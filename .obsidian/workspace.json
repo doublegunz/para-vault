@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "03-resources/dokumentasi_deploy_laravel_atomic_apache_php_85.md",
+                "file": "01-projects/qadrlabs/tentang solid.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "dokumentasi_deploy_laravel_atomic_apache_php_85"
+              "title": "tentang solid"
             }
           }
         ]
@@ -182,7 +182,20 @@
   },
   "active": "1dceef73659a7590",
   "lastOpenFiles": [
+    "01-projects/qadrlabs/06-dip-newsletter-service.md",
+    "01-projects/qadrlabs/05-isp-reporting-interfaces.md",
+    "01-projects/qadrlabs/04-lsp-notification-senders.md",
+    "01-projects/qadrlabs/03-ocp-payment-gateway.md",
+    "01-projects/qadrlabs/02-srp-invoice-controller.md",
+    "01-projects/qadrlabs/01-solid-introduction.md",
+    "01-projects/qadrlabs/walkthroughd.md",
+    "01-projects/qadrlabs/tentang solid.md",
     "03-resources/dokumentasi_deploy_laravel_atomic_apache_php_85.md",
+    "01-projects/qadrlabs/supervisor-qadrlabs.conf",
+    "01-projects/qadrlabs/qadrlabs.conf",
+    "01-projects/qadrlabs/app-qadrlabs.conf",
+    "01-projects/qadrlabs/rec-conf",
+    "01-projects/qadrlabs/configurasi",
     "03-resources/Unconfirmed 918303.crdownload",
     "README.md",
     "03-resources/zero downtime deployment.md",
