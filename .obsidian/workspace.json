@@ -11,14 +11,10 @@
             "id": "1dceef73659a7590",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "01-projects/qadrlabs/02-srp-invoice-controller.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "02-srp-invoice-controller"
+              "title": "New tab"
             }
           }
         ]
@@ -180,8 +176,16 @@
       "bases:Create new base": false
     }
   },
-  "active": "eeb5a4afb227e873",
+  "active": "1dceef73659a7590",
   "lastOpenFiles": [
+    "01-projects/qadrlabs/02-srp-invoice-controller.md",
+    "00-inbox/tentang solid.md",
+    "00-inbox/06-dip-newsletter-service.md",
+    "00-inbox/05-isp-reporting-interfaces.md",
+    "00-inbox/04-lsp-notification-senders.md",
+    "00-inbox/03-ocp-payment-gateway.md",
+    "00-inbox/02-srp-invoice-controller.md",
+    "00-inbox/01-solid-introduction.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/sharing/jadi-harus-mulai-dari-mana.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/sharing/ide.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/when-php-traits-help-and-when-they-become-technical-debt.md",
@@ -200,14 +204,6 @@
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/how-to-build-and-publish-a-php-library-to-packagist.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/getting-started-with-php-enums-a-practical-guide-for-beginners.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/fungsi-enkripsi-dan-dekripsi-menggunakan-php.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/cara-install-php-85-menggunakan-ppa-ondrej-php-di-ubuntu-2504.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/build-a-rate-limiter-from-scratch-in-php-fixed-window-and-token-bucket.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/build-a-mini-service-container-in-php-to-understand-dependency-injection.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/Web Development/deploy-website-menggunakan-git-ftp.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/Ubuntu/whats-new-in-ubuntu-2604-lts-resolute-raccoon.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/Ubuntu/setting-up-a-laravel-development-environment-on-ubuntu-2604-lts.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/Ubuntu/running-beberapa-versi-php-secara-bersamaan-di-ubuntu-22-04.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/Ubuntu/getting-started-with-pgvector-set-up-vector-search-in-postgresql-on-ubuntu-2504.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/sharing",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/Web Development",
