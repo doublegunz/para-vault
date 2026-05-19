@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "ea252f60d164d25f",
+        "id": "4dfe38c1fb1f1a53",
         "type": "tabs",
         "children": [
           {
-            "id": "3d6f3e047bfbd0a9",
+            "id": "1dceef73659a7590",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "00-inbox/01-solid-introduction.md",
+                "file": "01-projects/qadrlabs/post/integrating vite tailwind css v5, bun dan codeigniter 4.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "01-solid-introduction"
+              "title": "integrating vite tailwind css v5, bun dan codeigniter 4"
             }
           }
         ]
@@ -41,7 +41,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": true
+                "autoReveal": false
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -180,19 +180,21 @@
       "bases:Create new base": false
     }
   },
-  "active": "3d6f3e047bfbd0a9",
+  "active": "1dceef73659a7590",
   "lastOpenFiles": [
+    "00-inbox/tentang artikel codeigniter vite.md",
+    "01-projects/qadrlabs/post/integrating vite tailwind css v5, bun dan codeigniter 4.md",
+    "01-projects/qadrlabs/post",
+    "00-inbox/01-solid-introduction.md",
+    "03-resources/prompt-generate-artikel-di-claude.md.md",
+    "03-resources/README.md",
+    "01-projects/qadrlabs/02-srp-invoice-controller.md",
+    "00-inbox/tentang solid.md",
+    "00-inbox/06-dip-newsletter-service.md",
     "00-inbox/05-isp-reporting-interfaces.md",
     "00-inbox/04-lsp-notification-senders.md",
     "00-inbox/03-ocp-payment-gateway.md",
     "00-inbox/02-srp-invoice-controller.md",
-    "00-inbox/01-solid-introduction.md",
-    "Untitled.base",
-    "2026-05-19.md",
-    "Untitled.canvas",
-    "01-projects/qadrlabs/02-srp-invoice-controller.md",
-    "00-inbox/tentang solid.md",
-    "00-inbox/06-dip-newsletter-service.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/sharing/jadi-harus-mulai-dari-mana.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/sharing/ide.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/when-php-traits-help-and-when-they-become-technical-debt.md",
@@ -206,9 +208,6 @@
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/membuat-format-rupiah-dengan-php.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/membangun-aplikasi-payment-sederhana-menggunakan-php-dan-midtrans.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/mastering-php-traits-for-reusable-behavior-in-modern-php.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/long-method-the-code-smell-that-turns-your-functions-into-novels.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/how-to-set-up-xdebug-code-coverage-on-macos-with-homebrew.md",
-    "01-projects/qadrlabs/posts-export-2026-05-17-154314/php/how-to-build-and-publish-a-php-library-to-packagist.md",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/sharing",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/php",
     "01-projects/qadrlabs/posts-export-2026-05-17-154314/Web Development",
