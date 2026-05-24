@@ -1,10 +1,8 @@
-# Liskov Substitution Principle in Laravel 13: Why Inheritance Can Silently Break Your Code
-
 Your team has a notification system with three concrete senders inheriting from a common abstract class: email, SMS, and push. The interface looks clean. Type checks pass. Code review is happy. Then a critical password reset email goes out as an SMS instead, and the message gets silently truncated to one hundred sixty characters, cutting off the verification code. The code compiles. The tests pass. The customer cannot reset their password.
 
 Welcome to the Liskov Substitution Principle. Most violations of LSP do not look like bugs at compile time. They look like reasonable subclasses that happen to behave differently than their parent in subtle ways. The behavior difference does not surface during code review, does not show up in the type system, and only becomes visible when production code routes a real user through the substitution and the wrong thing happens.
 
-This article is the fourth in our SOLID series, following [Open/Closed Principle in Laravel 13: Build an Extensible Payment Gateway System](https://qadrlabs.com). We will build a notification sender hierarchy with three deliberate LSP violations: silent truncation, wrong exception type, and inconsistent return value. Pest tests will expose each violation, and we will fix them one at a time, ending with a hierarchy that is genuinely substitutable.
+This article is the fourth in our SOLID series, following [Open/Closed Principle in Laravel 13: Build an Extensible Payment Gateway System](https://qadrlabs.com/post/openclosed-principle-in-laravel-build-an-extensible-payment-gateway-system). We will build a notification sender hierarchy with three deliberate LSP violations: silent truncation, wrong exception type, and inconsistent return value. Pest tests will expose each violation, and we will fix them one at a time, ending with a hierarchy that is genuinely substitutable.
 
 ## Overview {#overview}
 

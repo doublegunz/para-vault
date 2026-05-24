@@ -1,5 +1,3 @@
-# SOLID Principles in Laravel 13: A Practical Introduction for Real-World Projects
-
 You inherit a Laravel project that has been in production for two years. The PostController is six hundred lines long. Adding a new field to the post creation flow means editing the controller, the form request, three different views, two scheduled jobs, and a notification class. You make the change, run the tests, and three unrelated tests fail. You fix those, push to staging, and the QA team reports that the comment notifications stopped working. None of this is unusual. It is what happens when code is written without design discipline.
 
 The cost of that messiness is not just frustration. It is slower feature delivery, more bugs in production, longer onboarding for new team members, and a creeping fear of changing anything. Many teams respond by writing more tests, hoping to catch regressions. That helps, but tests cannot fix a structural problem; they can only flag it. The actual fix is to write code that is structured to absorb change in the first place.

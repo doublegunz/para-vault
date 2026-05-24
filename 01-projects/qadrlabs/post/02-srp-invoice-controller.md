@@ -1,10 +1,8 @@
-# Single Responsibility Principle in Laravel 13: Refactor a Bloated Invoice Controller
-
 You open `InvoiceController.php` and the `store` method runs to ninety lines. It validates input, computes a subtotal, applies a tax rate, applies a discount code, persists the invoice, generates a PDF, sends an email, and writes an audit log. The marketing team asks for a small change to the email copy. You make the change, run the tests, and one of the calculation tests fails for reasons that have nothing to do with email. The fix takes an hour because everything in that method touches everything else.
 
 This is the everyday cost of ignoring the Single Responsibility Principle. The class works, it ships, and the bill arrives later in the form of every change being slower and riskier than it should be. The longer you wait to split the responsibilities, the more the code accumulates implicit coupling, and the harder the eventual refactor becomes.
 
-This article is the second in our SOLID series, following [SOLID Principles in Laravel 13: A Practical Introduction for Real-World Projects](https://qadrlabs.com). We will build a deliberately bloated invoice controller, write Pest tests against it, capture a clean baseline test run, then refactor the controller into four focused services without changing the public behavior. Every test that passed against the bloated version must still pass against the slim version, with the same count.
+This article is the second in our SOLID series, following [SOLID Principles in Laravel 13: A Practical Introduction for Real-World Projects](https://qadrlabs.com/post/solid-principles-in-laravel-a-practical-introduction-for-real-world-projects). We will build a deliberately bloated invoice controller, write Pest tests against it, capture a clean baseline test run, then refactor the controller into four focused services without changing the public behavior. Every test that passed against the bloated version must still pass against the slim version, with the same count.
 
 ## Overview {#overview}
 
@@ -342,9 +340,9 @@ it('calculates subtotal as the sum of line totals', function () {
 
     $this->postJson('/invoices', validInvoicePayload())
          ->assertStatus(201)
-         ->assertJsonPath('subtotal', 250.00);              // 2*100 + 1*50
+         ->assertJsonPath('subtotal', 250);                 // 2*100 + 1*50
 
-    expect(Invoice::first()->subtotal)->toBe(250.00);
+    expect(Invoice::first()->subtotal)->toEqual(250.00);
 });
 
 it('applies an 11 percent tax to the subtotal', function () {
@@ -363,7 +361,7 @@ it('applies a 10 percent discount when WELCOME10 code is provided', function () 
 
     $this->postJson('/invoices', validInvoicePayload(['discount_code' => 'WELCOME10']))
          ->assertStatus(201)
-         ->assertJsonPath('discount_amount', 25.00)         // 250 * 0.10
+         ->assertJsonPath('discount_amount', 25)            // 250 * 0.10
          ->assertJsonPath('total', 252.50);                 // 250 + 27.50 - 25
 });
 
@@ -391,6 +389,7 @@ it('sends the invoice email to the customer', function () {
         return $mail->hasTo('asriyanik@example.com');
     });
 });
+
 ```
 
 Each test fakes only the side effects it needs to verify. `Mail::fake()` intercepts outgoing email so no SMTP connection is attempted, and `Storage::fake('local')` swaps the disk for an in-memory one so the PDF write is asserted without touching the real filesystem. The tests do not know anything about how the controller is structured internally; they only know the request and the visible outcomes.
@@ -406,23 +405,25 @@ php artisan test
 Your output should look like this. Six new feature tests pass, plus the two example tests that ship with Laravel.
 
 ```
+$ php artisan test
 
    PASS  Tests\Unit\ExampleTest
-  ✓ that true is true                                                                                                                                                                                  0.01s
+  ✓ that true is true                                                    0.01s  
 
    PASS  Tests\Feature\ExampleTest
-  ✓ the application returns a successful response                                                                                                                                                      0.06s
+  ✓ the application returns a successful response                        0.11s  
 
    PASS  Tests\Feature\InvoiceCreationTest
-  ✓ it rejects requests without required fields                                                                                                                                                        0.21s
-  ✓ it calculates subtotal as the sum of line totals                                                                                                                                                   0.04s
-  ✓ it applies an 11 percent tax to the subtotal                                                                                                                                                       0.03s
-  ✓ it applies a 10 percent discount when welcome10 code is provided                                                                                                                                   0.03s
-  ✓ it writes a pdf file and stores its path on the invoice                                                                                                                                            0.03s
-  ✓ it sends the invoice email to the customer                                                                                                                                                         0.04s
+  ✓ it rejects requests without required fields                          0.08s  
+  ✓ it calculates subtotal as the sum of line totals                     0.05s  
+  ✓ it applies an 11 percent tax to the subtotal                         0.03s  
+  ✓ it applies a 10 percent discount when WELCOME10 code is provided     0.03s  
+  ✓ it writes a PDF file and stores its path on the invoice              0.03s  
+  ✓ it sends the invoice email to the customer                           0.03s  
 
-  Tests:    8 passed (16 assertions)
-  Duration: 0.49s
+  Tests:    8 passed (21 assertions)
+  Duration: 0.41s
+
 ```
 
 Eight passing tests is our baseline. After the refactor we need exactly the same eight tests passing.
@@ -690,23 +691,25 @@ php artisan test
 Your output should match the baseline almost exactly, with timing differences being the only delta.
 
 ```
+$ php artisan test
 
    PASS  Tests\Unit\ExampleTest
-  ✓ that true is true                                                                                                                                                                                  0.01s
+  ✓ that true is true                                                    0.01s  
 
    PASS  Tests\Feature\ExampleTest
-  ✓ the application returns a successful response                                                                                                                                                      0.06s
+  ✓ the application returns a successful response                        0.11s  
 
    PASS  Tests\Feature\InvoiceCreationTest
-  ✓ it rejects requests without required fields                                                                                                                                                        0.20s
-  ✓ it calculates subtotal as the sum of line totals                                                                                                                                                   0.04s
-  ✓ it applies an 11 percent tax to the subtotal                                                                                                                                                       0.03s
-  ✓ it applies a 10 percent discount when welcome10 code is provided                                                                                                                                   0.03s
-  ✓ it writes a pdf file and stores its path on the invoice                                                                                                                                            0.03s
-  ✓ it sends the invoice email to the customer                                                                                                                                                         0.04s
+  ✓ it rejects requests without required fields                          0.08s  
+  ✓ it calculates subtotal as the sum of line totals                     0.05s  
+  ✓ it applies an 11 percent tax to the subtotal                         0.03s  
+  ✓ it applies a 10 percent discount when WELCOME10 code is provided     0.03s  
+  ✓ it writes a PDF file and stores its path on the invoice              0.03s  
+  ✓ it sends the invoice email to the customer                           0.03s  
 
-  Tests:    8 passed (16 assertions)
-  Duration: 0.47s
+  Tests:    8 passed (21 assertions)
+  Duration: 0.41s
+
 ```
 
 Same eight tests, same assertions, same green state. The refactor is behavior preserving. That is the property a real refactor must always have, and it is the property the SRP-driven extraction made easy: each new class is testable in isolation because each new class has only one reason to exist.

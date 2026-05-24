@@ -1,10 +1,8 @@
-# Open/Closed Principle in Laravel 13: Build an Extensible Payment Gateway System
-
 Your e-commerce app supports two payment gateways: PayPal and Stripe. Two months later the business adds Midtrans for the Indonesian market. You open `PaymentService::charge` and add an `elseif`. Six months later it adds a wallet provider, and you add another `elseif`. Twelve months later the file has eight branches, each touching the others, and your changes to PayPal somehow affect Stripe because of a refactor you did to the shared exception handling. The QA team starts asking for a full payment regression run on every change.
 
 The pain is not the new gateway. The pain is that adding a new gateway forces you to open and modify code that was already tested and shipped. Every modification is a chance to break what already works. Over a long-lived codebase those chances accumulate, and the team eventually develops a learned helplessness: "we cannot touch payments without a war room".
 
-This article is the third in our SOLID series, following [Single Responsibility Principle in Laravel 13: Refactor a Bloated Invoice Controller](https://qadrlabs.com). The Open/Closed Principle exists exactly to prevent that learned helplessness. We will build a `PaymentService` that uses an `if/elseif` chain to dispatch to PayPal or Stripe, lock the behavior down with Pest tests, and refactor it into a contract-driven design where adding a third gateway requires zero modification to the service or its tests. Then we will add Midtrans as proof.
+This article is the third in our SOLID series, following [Single Responsibility Principle in Laravel 13: Refactor a Bloated Invoice Controller](https://qadrlabs.com/post/single-responsibility-principle-in-laravel-13-refactor-a-bloated-invoice-controller). The Open/Closed Principle exists exactly to prevent that learned helplessness. We will build a `PaymentService` that uses an `if/elseif` chain to dispatch to PayPal or Stripe, lock the behavior down with Pest tests, and refactor it into a contract-driven design where adding a third gateway requires zero modification to the service or its tests. Then we will add Midtrans as proof.
 
 ## Overview {#overview}
 
@@ -294,7 +292,7 @@ it('charges a customer through the paypal gateway', function () {
         ])
          ->assertStatus(201)
          ->assertJsonPath('gateway', 'paypal')
-         ->assertJsonPath('amount', 100.00)
+         ->assertJsonPath('amount', 100)
          ->assertJsonPath('currency', 'USD')
          ->assertJsonPath('status', 'succeeded');
 
@@ -322,6 +320,7 @@ it('throws when an unsupported gateway is requested', function () {
     expect(fn () => $service->charge('unknown', 10.00, 'USD'))
         ->toThrow(InvalidArgumentException::class);
 });
+
 ```
 
 The last test deliberately exercises the service directly rather than through HTTP, so we can assert that the service rejects unsupported gateways without going through Laravel's request validation. After the refactor the service still rejects unsupported gateways, just through a different mechanism.
@@ -337,21 +336,23 @@ php artisan test
 The output should look like this. Six tests pass: four new feature tests plus the two examples that ship with Laravel.
 
 ```
+$ php artisan test
 
    PASS  Tests\Unit\ExampleTest
-  ✓ that true is true                                                                                                                                                                                  0.01s
+  ✓ that true is true                                                    0.01s  
 
    PASS  Tests\Feature\ExampleTest
-  ✓ the application returns a successful response                                                                                                                                                      0.05s
+  ✓ the application returns a successful response                        0.11s  
 
    PASS  Tests\Feature\PaymentChargeTest
-  ✓ it rejects requests without required fields                                                                                                                                                        0.20s
-  ✓ it charges a customer through the paypal gateway                                                                                                                                                   0.04s
-  ✓ it charges a customer through the stripe gateway                                                                                                                                                   0.03s
-  ✓ it throws when an unsupported gateway is requested                                                                                                                                                 0.02s
+  ✓ it rejects requests without required fields                          0.08s  
+  ✓ it charges a customer through the paypal gateway                     0.03s  
+  ✓ it charges a customer through the stripe gateway                     0.02s  
+  ✓ it throws when an unsupported gateway is requested                   0.02s  
 
-  Tests:    6 passed (12 assertions)
-  Duration: 0.39s
+  Tests:    6 passed (18 assertions)
+  Duration: 0.33s
+
 ```
 
 Six tests passing, all green. This is the safety net for the refactor.

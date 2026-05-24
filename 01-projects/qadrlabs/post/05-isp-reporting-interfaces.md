@@ -1,10 +1,8 @@
-# Interface Segregation Principle in Laravel 13: Stop Forcing Classes to Implement Methods They Don't Need
-
 You inherit a reporting module that defines a single `ReportInterface`. The interface declares six methods: `generatePdf`, `generateExcel`, `generateCsv`, `scheduleDaily`, `archiveToS3`, and `signWithCertificate`. Almost every report only uses one or two of these. The simple sales report just needs PDF output. The compliance report needs PDF plus signing. The data export needs CSV only. But every single report class is forced to declare all six methods because the interface demands them. The result, you discover when reading the code, is that most reports satisfy the contract by throwing `BadMethodCallException` from the methods they do not actually support.
 
 The codebase compiles. The type system is satisfied. Nothing fails until production, when a scheduled job calls `archiveToS3()` on a report that lied about supporting it, the exception fires, the queue retries, and finally the on-call engineer gets paged at three in the morning. The interface promised more than the implementations could deliver, and there was no way to tell from the type system alone.
 
-This article is the fifth in our SOLID series, following [Liskov Substitution Principle in Laravel 13: Why Inheritance Can Silently Break Your Code](https://qadrlabs.com). The Interface Segregation Principle is exactly the discipline that prevents the situation above. We will build a fat reporting interface with the same six methods, watch concrete report classes drown in stub implementations, capture a baseline Pest run, and then split the interface into focused capability contracts. Reports declare only what they truly do. Callers ask for only what they need. The `BadMethodCallException` antipattern disappears entirely.
+This article is the fifth in our SOLID series, following [Liskov Substitution Principle in Laravel 13: Why Inheritance Can Silently Break Your Code](https://qadrlabs.com/post/liskov-substitution-principle-in-laravel-why-inheritance-can-silently-break-your-code). The Interface Segregation Principle is exactly the discipline that prevents the situation above. We will build a fat reporting interface with the same six methods, watch concrete report classes drown in stub implementations, capture a baseline Pest run, and then split the interface into focused capability contracts. Reports declare only what they truly do. Callers ask for only what they need. The `BadMethodCallException` antipattern disappears entirely.
 
 ## Overview {#overview}
 
@@ -359,7 +357,7 @@ it('renders a PDF for the compliance report and signs it', function () {
     $signed = $report->signWithCertificate();
 
     expect($pdf)->toContain('ComplianceReport')
-                ->and($signed)->toStartWith(base64_encode('SIGNED::'));
+                ->and(base64_decode($signed))->toStartWith('SIGNED::');
 });
 
 it('exports CSV for the data export report', function () {
@@ -388,6 +386,7 @@ it('schedules the data export report on a daily cadence', function () {
                     ->and($entries[0]['report'])->toBe(DataExportReport::class)
                     ->and($entries[0]['frequency'])->toBe('daily');
 });
+
 ```
 
 Each test exercises only the methods the report under test actually supports. None of the tests depend on the fat interface; they depend on the concrete capabilities each report offers. This is a hint about the right shape of the contracts.
