@@ -1,1 +1,5 @@
 .obsidian/workspace.json
+
+# Local tutorial test projects
+/sandbox/*
+!/sandbox/.gitkeep

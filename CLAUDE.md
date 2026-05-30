@@ -15,6 +15,7 @@ The vault follows the PARA organizational structure:
 - **02-areas/**: Long-term responsibilities and areas of focus without specific end dates
 - **03-resources/**: Topics of ongoing interest, reference materials, and learning resources
 - **04-archives/**: Completed or inactive items from other folders
+- **sandbox/**: Git-ignored local workspace for testing tutorial commands, sample projects, generated files, dependencies, and other throwaway artifacts. The folder is kept in Git with `.gitkeep`, but its contents are ignored.
 
 ## File Organization
 
@@ -35,3 +36,9 @@ This vault uses Obsidian features:
 - **Backlinks**: Notes can reference each other bidirectionally
 
 When creating or modifying notes, maintain consistency with Obsidian's markdown flavor and linking conventions.
+
+## Tutorial Testing
+
+Use `sandbox/` for hands-on validation of tutorials and command snippets. Files inside this folder are local experiment artifacts and should not be treated as committed source material.
+
+Do not place real secrets in `sandbox/`. Prefer example credentials, placeholder values, or `.env.example` patterns when a tutorial needs configuration.
