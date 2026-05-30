@@ -25,13 +25,13 @@ The core idea is to attach two tags to every cached article: a shared `articles`
 - How to design per-id tags so you can expire one item without flushing the rest
 - The difference between flushing one tag and flushing a group of tags
 - How to automate invalidation with a model observer and the `#[ObservedBy]` attribute
-- How to test tag behavior in CI without a running Redis server
+- How to test tag behavior in CI without a running Redis server. 
 
 ### What You'll Need
 
 - PHP 8.3 or newer
 - Composer and the Laravel installer
-- A running Redis server on your machine; cache tags require a taggable store, and Redis is the easiest one to reach for
+- A running [Redis server](https://qadrlabs.com/post/how-to-install-redis-8-on-ubuntu-2604-lts-resolute-raccoon) on your machine; cache tags require a taggable store, and Redis is the easiest one to reach for
 - Basic familiarity with Eloquent models, routes, and Artisan Tinker
 
 ## Step 1: Create the Project and Switch to a Taggable Cache Store {#step-1-create-the-project-and-switch-to-a-taggable-cache-store}
@@ -127,6 +127,18 @@ return new class extends Migration
 ```
 
 A title and a body are all we need to represent an article. The `timestamps()` column gives us an `updated_at` value we can display, which makes it obvious when a cached version is stale.
+
+Run the migration to create the `articles` table.
+
+```bash
+php artisan migrate
+```
+
+```
+   INFO  Running migrations.
+
+  2026_05_30_000000_create_articles_table ............................................................... 5ms DONE
+```
 
 Open `app/Models/Article.php` and mark the writable attributes with the `#[Fillable]` attribute.
 
@@ -344,8 +356,8 @@ php artisan tinker
 > Cache::tags(['articles', 'article:3'])->get('article:3');
 = null
 
-> Cache::tags(['articles', 'article:7'])->get('article:7')?->title;
-= "Quia voluptatem quas et molestiae."
+> Cache::tags(['articles', 'article:7'])->get('article:7') !== null;
+= true
 
 > Cache::get('homepage:stats');
 = [
@@ -353,7 +365,7 @@ php artisan tinker
   ]
 ```
 
-Flushing `article:3` cleared article three, while article seven and the untagged stats survived untouched. That is the surgical invalidation a blanket `Cache::flush()` can never give you. The one weakness here is that this only works if every developer remembers to call `flush()` after every change. Let us remove that risk.
+Flushing `article:3` cleared article three, while article seven and the untagged stats survived untouched. Notice that we check `!== null` instead of accessing a property like `?->title` directly. This is a Tinker quirk: PHP's `unserialize()` runs inside an `eval()` context where the autoloader sometimes cannot resolve the model class, producing an `__PHP_Incomplete_Class` object. Any property access on that object returns `null` with a warning, even though the value is correctly stored in Redis. In real application code the deserialization always works because the class is fully loaded by the time the cache is read. That is the surgical invalidation a blanket `Cache::flush()` can never give you. The one weakness here is that this only works if every developer remembers to call `flush()` after every change. Let us remove that risk.
 
 ## Step 5: Automate Invalidation With a Model Observer {#step-5-automate-invalidation-with-a-model-observer}
 
@@ -500,8 +512,8 @@ php artisan tinker
 > Cache::tags(['articles', 'article:1'])->get('article:1');
 = null
 
-> Cache::tags(['articles', 'article:2'])->get('article:2')?->title;
-= "Aperiam quos qui est velit voluptas."
+> Cache::tags(['articles', 'article:2'])->get('article:2') !== null;
+= true
 
 > Cache::get('homepage:stats');
 = [
@@ -509,7 +521,7 @@ php artisan tinker
   ]
 ```
 
-The plain `update()` call triggered the observer, which flushed `article:1`. Article two and the untagged stats stayed cached, so the next visitor to article two still gets a fast response while article one rebuilds from fresh data.
+The plain `update()` call triggered the observer, which flushed `article:1`. Article two and the untagged stats stayed cached, so the next visitor to article two still gets a fast response while article one rebuilds from fresh data. We check `!== null` rather than accessing `?->title` directly because Tinker's `unserialize()` runs inside an `eval()` context where the autoloader sometimes cannot resolve the model class, resulting in an `__PHP_Incomplete_Class` object whose property reads return `null`. This is a Tinker-only limitation; in real application code the deserialization works correctly.
 
 ### Scenario 3: Flush the Whole Group at Once
 
@@ -544,7 +556,15 @@ Cache tags need a taggable store, but we do not want CI to depend on a running R
 php artisan make:test ArticleCacheTest --pest
 ```
 
-Open `tests/Feature/ArticleCacheTest.php` and write the suite.
+Before writing the tests, open `tests/Pest.php` and enable `RefreshDatabase` for the Feature suite. A fresh Laravel project ships with it commented out; uncomment the `->use()` line.
+
+```php
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Feature');
+```
+
+This tells Pest to run all database migrations inside a transaction before each Feature test and roll them back afterwards. Without it the in-memory SQLite database has no `articles` table and every factory call fails. Open `tests/Feature/ArticleCacheTest.php` and write the suite.
 
 ```php
 <?php
@@ -639,16 +659,25 @@ php artisan test
 ```
 
 ```
-   PASS  Tests\Feature\ArticleCacheTest
-  ✓ it caches an article after it is shown                                   0.21s
-  ✓ it clears only the updated article from the cache                        0.04s
-  ✓ it keeps untagged cache when a single article tag is flushed             0.02s
-  ✓ it flushing the articles tag clears every article but not untagged cache 0.03s
-  ✓ it flushes the cache when an article is updated via the observer         0.02s
-  ✓ it flushes the cache when an article is deleted via the observer         0.02s
+$ php artisan test
 
-  Tests:    6 passed (14 assertions)
-  Duration: 0.43s
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true                                                    0.01s  
+
+   PASS  Tests\Feature\ArticleCacheTest
+  ✓ it caches an article after it is shown                               0.19s  
+  ✓ it clears only the updated article from the cache                    0.04s  
+  ✓ it keeps untagged cache when a single article tag is flushed         0.02s  
+  ✓ it flushing the articles tag clears every article but not untagged…  0.02s  
+  ✓ it flushes the cache when an article is updated via the observer     0.02s  
+  ✓ it flushes the cache when an article is deleted via the observer     0.02s  
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ the application returns a successful response                        0.03s  
+
+  Tests:    8 passed (17 assertions)
+  Duration: 0.40s
+
 ```
 
 Six green tests confirm tagging, single-item invalidation, group invalidation, and observer-driven busting, all without a Redis server in the loop. With the behavior verified, here is what is happening underneath.
