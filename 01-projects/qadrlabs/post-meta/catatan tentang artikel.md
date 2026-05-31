@@ -96,9 +96,7 @@ Article Title
 
   Short Description (160 char max)
 
-  ▎ Use Laravel 13 database transactions to make multi-table inserts
-  ▎ all-or-nothing. Roll back a failed checkout cleanly with DB::transaction and
-  ▎ avoid partial data.
+  Use Laravel 13 database transactions to make multi-table inserts all-or-nothing. Roll back a failed checkout cleanly with DB::transaction and avoid partial data.
 
   Character count: 159 ✅
 

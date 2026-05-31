@@ -41,30 +41,59 @@ laravel new transactions-demo --no-interaction --database=sqlite --pest --no-boo
 cd transactions-demo
 ```
 
-Run the default migrations to set up the base tables.
+```
+ • Creating Laravel application
+   ✔ Application initialized
 
-```bash
-php artisan migrate
+ • Running database migrations
+   ✔ Database migrated
+
+ • Setting up Pest
+   ✔ Pest initialized
+
+ Application ready in [transactions-demo]. You can start your local development using:
+
+ ➜ cd transactions-demo
+ ➜ npm install --ignore-scripts && npm run build
+ ➜ composer run dev
 ```
 
-```
-   INFO  Running migrations.
-
-  0001_01_01_000000_create_users_table ............................... 9ms DONE
-  0001_01_01_000001_create_cache_table ............................... 2ms DONE
-  0001_01_01_000002_create_jobs_table ................................ 5ms DONE
-```
-
-SQLite fully supports transactions, so nothing extra needs installing. With the project ready, we build the tables a checkout touches.
+The installer already runs the default migrations, so you do not need to run `php artisan migrate` here. SQLite fully supports transactions, and Pest is already installed because we used the `--pest` flag. With the project ready, we build the tables a checkout touches.
 
 ## Step 2: Build the Models and Seed Stock {#step-2-build-the-models-and-seed-stock}
 
-A checkout spans three tables, so we need three models. Generate them with their migrations.
+A checkout spans three tables, so we need three models. Generate them with their migrations one command at a time. Running the commands separately keeps the migration timestamps easy to read and avoids creating multiple migration files with the same timestamp on a fast machine.
 
 ```bash
 php artisan make:model Product -mf
+```
+Output:
+```
+   INFO  Model [app/Models/Product.php] created successfully.  
+
+   INFO  Factory [database/factories/ProductFactory.php] created successfully.  
+
+   INFO  Migration [database/migrations/2026_05_31_111816_create_products_table.php] created successfully.  
+```
+
+```bash
 php artisan make:model Order -m
+```
+Output:
+```
+   INFO  Model [app/Models/Order.php] created successfully.  
+
+   INFO  Migration [database/migrations/2026_05_31_111828_create_orders_table.php] created successfully.  
+```
+
+```bash
 php artisan make:model OrderItem -m
+```
+Output:
+```
+   INFO  Model [app/Models/OrderItem.php] created successfully.  
+
+   INFO  Migration [database/migrations/2026_05_31_111837_create_order_items_table.php] created successfully.  
 ```
 
 Open the products migration in `database/migrations` and define a product with a stock count.
@@ -235,17 +264,28 @@ The keyboard is deliberately out of stock; it is the trap that will make our che
 ```bash
 php artisan migrate:fresh --seed
 ```
-
+Output
 ```
-   INFO  Preparing database.
+$ php artisan migrate:fresh --seed
 
-  Dropping all tables ................................................. 6ms DONE
+  Dropping all tables ............................................ 4.21ms DONE
 
-   INFO  Running migrations.
+   INFO  Preparing database.  
 
-  ...
+  Creating migration table ...................................... 10.64ms DONE
 
-   INFO  Seeding database.
+   INFO  Running migrations.  
+
+  0001_01_01_000000_create_users_table .......................... 21.08ms DONE
+  0001_01_01_000001_create_cache_table .......................... 11.72ms DONE
+  0001_01_01_000002_create_jobs_table ........................... 21.92ms DONE
+  2026_05_31_111816_create_products_table ........................ 3.95ms DONE
+  2026_05_31_111828_create_orders_table .......................... 6.16ms DONE
+  2026_05_31_111837_create_order_items_table .................... 10.97ms DONE
+
+
+   INFO  Seeding database.  
+
 ```
 
 We now have three products with a known mouse stock of ten, a keyboard stock of zero, and a cable stock of fifty. Time to write a checkout that mishandles failure.
@@ -314,13 +354,13 @@ php artisan tinker
 > $service = app(App\Services\CheckoutService::class);
 
 > try {
-.     $service->checkout([
-.         ['product_id' => 1, 'quantity' => 2],
-.         ['product_id' => 2, 'quantity' => 1],
-.     ]);
-. } catch (\Throwable $e) {
-.     echo $e->getMessage();
-. }
+     $service->checkout([
+         ['product_id' => 1, 'quantity' => 2],
+         ['product_id' => 2, 'quantity' => 1],
+     ]);
+ } catch (\Throwable $e) {
+     echo $e->getMessage();
+ }
 Not enough stock for Mechanical Keyboard.
 
 > App\Models\Order::count();
@@ -426,13 +466,13 @@ php artisan tinker
 > $service = app(App\Services\CheckoutService::class);
 
 > try {
-.     $service->checkout([
-.         ['product_id' => 1, 'quantity' => 2],
-.         ['product_id' => 2, 'quantity' => 1],
-.     ]);
-. } catch (\Throwable $e) {
-.     echo $e->getMessage();
-. }
+     $service->checkout([
+         ['product_id' => 1, 'quantity' => 2],
+         ['product_id' => 2, 'quantity' => 1],
+     ]);
+ } catch (\Throwable $e) {
+     echo $e->getMessage();
+ }
 Not enough stock for Mechanical Keyboard.
 
 > App\Models\Order::count();
@@ -464,6 +504,7 @@ namespace App\Http\Controllers;
 
 use App\Services\CheckoutService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use RuntimeException;
 
 class CheckoutController extends Controller
@@ -471,11 +512,20 @@ class CheckoutController extends Controller
     public function store(Request $request, CheckoutService $service)
     {
         // Validate the cart shape before touching the database.
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_id' => ['required', 'integer', 'exists:products,id'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         try {
             $order = $service->checkout($validated['items']);
@@ -493,13 +543,17 @@ class CheckoutController extends Controller
 }
 ```
 
-The validation rules guarantee the cart is a non-empty array and that every line references a real product with a quantity of at least one, which keeps malformed input from ever reaching the service. The `try/catch` turns the service's out-of-stock exception into a clean `422` response; by the time we catch it, the transaction has already rolled back, so there is nothing to clean up. A successful checkout returns the created order with its items and a `201` status. Register the route in `routes/web.php`.
+The validation rules guarantee the cart is a non-empty array and that every line references a real product with a quantity of at least one, which keeps malformed input from ever reaching the service. Because this endpoint always returns JSON, the controller sends a JSON `422` response directly when validation fails. The `try/catch` turns the service's out-of-stock exception into a clean `422` response; by the time we catch it, the transaction has already rolled back, so there is nothing to clean up. A successful checkout returns the created order with its items and a `201` status. Register the route in `routes/web.php`.
 
 ```php
 <?php
 
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
 
 Route::post('/checkout', [CheckoutController::class, 'store']);
 ```
@@ -523,9 +577,9 @@ Check out a cart that fits within stock and confirm every table was written and 
 > $service = app(App\Services\CheckoutService::class);
 
 > $order = $service->checkout([
-.     ['product_id' => 1, 'quantity' => 2],
-.     ['product_id' => 3, 'quantity' => 3],
-. ]);
+     ['product_id' => 1, 'quantity' => 2],
+     ['product_id' => 3, 'quantity' => 3],
+ ]);
 
 > $order->total;
 = "86.00"
@@ -551,13 +605,13 @@ Now check out a cart that includes the out-of-stock keyboard and confirm the dat
 
 ```php
 > try {
-.     $service->checkout([
-.         ['product_id' => 1, 'quantity' => 1],
-.         ['product_id' => 2, 'quantity' => 1],
-.     ]);
-. } catch (\Throwable $e) {
-.     echo $e->getMessage();
-. }
+     $service->checkout([
+         ['product_id' => 1, 'quantity' => 1],
+         ['product_id' => 2, 'quantity' => 1],
+     ]);
+ } catch (\Throwable $e) {
+     echo $e->getMessage();
+ }
 Not enough stock for Mechanical Keyboard.
 
 > App\Models\Order::count();
@@ -586,6 +640,9 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\CheckoutService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 it('places an order and decrements stock on success', function () {
     $mouse = Product::create(['name' => 'Mouse', 'price' => 25, 'stock' => 10]);
@@ -626,17 +683,24 @@ it('rolls back everything when a product is out of stock', function () {
 });
 
 it('requires a non-empty items array', function () {
-    $this->postJson('/checkout', [])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['items']);
+    $response = $this->postJson('/checkout', ['items' => []]);
+
+    expect($response->status())->toBe(422);
+
+    expect($response->json('errors'))->toHaveKey('items');
 });
 
 it('rejects unknown products and zero quantities', function () {
-    $this->postJson('/checkout', [
+    $response = $this->postJson('/checkout', [
         'items' => [['product_id' => 999, 'quantity' => 0]],
-    ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['items.0.product_id', 'items.0.quantity']);
+    ]);
+
+    expect($response->status())->toBe(422);
+
+    expect($response->json('errors'))->toHaveKeys([
+        'items.0.product_id',
+        'items.0.quantity',
+    ]);
 });
 
 it('computes the order total from product prices', function () {
@@ -664,7 +728,7 @@ it('can place an order directly through the service', function () {
 The first two tests are the heart of the suite: a valid cart commits an order, its items, and the stock decrements together, while an out-of-stock cart returns a `422` and leaves all three tables exactly as they were. The next two confirm validation rejects an empty cart and bad line data before any database work happens. The fifth checks the computed total, and the last calls the service directly to prove it works outside an HTTP request too. Run the suite.
 
 ```bash
-php artisan test
+php artisan test tests/Feature/CheckoutTest.php
 ```
 
 ```
@@ -676,8 +740,8 @@ php artisan test
   ✓ it computes the order total from product prices               0.03s
   ✓ it can place an order directly through the service            0.03s
 
-  Tests:    6 passed (14 assertions)
-  Duration: 0.46s
+  Tests:    6 passed (19 assertions)
+  Duration: 0.32s
 ```
 
 Six green tests confirm the happy path commits, the failure path rolls back, and validation guards the door. With the behavior verified, here is what the transaction is doing underneath.
