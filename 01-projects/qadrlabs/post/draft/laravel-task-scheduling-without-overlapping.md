@@ -43,21 +43,17 @@ laravel new schedule-demo --no-interaction --database=sqlite --pest --no-boost
 cd schedule-demo
 ```
 
-Run the default migrations to set up the framework tables, including the `cache` and `cache_locks` tables that the scheduler's overlap lock relies on.
+The Laravel installer may run the default migrations for you. Run `migrate` once anyway so you can confirm the framework tables exist, including the `cache` and `cache_locks` tables that the scheduler's overlap lock relies on.
 
 ```bash
 php artisan migrate
 ```
 
 ```
-   INFO  Running migrations.
-
-  0001_01_01_000000_create_users_table ............................... 9ms DONE
-  0001_01_01_000001_create_cache_table ............................... 2ms DONE
-  0001_01_01_000002_create_jobs_table ................................ 5ms DONE
+   INFO  Nothing to migrate.
 ```
 
-The `create_cache_table` migration is the important one here. The default `database` cache store supports atomic locks in Laravel 13, and `withoutOverlapping()` stores its lock there, so we get overlap protection without installing Redis or any other service. With the project ready, let us build something slow enough to overlap.
+The `create_cache_table` migration is the important one here. If your installer did not already run the default migrations, this command will create the users, cache, and jobs tables instead of showing `Nothing to migrate`. The default `database` cache store supports atomic locks in Laravel 13, and `withoutOverlapping()` stores its lock there, so we get overlap protection without installing Redis or any other service. With the project ready, let us build something slow enough to overlap.
 
 ## Step 2: Build the Heavy Command {#step-2-build-the-heavy-command}
 
@@ -429,12 +425,14 @@ php artisan schedule:test
 ```
 
 ```
-   INFO  Running [php artisan report:generate].
+ Which command would you like to run?
+  › '/usr/bin/php8.5' 'artisan' report:generate
 
-Report #5: 50 orders, 13245.67 total.
+Running ['artisan' report:generate] normally in background .. 30s DONE
+⇂ '/usr/bin/php8.5' 'artisan' report:generate > '/dev/null' 2>&1
 ```
 
-This runs the task through the scheduler's machinery, which is handy for confirming the command behaves before you trust it to cron.
+Because our task now uses `runInBackground()`, Laravel runs it as a background process and redirects the command output to `/dev/null`. The report still gets created; check the logs or database if you want to confirm the result after the command finishes. This is handy for confirming the scheduled event itself behaves before you trust it to cron.
 
 ### Scenario 3: Watch the Overlap Lock Skip a Run
 
@@ -460,14 +458,14 @@ php artisan schedule:clear-cache
 ```
 
 ```
-   INFO  Removed mutex for [php artisan report:generate].
+   INFO  Deleting mutex for ['/usr/bin/php8.5' 'artisan' report:generate].
 ```
 
 This releases the locks immediately so the next scheduled run can proceed. With the behavior understood, we lock it down with tests.
 
 ## Step 7: Write the Tests {#step-7-write-the-tests}
 
-We can verify two things in automated tests: that the command produces the right output, and that the schedule is configured with the overlap protection we expect. The schedule definition is inspectable through the `Schedule` facade's `events()` method, so we can assert on it directly. Create the test file.
+We can verify two things in automated tests: that the command produces the right output, and that the schedule is configured with the overlap protection we expect. The schedule definition is inspectable through the scheduler instance's `events()` method, so we can assert on it directly. Create the test file.
 
 ```bash
 php artisan make:test ReportScheduleTest --pest
@@ -480,7 +478,10 @@ Open `tests/Feature/ReportScheduleTest.php` and write the suite.
 
 use App\Models\Order;
 use App\Models\Report;
-use Illuminate\Support\Facades\Schedule;
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
 
 function reportEvent()
 {
@@ -540,8 +541,8 @@ php artisan test
   ✓ it runs the scheduled report on one server only                                      0.01s
   ✓ it writes one report per direct invocation because the lock is a scheduler guard     0.03s
 
-  Tests:    5 passed (11 assertions)
-  Duration: 0.38s
+  Tests:    5 passed (9 assertions)
+  Duration: 0.27s
 ```
 
 Five green tests confirm the command works and the schedule carries the protection we configured. With the behavior verified, here is what is happening underneath.
