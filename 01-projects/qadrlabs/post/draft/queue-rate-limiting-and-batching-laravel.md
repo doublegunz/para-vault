@@ -547,10 +547,13 @@ use App\Jobs\SendNewsletterEmail;
 use App\Mail\NewsletterMail;
 use App\Models\Subscriber;
 use Illuminate\Bus\PendingBatch;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+
+uses(RefreshDatabase::class);
 
 it('dispatches a batch named Monthly Newsletter', function () {
     Bus::fake();
@@ -577,7 +580,7 @@ it('allows failures so one bad email does not stop the batch', function () {
 
     $this->artisan('newsletter:send');
 
-    Bus::assertBatched(fn (PendingBatch $batch) => $batch->allowFailures === true);
+    Bus::assertBatched(fn (PendingBatch $batch) => $batch->allowsFailures());
 });
 
 it('sends the newsletter mailable when a job runs', function () {

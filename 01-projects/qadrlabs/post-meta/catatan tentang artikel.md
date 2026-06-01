@@ -58,16 +58,14 @@ Article Title
 
   Short Description (160 char max)
 
-  ▎ Stop heavy Laravel cron jobs from overlapping. Use withoutOverlapping() with
-  ▎ lock expiry, runInBackground, and onOneServer to run slow scheduled tasks
-  ▎ safely.
+  Stop heavy Laravel cron jobs from overlapping. Use withoutOverlapping() with lock expiry, runInBackground, and onOneServer to run slow scheduled tasks safely.
 
   Character count: 157 ✅
 
   Category and Tags
 
   - Category: Laravel
-  - Tags: laravel, laravel-13, task-scheduling, cron, withoutoverlapping,
+  - Tags: laravel, laravel-13, Task Scheduling, cron, withoutoverlapping,
   artisan, php
 
   ---

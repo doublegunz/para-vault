@@ -199,6 +199,12 @@ class DatabaseSeeder extends Seeder
 }
 ```
 
+Run the new migrations so the `orders` and `reports` tables exist before the seeder tries to insert order rows.
+
+```bash
+php artisan migrate
+```
+
 Run the seeder so the report has something to aggregate.
 
 ```bash
@@ -290,13 +296,25 @@ Artisan::command('inspire', function () {
 Schedule::command('report:generate')->everyMinute();
 ```
 
-The line `Schedule::command('report:generate')->everyMinute()` tells Laravel the command is due at the top of every minute. In production, the scheduler is driven by a single system cron entry that calls `schedule:run` once a minute. You would add this line to your server's crontab.
+The line `Schedule::command('report:generate')->everyMinute()` tells Laravel the command is due at the top of every minute. In production, the scheduler is driven by a single system cron entry that calls `schedule:run` once a minute. Open the crontab for the Linux user that owns the Laravel project.
+
+```bash
+crontab -e
+```
+
+Paste this line into the file, replacing `/path-to-your-project` with the absolute path to your deployed Laravel project.
 
 ```
 * * * * * cd /path-to-your-project && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-That one entry is all the cron configuration Laravel ever needs; every scheduled task lives in your PHP code, not in crontab. Confirm the task is registered with `schedule:list`.
+Save and close the editor. On most servers, cron installs the updated crontab automatically after the editor exits. You can confirm the entry was saved with this command.
+
+```bash
+crontab -l
+```
+
+That one entry is all the cron configuration Laravel ever needs; every scheduled task lives in your PHP code, not in crontab. For the local demo, you do not need to wait for system cron. Confirm the task is registered with `schedule:list`.
 
 ```bash
 php artisan schedule:list
@@ -534,15 +552,24 @@ php artisan test
 ```
 
 ```
-   PASS  Tests\Feature\ReportScheduleTest
-  ✓ it generates a single report from the orders                                        0.19s
-  ✓ it schedules the report command to run every minute                                 0.02s
-  ✓ it protects the scheduled report from overlapping                                    0.01s
-  ✓ it runs the scheduled report on one server only                                      0.01s
-  ✓ it writes one report per direct invocation because the lock is a scheduler guard     0.03s
+$ php artisan test
 
-  Tests:    5 passed (9 assertions)
-  Duration: 0.27s
+   PASS  Tests\Unit\ExampleTest
+  ✓ that true is true                                                    0.01s  
+
+   PASS  Tests\Feature\ExampleTest
+  ✓ the application returns a successful response                        0.11s  
+
+   PASS  Tests\Feature\ReportScheduleTest
+  ✓ it generates a single report from the orders                         0.10s  
+  ✓ it schedules the report command to run every minute                  0.03s  
+  ✓ it protects the scheduled report from overlapping                    0.02s  
+  ✓ it runs the scheduled report on one server only                      0.02s  
+  ✓ it writes one report per direct invocation because the lock is a sc… 0.03s  
+
+  Tests:    7 passed (11 assertions)
+  Duration: 0.38s
+
 ```
 
 Five green tests confirm the command works and the schedule carries the protection we configured. With the behavior verified, here is what is happening underneath.
