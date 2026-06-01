@@ -115,6 +115,22 @@ return new class extends Migration
 
 This is a deliberately small table: a name and a unique email are all we need to address a message. The `unique` constraint on `email` mirrors a real subscriber list where one address appears once.
 
+Run the new migration so the `subscribers` table exists before we seed it.
+
+```bash
+php artisan migrate
+```
+
+Laravel runs only the migration we just added because the default tables were already created in Step 1.
+
+```
+   INFO  Running migrations.
+
+  2026_06_01_101506_create_subscribers_table ......................... 4ms DONE
+```
+
+Your timestamp will be different because Laravel prefixes generated migration files with the date and time they were created. That is fine as long as the migration name ends with `create_subscribers_table`.
+
 Now open `app/Models/Subscriber.php` and declare which attributes are mass assignable using the `#[Fillable]` attribute.
 
 ```php
@@ -438,7 +454,7 @@ Everything is wired up. Now we exercise it from three angles: a normal throttled
 
 ### Scenario 1: Dispatch and Watch the Rate Limiter
 
-Open one terminal and start a queue worker so jobs actually get processed.
+Open one terminal and start a queue worker so jobs actually get processed. Dispatching the batch writes rows to the `jobs` table, but nothing sends until a worker is running.
 
 ```bash
 php artisan queue:work
@@ -456,7 +472,7 @@ The command returns immediately with the batch id and the number of queued email
 Dispatched batch 9b1f4c2e-5a3d-4f8e-9c1a-7d2b6e0f3a55 with 1000 emails queued.
 ```
 
-Switch back to the worker terminal. You will see jobs processing, but only about sixty of them per minute. Once the limiter is saturated, the worker logs that jobs are being released back for later instead of running them immediately.
+Switch back to the worker terminal. You will see jobs processing quickly until the limiter reaches sixty sends in the current minute. After that, Laravel may still show fast `DONE` lines because the middleware handled the attempt and released the job before `handle()` sent mail. The important detail is that only sixty messages are written to the mail log during that minute, and the remaining jobs stay pending for the next limiter window.
 
 ```
    INFO  Processing jobs from the [default] queue.
@@ -470,7 +486,7 @@ Switch back to the worker terminal. You will see jobs processing, but only about
   2026-05-29 10:01:00 App\Jobs\SendNewsletterEmail ............ 1ms DONE
 ```
 
-This is the whole point of the exercise: the worker never sends faster than sixty emails per minute, so your SMTP provider sees a steady, polite stream instead of a thousand connections at once. Because we set `MAIL_MAILER=log`, each "sent" email is written to `storage/logs/laravel.log`. Open that file and you will see the rendered messages.
+This is the whole point of the exercise: the job may be attempted more often than sixty times in a minute, but `handle()` only sends mail while the limiter has capacity. Your SMTP provider sees a steady, polite stream instead of a thousand messages at once. Because we set `MAIL_MAILER=log`, each "sent" email is written to `storage/logs/laravel.log`. Open that file and you will see the rendered messages.
 
 ```
 [2026-05-29 10:00:01] local.DEBUG: Message-ID: <abc123@bulk-mailer>
@@ -529,6 +545,31 @@ Once `cancel()` is called, the `$this->batch()?->cancelled()` guard we added in 
 ```
 
 That is the full lifecycle: a throttled send, live progress, and a clean cancel. Now we lock the behavior in with tests.
+
+### Optional Cleanup: Reset the Demo
+
+If you only processed a few jobs while testing, the `jobs` table will still contain the remaining newsletter jobs. You can clear them before repeating the demo.
+
+```bash
+php artisan queue:clear
+```
+
+Laravel asks for confirmation because clearing a queue deletes pending jobs.
+
+```
+  WARN  Are you sure you want to delete all of the jobs from the [default] queue? (yes/no) [no]
+❯ yes
+
+   INFO  Jobs deleted successfully.
+```
+
+If you want to reset the database and seed the thousand subscribers again, use `migrate:fresh --seed`.
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+This drops all tables, recreates the Laravel queue, cache, and subscriber tables, then runs `DatabaseSeeder` again. Use it only in a local tutorial project because it deletes existing data.
 
 ## Step 7: Write the Tests {#step-7-write-the-tests}
 
@@ -618,10 +659,10 @@ it('skips sending when the batch is cancelled', function () {
 });
 ```
 
-Each test pins down one promise the feature makes. The first three use `Bus::fake()` to intercept the batch and assert its name, its job count, and that failures are allowed, all without touching the queue. The fourth runs the job's `handle()` directly with `Mail::fake()` and asserts the right Mailable went to the right address. The fifth and sixth confirm the throttling wiring is present: the job carries the `RateLimited` middleware and the `emails` limiter is registered. The last test uses `withFakeBatch()`, a helper that hands back the job already attached to a fake batch, so we can cancel the batch and prove the job sends nothing. Run the suite.
+Each test pins down one promise the feature makes. The first three use `Bus::fake()` to intercept the batch and assert its name, its job count, and that failures are allowed, all without touching the queue. The fourth runs the job's `handle()` directly with `Mail::fake()` and asserts the right Mailable went to the right address. The fifth and sixth confirm the throttling wiring is present: the job carries the `RateLimited` middleware and the `emails` limiter is registered. The last test uses `withFakeBatch()`, a helper that hands back the job already attached to a fake batch, so we can cancel the batch and prove the job sends nothing. Run this feature test file.
 
 ```bash
-php artisan test
+php artisan test tests/Feature/NewsletterBatchTest.php
 ```
 
 ```
@@ -634,11 +675,11 @@ php artisan test
   ✓ it registers the emails rate limiter                      0.01s
   ✓ it skips sending when the batch is cancelled              0.02s
 
-  Tests:    7 passed (12 assertions)
-  Duration: 0.41s
+  Tests:    7 passed (9 assertions)
+  Duration: 0.30s
 ```
 
-Seven green tests confirm the batch is built correctly, the mail is addressed correctly, the rate limiter is in place, and cancellation is honored. With the behavior verified, the rest of the article explains what is happening underneath.
+Seven green tests confirm the batch is built correctly, the mail is addressed correctly, the rate limiter is in place, and cancellation is honored. If you run `php artisan test` without a path, Laravel's generated example tests may also appear in the output. With the behavior verified, the rest of the article explains what is happening underneath.
 
 ## How Job Rate Limiting Works {#how-job-rate-limiting-works}
 
