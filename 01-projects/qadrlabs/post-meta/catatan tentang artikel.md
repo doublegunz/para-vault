@@ -4,10 +4,7 @@ Article Title
   Without Getting Banned by Your SMTP Provider
 
   Short Description (160 char max)
-
-  ▎ Send thousands of bulk emails in Laravel 13 without getting banned. Throttle
-  ▎ queued jobs with RateLimited middleware and track progress using job
-  ▎ batching.
+Send thousands of bulk emails in Laravel 13 without getting banned. Throttle queued jobs with RateLimited middleware and track progress using job batching.
 
   Character count: 152 ✅
 

@@ -48,31 +48,25 @@ The `--database=sqlite` flag wires the application to a local SQLite file and un
 
 Next, tell Laravel to use the database queue connection and the log mailer. Open `.env` and set these two values.
 
-```dotenv
+```
 QUEUE_CONNECTION=database
 MAIL_MAILER=log
 ```
 
 `QUEUE_CONNECTION=database` means dispatched jobs are stored as rows in a `jobs` table and a worker pulls them off one at a time, which is exactly the controlled, resumable behavior we want for bulk email. `MAIL_MAILER=log` writes each outgoing message to `storage/logs/laravel.log` instead of contacting a real SMTP server, so you can run the entire tutorial without credentials and still verify what would have been sent.
 
-A fresh Laravel 13 app already includes the migrations for the tables we need. The default `database/migrations/0001_01_01_000002_create_jobs_table.php` migration creates the `jobs`, `job_batches`, and `failed_jobs` tables in one file, and the cache migration creates the `cache` table that the rate limiter uses for its counters. Run the migrations to create everything.
+A fresh Laravel 13 app already includes the migrations for the tables we need, and the Laravel installer runs those initial migrations as part of the project setup. The default `database/migrations/0001_01_01_000002_create_jobs_table.php` migration creates the `jobs`, `job_batches`, and `failed_jobs` tables in one file, and the cache migration creates the `cache` table that the rate limiter uses for its counters.
+
+If you run the migration command again at this point, Laravel should tell you there is nothing left to run.
 
 ```bash
 php artisan migrate
 ```
 
-You should see output confirming the tables were created.
+You should see this output because the installer already created the default tables.
 
 ```
-   INFO  Preparing database.
-
-  Creating migration table ............................................ 4ms DONE
-
-   INFO  Running migrations.
-
-  0001_01_01_000000_create_users_table ............................... 9ms DONE
-  0001_01_01_000001_create_cache_table ............................... 2ms DONE
-  0001_01_01_000002_create_jobs_table ................................ 5ms DONE
+   INFO  Nothing to migrate.
 ```
 
 The `jobs` table holds queued jobs waiting to run, `job_batches` tracks the aggregate state of each batch, and `cache` backs the rate limiter. With the queue and mail configured, we can build the data we are going to email.
@@ -267,7 +261,7 @@ The constructor accepts the `Subscriber` so the template can greet the recipient
 
 Create the view file at `resources/views/emails/newsletter.blade.php`.
 
-```blade
+```
 <!DOCTYPE html>
 <html lang="en">
 <head>
