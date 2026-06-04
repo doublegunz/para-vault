@@ -2,6 +2,8 @@ You have just decided to learn Laravel, the most popular PHP framework in the wo
 
 ## Overview {#overview}
 
+In this lesson, we will focus on the tools and the first Laravel project. The goal is not to memorize every configuration option yet, but to make sure you can create, open, run, and inspect a fresh Laravel application.
+
 ### What You'll Build
 
 You will set up a complete local development environment and create a fresh Laravel 13 project called **Catatku** (Indonesian for "My Notes"), which we will build upon throughout this course. By the end of this lesson, you will see the Laravel welcome page running in your browser.
@@ -176,22 +178,24 @@ Laravel 13 requires PHP 8.3 or higher. The default Laragon installation comes wi
 
 ### Download PHP 8.3 {#download-php-83}
 
-1. Go to the official PHP downloads page: [https://windows.php.net/download/](https://windows.php.net/download/).
-2. Download the **PHP 8.3 64-bit Non-Thread Safe (NTS)** version. You can click [this direct link](https://windows.php.net/downloads/releases/php-8.3.12-nts-Win32-vs16-x64.zip) to download the `.zip` file.
+1. Go to the official PHP downloads page for Windows: [https://www.php.net/downloads.php?os=windows&version=8.3](https://www.php.net/downloads.php?os=windows&version=8.3).
+2. Download the latest **PHP 8.3 x64 Non Thread Safe (NTS)** ZIP build.
 
    ![download php 8.3](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/1%20download%20php%208.2.png)
 
-We are downloading the NTS (Non-Thread Safe) version because Laragon uses it by default. The NTS build is optimized for single-threaded environments like Nginx with PHP-FPM, which is the setup we will configure next.
+The exact patch version may be different by the time you read this lesson. That is fine. As long as the file starts with `php-8.3` and uses the x64 NTS build, it is suitable for this course.
+
+We are downloading the NTS (Non Thread Safe) version because Laragon uses it by default. The NTS build is optimized for single-threaded environments like Nginx with PHP-FPM, which is the setup we will configure next.
 
 ### Extract the PHP Files to Laragon {#extract-the-php-files-to-laragon}
 
 Once the download is complete, follow these steps:
 
-1. Move the `php-8.3.13-nts-Win32-vs16-x64.zip` file to `C:\laragon\bin\php`.
+1. Move the downloaded `php-8.3.x-nts-Win32-vs16-x64.zip` file to `C:\laragon\bin\php`.
 
    ![move zip file to laragon php directory](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/2%20pindahkan%20ke%20direktori%20php%20di%20laragon.png)
 
-2. Right-click the ZIP file and select **Extract All**. Click the **Extract** button to begin the extraction process. When it finishes, you will see a new folder named `php-8.3.13-nts-Win32-vs16-x64`.
+2. Right-click the ZIP file and select **Extract All**. Click the **Extract** button to begin the extraction process. When it finishes, you will see a new folder with a name similar to `php-8.3.x-nts-Win32-vs16-x64`.
 
    ![extract all](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/3%20Extract%20all.png)
 
@@ -200,7 +204,7 @@ Once the download is complete, follow these steps:
 ### Select PHP 8.3 in Laragon {#select-php-83-in-laragon}
 
 1. Open Laragon.
-2. Go to **Menu** > **PHP** > **Version** > `php-8.3.13-nts-Win32-vs16-x64` to activate PHP 8.3 as the primary PHP version.
+2. Go to **Menu** > **PHP** > **Version** > your extracted PHP 8.3 folder, such as `php-8.3.x-nts-Win32-vs16-x64`, to activate PHP 8.3 as the primary PHP version.
 
    ![switch php version](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/5%20switch%20php%20version.png)
 
@@ -234,7 +238,7 @@ After configuring everything, we need to confirm that PHP 8.3 is properly set up
 
    ![open localhost in browser](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/9%20buka%20localhost%20di%20browser.png)
 
-2. The localhost page should display `PHP version: 8.3.13`, confirming that the web server is using the correct PHP version.
+2. The localhost page should display a PHP 8.3 version, such as `PHP version: 8.3.x`, confirming that the web server is using the correct PHP version.
 
    ![localhost page](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/10%20halaman%20localhost.png)
 
@@ -254,10 +258,10 @@ After configuring everything, we need to confirm that PHP 8.3 is properly set up
    php -v
    ```
 
-   The output should show the updated PHP version:
+   The output should show the updated PHP version. It will look similar to this:
 
    ```bash
-   PHP 8.3.13 (cli) (built: Oct 22 2024 21:07:34) (NTS Visual C++ 2019 x64)
+   PHP 8.3.x (cli) (built: ...) (NTS Visual C++ 2019 x64)
    ```
 
    ![check php version in cmder](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/14%20cek%20versi%20php%20di%20cmder%20-%202.png)
@@ -275,6 +279,8 @@ composer create-project --prefer-dist laravel/laravel catatku
 ```
 
 This command tells Composer to download the latest version of Laravel and set up the entire project structure inside a folder called `catatku`. The process requires an internet connection and may take a few minutes depending on your connection speed.
+
+In current Laravel 13 projects, this command may also create a local SQLite database file and run Laravel's default migrations automatically. That is expected. In this course, we will still use MySQL for Catatku so you can practice working with a database server. We will switch the project from Laravel's default SQLite setup to MySQL in the next lesson.
 
 Once the installation finishes, navigate into the project directory and open it in VS Code:
 
@@ -295,7 +301,7 @@ Laravel ships with a built-in development server powered by Artisan. From inside
 php artisan serve
 ```
 
-You should see this output:
+You should see output similar to this:
 
 ```
 INFO  Server running on [http://127.0.0.1:8000].
@@ -322,6 +328,7 @@ catatku/
 │   │   └── Controllers/    ← Where controllers live
 │   └── Models/             ← Where Eloquent models live
 ├── database/
+│   ├── database.sqlite     ← Local SQLite database created by Laravel by default
 │   └── migrations/         ← Database table definitions
 ├── resources/
 │   └── views/              ← Blade template files (HTML)
@@ -336,6 +343,8 @@ catatku/
 **`app/Models/`** contains PHP representations of your database tables. The `Entry` model we will create later corresponds directly to the `entries` table in the database. In Laravel 13, models use the `#[Fillable([...])]` attribute instead of the traditional `protected $fillable` property, which is a cleaner and more modern approach.
 
 **`database/migrations/`** contains PHP files that define table structures programmatically. This means database changes can be tracked and replicated consistently across different environments.
+
+**`database/database.sqlite`** is the local SQLite database file Laravel creates by default. We will keep it in mind, but Catatku will use MySQL later in this course.
 
 **`resources/views/`** is where all Blade template files live. Blade is Laravel's template engine for generating dynamic HTML.
 
@@ -378,4 +387,4 @@ In this lesson, you built a complete local development environment from scratch 
 - **Artisan** is Laravel's CLI tool that generates files, runs migrations, starts the dev server, and much more.
 - The **`.env`** file holds your environment configuration and should never be shared or committed to version control.
 
-In the next lesson, we will set up our database and create the first migration for the Catatku application. You will learn how Laravel manages database schemas through migrations and how to define your first Eloquent model.
+In the next lesson, we will replace Laravel's default SQLite setup with MySQL, then create the first application-specific migration for Catatku. You will learn how Laravel manages database schemas through migrations and how to define your first Eloquent model.
