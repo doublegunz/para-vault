@@ -29,8 +29,8 @@ Tahap pertama melibatkan proses download file PHP 8.3 dan mempersiapkannya di di
 
 ### Download PHP 8.3{#download-php-83}
 
-1. **Akses Situs PHP Resmi**: Buka halaman [https://windows.php.net/download/](https://windows.php.net/download/).
-2. **Download PHP 8.3 64-bit NTS**: Cari link download PHP versi 8.3 64-bit Non-Thread Safe (NTS). Anda bisa mengklik [di sini](https://windows.php.net/downloads/releases/php-8.3.12-nts-Win32-vs16-x64.zip) untuk langsung mengunduh file dengan ekstensi `.zip`.
+1. **Akses Situs PHP Resmi**: Buka halaman [https://www.php.net/downloads.php?os=windows&version=8.3](https://www.php.net/downloads.php?os=windows&version=8.3).
+2. **Download PHP 8.3 64-bit NTS**: Unduh versi terbaru **PHP 8.3 64-bit Non-Thread Safe (NTS)** dalam format `.zip` dari halaman tersebut.
 
    ![download php 8.3](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/1%20download%20php%208.2.png)
 
@@ -38,10 +38,10 @@ Tahap pertama melibatkan proses download file PHP 8.3 dan mempersiapkannya di di
 
 Setelah proses download selesai, ikuti langkah-langkah berikut:
 
-1. **Pindahkan File ZIP**: Pindahkan file `php-8.3.13-nts-Win32-vs16-x64.zip` ke folder `C:\laragon\bin\php` di komputer Anda.
+1. **Pindahkan File ZIP**: Pindahkan file `php-8.3.x-nts-Win32-vs16-x64.zip` ke folder `C:\laragon\bin\php` di komputer Anda.
    ![pindahkan file zip php ke direktori php di laragon direktori](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/2%20pindahkan%20ke%20direktori%20php%20di%20laragon.png)
 
-2. **Ekstrak File**: Klik kanan file ZIP dan pilih **Extract All**. Kemudian, klik tombol **Extract** untuk memulai proses ekstraksi. Setelah selesai, Anda akan melihat folder baru dengan nama `php-8.3.13-nts-Win32-vs16-x64`.
+2. **Ekstrak File**: Klik kanan file ZIP dan pilih **Extract All**. Kemudian, klik tombol **Extract** untuk memulai proses ekstraksi. Setelah selesai, Anda akan melihat folder baru dengan nama seperti `php-8.3.x-nts-Win32-vs16-x64`.
    ![extract all](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/3%20Extract%20all.png)
 
    ![folder hasil extract](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/4%20folder%20hasil%20extract.png)
@@ -55,7 +55,7 @@ Setelah file PHP 8.3 berhasil diekstrak, langkah selanjutnya adalah mengkonfigur
 ### Memilih PHP 8.3 di Laragon{#memilih-php-83-di-laragon}
 
 1. **Buka Laragon**: Jalankan aplikasi Laragon yang sudah Anda install sebelumnya.
-2. **Pilih PHP Versi 8.3**: Di Laragon, pilih **Menu** > **PHP** > **Version** > `php-8.3.13-nts-Win32-vs16-x64` untuk mengaktifkan PHP 8.3 sebagai versi PHP utama.
+2. **Pilih PHP Versi 8.3**: Di Laragon, pilih **Menu** > **PHP** > **Version** > folder PHP 8.3 yang baru diekstrak, seperti `php-8.3.x-nts-Win32-vs16-x64`, untuk mengaktifkan PHP 8.3 sebagai versi PHP utama.
    ![switch php version](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/5%20switch%20php%20version.png)
 
 ### Mengatur Nginx Sebagai Web Server{#mengatur-nginx-sebagai-web-server}
@@ -88,7 +88,7 @@ Setelah konfigurasi selesai, kita perlu memverifikasi apakah PHP 8.3 sudah terpa
    
    ![buka localhost di browser](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/9%20buka%20localhost%20di%20browser.png)
 
-2. **Cek Versi PHP di Halaman**: Setelah membuka halaman `localhost`, Anda akan melihat tampilan yang menunjukkan versi PHP yang sedang digunakan, yaitu `PHP version: 8.3.13`.
+2. **Cek Versi PHP di Halaman**: Setelah membuka halaman `localhost`, Anda akan melihat tampilan yang menunjukkan versi PHP yang sedang digunakan, seperti `PHP version: 8.3.x`.
    
    ![halaman localhost](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/10%20halaman%20localhost.png)
 
@@ -110,7 +110,7 @@ Setelah konfigurasi selesai, kita perlu memverifikasi apakah PHP 8.3 sudah terpa
 
    Output akan menunjukkan versi PHP terbaru seperti berikut:
    ```bash
-   PHP 8.3.13 (cli) (built: Oct 22 2024 21:07:34) (NTS Visual C++ 2019 x64)
+   PHP 8.3.x (cli) (built: ...) (NTS Visual C++ 2019 x64)
    ```
    
    ![cek versi php di cmder](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/14%20cek%20versi%20php%20di%20cmder%20-%202.png)
