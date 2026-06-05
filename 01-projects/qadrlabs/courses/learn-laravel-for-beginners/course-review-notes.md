@@ -6,6 +6,7 @@ Scope:
 
 - Module 1, Lesson 1: `module-1-getting-to-know-catatku-1/lesson-1-what-we-will-build-4.md`
 - Module 1, Lesson 2: `module-1-getting-to-know-catatku-1/lesson-2-setting-up-your-laravel-project.md`
+- Module 2, Lesson 3: `module-2-laravel-foundations/lesson-3-your-first-route-and-view-1.md`
 
 ## Test Log
 
@@ -203,3 +204,97 @@ This lesson uses Windows and Laragon. If you are on macOS or Linux, install PHP,
 ```
 
 This keeps the Windows path intact while giving non-Windows learners a clear re-entry point.
+
+## Lesson 3 Notes
+
+### Practical Test
+
+Lesson 3 was practiced in `sandbox/catatku` without starting the development server, per review instruction.
+
+Files changed in the sandbox project:
+
+- `routes/web.php`
+- `resources/views/home.blade.php`
+- `resources/views/entries/index.blade.php`
+
+Commands run for validation:
+
+```bash
+php artisan route:list --except-vendor
+php artisan view:cache
+php artisan view:clear
+```
+
+Observed route list:
+
+```text
+GET|HEAD / .. routes/web.php:5
+GET|HEAD entries .. routes/web.php:9
+
+Showing [2] routes
+```
+
+Blade validation:
+
+```text
+INFO Blade templates cached successfully.
+INFO Compiled views cleared successfully.
+```
+
+The lesson's route and Blade code is valid. The views compile successfully, and the expected routes exist.
+
+### Formatting
+
+The lesson contains `---` section separators. The qadrlabs writing rules say not to use horizontal separators between sections. Remove those separators and rely on H2 structure instead.
+
+The `## Overview {#overview}` section goes directly into `### What You'll Build`. Add a short narrative paragraph after the Overview H2 before the first H3.
+
+The entries view uses an em dash in:
+
+```html
+<title>My Entries — Catatku</title>
+```
+
+Replace it with an ASCII hyphen:
+
+```html
+<title>My Entries - Catatku</title>
+```
+
+The entries view also uses an emoji in the navbar:
+
+```html
+Catatku 📓
+```
+
+For consistency with the course/article style and easier cross-platform rendering, use plain text:
+
+```html
+Catatku
+```
+
+### Tailwind CDN Consistency
+
+The home view uses:
+
+```html
+<script src="https://cdn.tailwindcss.com"></script>
+```
+
+The entries view uses:
+
+```html
+<script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+```
+
+Use one Tailwind CDN style consistently in beginner lessons. Since the qadrlabs article guide uses Tailwind CDN examples and Lesson 3 already starts with `https://cdn.tailwindcss.com`, the simplest fix is to use the same CDN script in both views.
+
+### Empty `href` Attributes
+
+The home page intentionally uses empty `href` attributes for login/register links because authentication is not built yet. This works for the lesson, but it can be confusing when learners click the buttons.
+
+Consider using `href="#"` for placeholders, or add one sentence that clicking the buttons will not navigate anywhere yet because authentication routes will be added later.
+
+### Step 5 Run Instruction
+
+Step 5 asks learners to make sure the development server is still running. That is fine for a hands-on lesson. For article/course consistency, consider saying "If the server is not running, start it again with `php artisan serve`" so learners who paused after Lesson 2 do not get stuck.
