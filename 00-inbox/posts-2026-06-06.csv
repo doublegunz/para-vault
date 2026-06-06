@@ -1,0 +1,281 @@
+"Judul Post",Kategori
+"Spring Boot 4 Authentication Tutorial: Add Login and Registration with Spring Security 7 and JPA",Java
+"PHP Supply Chain Security: What Changed in Composer 2.10 and Why It Matters",Security
+"Queue Rate Limiting and Batching in Laravel: Send Thousands of Bulk Emails Without Getting Banned by Your SMTP Provider",Laravel
+"Laravel Task Scheduling: Stop Heavy Cron Jobs From Overlapping With withoutOverlapping()",Laravel
+"Laravel 13 Database Transactions and Rollbacks: Stop Multi-Table Inserts From Half-Failing",Laravel
+"Laravel 13 Cache Tags: Invalidate a Single Article's Cache Without Flushing Your Entire Application",Laravel
+"How to Install Redis 8 on Ubuntu 26.04 LTS (Resolute Raccoon)",DevOps
+"Setting Up a Laravel Project on macOS with Laravel Valet",Laravel
+"Three Ways to Set Up Storage Link in Laravel on Shared Hosting",Laravel
+"Audit GitHub Repository Security with Laravel Moat",Security
+"PHP 8.6: What's New and Changed",php
+"Dependency Inversion Principle in Laravel: Master the Service Container with Real Examples",SOLID
+"Interface Segregation Principle in Laravel: Stop Forcing Classes to Implement Methods They Don't Need",SOLID
+"Liskov Substitution Principle in Laravel: Why Inheritance Can Silently Break Your Code",SOLID
+"Open/Closed Principle in Laravel: Build an Extensible Payment Gateway System",SOLID
+"Single Responsibility Principle in Laravel: Refactor a Bloated Invoice Controller",SOLID
+"SOLID Principles in Laravel: A Practical Introduction for Real-World Projects",SOLID
+"Passkeys in Laravel Starter Kits: A First Look",Laravel
+"Spring Boot 4 Testing Tutorial: Test the CRUD Blog with JUnit 5, Mockito, and MockMvc",Java
+"Integrating Vite, Tailwind CSS v4, and Bun with CodeIgniter 4 (Without a Vite Package)","CodeIgniter 4"
+"Understanding CVE-2026-42945 (NGINX Rift): What It Is, How It Works, and How to Fix It",Security
+"Automated MySQL Backup to Google Drive on Ubuntu VPS Using Rclone",DevOps
+"Speed Up Your Laravel App with Http::pool(): Run Multiple HTTP Requests Concurrently",Laravel
+"Eloquent Encrypted Cast: Auto-Encrypt Sensitive Data at the Model Level in Laravel 13",Laravel
+"Preventing Race Conditions in Laravel with lockForUpdate",Laravel
+"How to Set Up Xdebug Code Coverage on macOS with Homebrew",php
+"How to Install Node.js on Android Using Termux","How To Install"
+"Fix ""No Code Coverage Driver Available"" in Pest After Upgrading to Ubuntu 26.04 and PHP 8.5",Ubuntu
+"Testing CRUD Features in CodeIgniter 4 with Pest (Part 2 of 2)","CodeIgniter 4"
+"Building a CRUD Feature in CodeIgniter 4: A BookShelf Catalog (Part 1 of 2)","CodeIgniter 4"
+"How to Build and Publish a PHP Library to Packagist",php
+"Secure Download Links in Laravel with Signed URLs",Laravel
+"Implementing the Repository Pattern Without Over-Engineering in Laravel",Laravel
+"Understanding Goroutines in Go: When They Help and When They Don't",Golang
+"Laravel Throttle Middleware and the RateLimiter Facade: A Practical Guide",Laravel
+"Webhook Signature Verification in Laravel: Safely Receiving Data from Payment Gateways",Laravel
+"Full-Text Search in Laravel with Elasticsearch",Laravel
+"Build a Rate Limiter from Scratch in PHP: Fixed Window and Token Bucket",php
+"Passwordless Login with Magic Links in Laravel 13",Laravel
+"Build a Mini Service Container in PHP to Understand Dependency Injection",php
+"Serving a Pre-Trained Colab Model as a REST API with Flask","Machine Learning"
+"Building a Simple Machine Learning Model with Scikit-Learn in Google Colab","Machine Learning"
+"Serving a Machine Learning Model with Flask: Building a JSON API","Machine Learning"
+"Building a Simple Machine Learning Model with Scikit-Learn","Machine Learning"
+"Preventing Brute Force Attacks: Rate Limiting Your Flask API with Flask-Limiter",Python
+"Role-Based Access Control in Flask: Separating Admin and User Permissions",Python
+"Fix HDMI Not Working After Upgrading to Ubuntu 26.04 on NVIDIA Optimus Laptops",Ubuntu
+"Adding JWT Authentication to Your Flask REST API",Python
+"Building a CRUD REST API with Flask and SQLite",Python
+"Setting Up a Laravel Development Environment on Ubuntu 26.04 LTS",Ubuntu
+"What's New in Ubuntu 26.04 LTS ""Resolute Raccoon""",Ubuntu
+"Crosstab Query in Laravel 13: Pivot Reports with the Query Builder",Laravel
+"Crosstab Query in MySQL and MariaDB: Pivot Rows into Columns Without a PIVOT Function","Database & SQL"
+"Long Method: The Code Smell That Turns Your Functions into Novels",php
+"Why Go Doesn't Have Try-Catch: Understanding Go Error Handling from First Principles",Golang
+"Database Transactions and Rollbacks in SQL: Keep Your Data Consistent","Database & SQL"
+"Understanding with(), whereHas(), and withCount() in Laravel Eloquent",Laravel
+"Laravel Sanctum vs Passport: When to Use Which One",Laravel
+"Laravel 13: Collections Pipeline, Replace foreach with map, filter, and Friends",Laravel
+"Using Invokable Controllers as Action Classes in Laravel",Laravel
+"Service Class, Action Class, and Use Case Class: What They Are and When to Use Each in Laravel",Laravel
+"Fix: CodeIgniter 4 Installation Fails Due to Composer Security Advisory","CodeIgniter 4"
+"How to Install Composer Globally on macOS","How To Install"
+"When PHP Traits Help and When They Become Technical Debt",php
+"Laravel 13: Upload Large Files with Chunked and Resumable Uploads",Laravel
+"How to Seed Realistic Data in Laravel Using Seeders and Factories",Laravel
+"PHP 8.5 Pipe Operator: Write Code That Reads Like a Recipe",php
+"Skip the Prompts: Using Laravel Installer Flags to Create Projects Faster",Laravel
+"Refactoring Magic Strings to PHP Enums in Laravel 13",Laravel
+"Making HTTP Requests with the JavaScript Fetch API",JavaScript
+"PHP 8.1 Readonly Properties: Building Immutable Value Objects and DTOs",php
+"Getting Started with PHP Enums: A Practical Guide for Beginners",php
+"Backing Up a Laravel Project with Spatie Laravel Backup",Laravel
+"Reducing AI Token Usage in PHP Tests with PAO",Laravel
+"Dockerize Laravel 13 with FrankenPHP: A Modern Containerization Approach",Laravel
+"Mastering PHP Traits for Reusable Behavior in Modern PHP",php
+"Laravel Svelte Starter Kit: Build a CRUD Blog with Svelte 5 and Inertia.js",Laravel
+"Spring Boot 4 CRUD Tutorial: Build a Simple Blog Step by Step",Java
+"Laravel 13: Add Soft Deletes to Your Blog",Laravel
+"Laravel 13: Track Every Change with Spatie Activity Log",Laravel
+"Generating API Documentation with Scramble in Laravel 13",Laravel
+"How Laravel Installer 5.25.2 Protects Your Projects from npm Supply Chain Attacks",Laravel
+"How To Respond To The axios npm Supply Chain Compromise",Security
+"The axios npm Supply Chain Attack: How a Hijacked Maintainer Account Delivered a Cross-Platform RAT",Security
+"Laravel Starter Kit Now Ships with Team Support",Laravel
+"Laravel 13 CRUD with Livewire 4: Build Interactive Components Without JavaScript",Laravel
+"Inertia.js v3 Released: Smaller Bundle, Better DX, and First-Class APIs",Laravel
+"Build a Blog with Laravel 13 + Inertia.js + Vue 3",Laravel
+"Laravel 13: Add Image Upload to Your Blog with Storage and Validation",Laravel
+"Laravel 13: Role-Based Access Control with Spatie Permission and Middleware Attributes",Laravel
+"Laravel 13 Expanded PHP Attributes: A Complete Guide",Laravel
+"Laravel 13: Build a REST API for Your Blog with Sanctum Authentication",Laravel
+"Laravel 13 Semantic Search: Add Smart Search to Your Blog",Laravel
+"Getting Started with pgvector: Set Up Vector Search in PostgreSQL on Ubuntu 25.04",Ubuntu
+"Laravel 13: Add Authentication and Authorization with PHP Attributes",Laravel
+"Laravel 13: Refactor Your Controller with Form Request Validation",Laravel
+"Laravel 13 Testing with Pest: Write Tests for Your CRUD Application",Laravel
+"Build an API Using JSON:API Specification with Laravel 13",Laravel
+"Laravel 13 Filament 5 CRUD Tutorial: Build a Blog Admin Panel Step by Step",Laravel
+"Laravel 13 CRUD Tutorial: Build a Simple Blog Step by Step",Laravel
+"How to Upgrade Laravel 12 to Laravel 13: A Step-by-Step Guide",Laravel
+"Laravel 13 Is Here: AI-Native Features, Semantic Search, and More",Laravel
+"Practical Codelab: Building a Mobile Application with Laravel and NativePHP",Laravel
+"Inertia.js v3 Beta Released: Lighter, Faster, Less Configuration",Laravel
+"Blaze: Cara Cepat Akselerasi Rendering di Laravel",Laravel
+"Laravel 12 Svelte Starter Kit",Laravel
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 7: Membuat Proses Logout",Next.js
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 6: Menampilkan User di Halaman Dashboard",Next.js
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 5: Membuat Proses Login",Next.js
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 4: Membuat Proses Register",Next.js
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 3: Membuat Layouts di Next.js",Next.js
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 2: Installasi dan Konfigurasi NextAuth.js",Next.js
+"Tutorial Next.js Authentication dengan Next.js dan Go API — PART 1:  Membuat Project Next.js",Next.js
+"Tutorial Nuxt 4 Auth #7: Membuat Proses Logout",Nuxt
+"Tutorial Nuxt 4 Auth #6: Menampilkan User di Halaman Dashboard",Nuxt
+"Tutorial Nuxt 4 Auth #5: Membuat Proses Login",Nuxt
+"Tutorial Nuxt 4 Auth #4: Membuat Proses Register",Nuxt
+"Tutorial Nuxt 4 Auth #3: Membuat Layouts di Nuxt",Nuxt
+"Tutorial Nuxt 4 Auth #2: Installasi dan Konfigurasi Nuxt Auth",Nuxt
+"Tutorial Nuxt 4 Auth #1: Membuat Project Nuxt",Nuxt
+"Panduan Lengkap: Cara Integrasi RabbitMQ dengan Laravel sebagai Queue Driver",Laravel
+"Panduan Lengkap: Kompres Gambar Sebelum Upload di Laravel dengan Canvas API",Laravel
+"Panduan Lengkap: Cara Install Jupyter Notebook di Ubuntu 25.04","How To Install"
+"Laravel 13",Laravel
+"Build AI App dengan Laravel AI SDK",Laravel
+"NativePHP: Membangun Aplikasi Desktop dan Mobile Native dengan PHP dan Laravel",Laravel
+"Menggunakan bun di github action untuk project laravel",Laravel
+"Cara Menggunakan Bun di Laravel: Package Manager Alternatif NPM",Laravel
+"Mengenal Bun,  Sebuah All-in-One JavaScript Runtime Yang Cepat",JavaScript
+"Critical Security Vulnerability in React Server Components CVE-2025-55182",Security
+"Cara Install PHP 8.5 Menggunakan PPA Ondrej PHP di Ubuntu 25.04",php
+"Symfony Framework 8",Symfony
+"PHP 8.5: Panduan Lengkap Fitur Baru, Migration Guide, dan Best Practices",php
+"Tutorial CodeIgniter 4: Upload dan Download File","CodeIgniter 4"
+"Tutorial: Menambahkan Swagger API Documentation pada Laravel Sanctum",Laravel
+"REST API Upload File dengan Go dan Gin",Golang
+"REST API CRUD Operations dengan Go dan Gin",Golang
+"REST API Authentication dengan Go dan Gin",Golang
+"Teknik Caching Komprehensif di Laravel 12",Laravel
+"Secure Coding Laravel: Panduan Komprehensif Keamanan Aplikasi Web",Laravel
+"Tutorial Dockerize Aplikasi Laravel 12: Memahami Containerisasi untuk Development Environment",Laravel
+"Tutorial Lengkap CRUD Symfony: Membangun Sistem Manajemen Produk",Symfony
+"Panduan Lengkap Laravel Observer: Memahami dan Mengimplementasikan Event Listener untuk Model Eloquent",Laravel
+"Laravel Gate: Panduan Lengkap Authorization di Laravel 12",Laravel
+"Memahami Laravel Policy: Dari Konsep Dasar hingga Implementasi Lanjutan",Laravel
+"Tutorial CRUD Laravel 12 with Vue Starter Kit",Laravel
+"Tutorial CRUD Laravel 12 with React Starter Kit",Laravel
+"Tutorial CRUD Laravel 12 with Livewire Starter Kit",Laravel
+"Install Starter Kit Alternatif Dengan Blade dan Bootstrap di laravel 12",Laravel
+"Tutorial Integrasi WorkOS AuthKit di Laravel 12 dengan Starter Kit",Laravel
+"Install Laravel Jetstream di Laravel 12",Laravel
+"Install Laravel Breeze di Laravel 12",Laravel
+"Tutorial CRUD Laravel 12 Untuk Pemula",Laravel
+"Laravel 12 Starter Kit",Laravel
+"Upgrade Laravel 11 ke Laravel 12: Panduan Lengkap dengan Testing Pest",Laravel
+"Laravel 12",Laravel
+"Laravel Blueprint: Cara Cepat Membangun Aplikasi Laravel dengan Generator Kode Otomatis",Laravel
+"Mencegah Destructive Command Running di Laravel",Laravel
+"Deploy with Laravel Envoy",Laravel
+"Belajar TDD Laravel: Studi Kasus Menambahkan Post Baru",Laravel
+"Standarisasi Git untuk Tim Pengembang",Git
+"Testing Laravel dengan PHPUnit",Laravel
+"Panduan Lengkap Laravel Filament untuk Pemula: Studi Kasus CRUD Product",Laravel
+"Generate Model, Migration and Seeder from Existing Database",Laravel
+"Using Spatie Laravel Permission IN LARAVEL 11+:  A Step-by-Step Tutorial",Laravel
+"Testing Menggunakan Pest",Laravel
+"Mengatasi N+1 Query Problem di Project Laravel",Laravel
+"Install FrankenPHP di Ubuntu 24.04","How To Install"
+"Run Laravel Project menggunakan Laravel Octane dan FrankenPHP",Laravel
+"Tutorial Install Laravel di HP Android via Termux","How To Install"
+"Running multiple PHP versions simultaneously on windows",php
+"Panduan Lengkap: Membangun Aplikasi Chat Real-Time dengan Laravel, React, dan Laravel Reverb",Laravel
+"Panduan Lengkap: Cara Install LEMP Stack (Nginx, MariaDB, PHP 8.3) di Ubuntu 24.04","How To Install"
+"Panduan Lengkap Cara Install LAMP Stack dengan MariaDB di Ubuntu 24.04","How To Install"
+"Send Email dengan Queue di CodeIgniter 4","CodeIgniter 4"
+"Cara Menggunakan Composer Run Dev di Laravel 11",Laravel
+"Panduan Install Laravel Herd dan MySQL di Windows","How To Install"
+"Panduan Update Versi PHP di Laragon","How To Install"
+"Automated Testing Laravel dengan GitHub Actions",Laravel
+"Panduan Lengkap Menggunakan Visual Studio Code dan Laragon untuk Web Development","How To Install"
+"Tutorial Install XAMPP dan Setup Environment Variable pada Windows","How To Install"
+"Tutorial Laravel: Membuat Fitur Live CRUD menggunakan Ajax",Laravel
+"Tutorial Laravel: Membuat Fitur Generate dan Verifikasi QR Code",Laravel
+"Tutorial Install dan Setup Composer di HP Android Menggunakan Termux","How To Install"
+"Tutorial CodeIgniter 4: Login dan Register menggunakan CodeIgniter Shield","CodeIgniter 4"
+"Tutorial Laravel: Upload Gambar Menggunakan Dropzone.js",Laravel
+"Tutorial Laravel: Import Data Dari File Excel",Laravel
+"Build API menggunakan JSON:API Specification dan Framework Laravel",Laravel
+"Setup Minimalist Laravel Development Environment di Ubuntu 24.04","How To Install"
+"Tutorial Laravel: Membuat Fitur Export Dengan Format Excel",Laravel
+"Tutorial Laravel: Membuat Fitur Upload dan Download File",Laravel
+"Tutorial Laravel: Kirim Email Menggunakan SMTP Gmail",Laravel
+"Tutorial Laravel 11: Menggunakan Database Mysql di Laravel 11",Laravel
+"Tutorial Laravel 11: Menggunakan MariaDB di Laravel 11",Laravel
+"Tutorial Laravel 11: Membuat fitur Login With Google menggunakan Laravel Socialite",Laravel
+"Tutorial Laravel 11: Browser Testing Menggunakan Laravel Dusk",Laravel
+"Percobaan Upgrade Laravel 10 ke Laravel 11",Laravel
+"Tutorial Laravel 11: Development Sample Aplikasi CRUD",Laravel
+"Running Beberapa Versi PHP secara bersamaan di Ubuntu 22.04",Ubuntu
+"Percobaan Implementasi Multilingual di crud app menggunakan Laravel Localization",Laravel
+"Manage Laravel Queue menggunakan Supervisor",Laravel
+"Percobaan Upgrade Versi Laravel 8 ke Laravel 10",Laravel
+"Membuat Custom Laravel Artisan Command menggunakan Laravel Prompt",Laravel
+"Setup Laravel Development Environment di OS Windows",Laravel
+"Belajar Laravel 10: CRUD with Laravel Livewire",Laravel
+"Memulai belajar Laravel 10 dan Tailwind css untuk membangun crud app sederhana",Laravel
+"Tutorial CodeIgniter 4: Refactor Login Feature Menggunakan Filter Class","CodeIgniter 4"
+"REST API CRUD With Laravel Sanctum",Laravel
+"Belajar Laravel 8: Refactor Controller Menggunakan Form Request Validation",Laravel
+"CodeIgniter 4 CLI Generate Command untuk Mempercepat Web Development","CodeIgniter 4"
+"REST API Authentication With Laravel Sanctum",Laravel
+"Seri Tutorial CodeIgniter 4: Login dan Register menggunakan Myth:Auth Package","CodeIgniter 4"
+"Cara Install Multiple Node js Version Menggunakan NVM di Ubuntu 22.04","How To Install"
+"Laravel Tips: Maksimalkan fitur autocomplete text editor atau IDE menggunakan Laravel IDE Helper",Laravel
+"Memperbaiki Error Your GitHub OAuth token for github.com contains invalid characters saat run composer",Composer
+"Tutorial Setup dan Menggunakan Multiple version PHP di Ubuntu","How To Install"
+"Belajar Laravel 8: Kirim Email Dengan Queue",Laravel
+"Tutorial install adminer (tool alternatif phpMyAdmin) di hp android","How To Install"
+"TUTORIAL INSTALL PHPMYADMIN DI HP ANDROID MENGGUNAKAN TERMUX","How To Install"
+"Belajar Laravel 8: Testing CRUD Feature",Laravel
+"Membangun Aplikasi Payment Sederhana menggunakan PHP dan Midtrans",php
+"Belajar Laravel 8: Roles and Permissions",Laravel
+"Belajar Laravel 8: Deploy Project ke Heroku",Laravel
+"Belajar Kontribusi di Project Open Source",Git
+"Standar Penulisan Coding PSR-1",php
+"Belajar Laravel 8: Integrasi dataTables Server Side Rendering",Laravel
+"Belajar Laravel 8: Membuat Aplikasi CRUD Sederhana",Laravel
+"Cara Memperbaiki Error Pada Saat Install CodeIgniter 4","CodeIgniter 4"
+"Tutorial CodeIgniter 4: Generate PDF menggunakan DomPDF","CodeIgniter 4"
+"Deploy Website Menggunakan Git FTP","Web Development"
+"Tutorial CodeIgniter 4 Membuat fitur export excel menggunakan PhpSpreadsheet","CodeIgniter 4"
+"Integrasi DataTables Server Side processing CodeIgniter 4","CodeIgniter 4"
+"Membangun RESTful API menggunakan CodeIgniter 4","CodeIgniter 4"
+"Operasi CRUD Realtime Database Firebase Untuk Android Apps",Android
+"Database Seeder CodeIgniter 4","CodeIgniter 4"
+"Tutorial Install MYSQL di HP Android Menggunakan Termux","How To Install"
+"Tutorial instalasi Apache Web server dan PHP di HP android menggunakan Termux","How To Install"
+"Seri Tutorial CodeIgniter 4: Membuat Fitur Upload","CodeIgniter 4"
+"Seri Tutorial CodeIgniter 4: Membuat Fitur Login Dan Register","CodeIgniter 4"
+"Tutorial Membuat Fitur CRUD di CodeIgniter 4 untuk Pemula","CodeIgniter 4"
+"Tutorial Membuat Restful API menggunakan API Platform",API
+"Hacktoberfest dimulai! Yuk ikutan kontribusi.",Git
+"Mengirim Email via Gmail SMTP menggunakan Email Library CodeIgniter",Codeigniter
+"SOLID Principles dan Penerapan dalam PHP","Software Engineering"
+"Tutorial Codeigniter 3: Membuat Fitur Forgot Password",Codeigniter
+"Cara installasi dan penggunaan Composer pada Ubuntu 16.04","How To Install"
+"Searching With Pagination Pada CodeIgniter",Codeigniter
+"Belajar PHP OOP Part 14 Membuat Login Dan Register Sistem",OOP
+"Belajar PHP OOP Part 13 CRUD Dengan PDO",OOP
+"Belajar PHP OOP Part 12 Implementasi Class Diagram Dalam PHP",OOP
+"Mudahnya Merancang UML Menggunakan Draw.io Secara Offline","Software Engineering"
+"Tutorial Codeigniter: Menghilangkan index.php Dengan htaccess",Codeigniter
+"Tutorial Install LAMP di Ubuntu 16.04 Dengan Apache, PHP 7 dan MariaDB","How To Install"
+"Menggunakan Password_hash() Dan Password_verify()",php
+"Tutorial Git Untuk Pemula: Install dan Menggunakan Git di Ubuntu",Git
+"BELAJAR PHP OOP PART 11 ENCAPSULATION",OOP
+"BELAJAR PHP OOP PART 10 FUNCTION OVERRIDING",OOP
+"BELAJAR PHP OOP PART 9 INHERITANCE",OOP
+"BELAJAR PHP OOP PART 8 REVIEW OOP",OOP
+"BELAJAR PHP OOP PART 7 MERANGKAI PUZZLE, LATIHAN OOP",OOP
+"BELAJAR PHP OOP PART 6 MEMBUAT METHOD",OOP
+"Enkripsi Dan Dekripsi Menggunakan Encrypt Library CodeIgniter",Codeigniter
+"BELAJAR PHP OOP PART 5 METODE CONSTRUCT",OOP
+"Belajar PHP OOP Part 4 Berkenalan Dengan Property",OOP
+"Belajar PHP OOP Part 3 Membuat Class Pertamamu.",OOP
+"Belajar PHP OOP Part 2 OOP Di Kehidupan Sehari Hari",OOP
+"Belajar PHP OOP Part 1 Pengenalan OOP",OOP
+"Fungsi Enkripsi dan Dekripsi Menggunakan PHP",php
+"Membuat Simple Login dan Register Menggunakan CodeIgniter",Codeigniter
+"Jadi, Harus mulai dari mana?",sharing
+Ide,sharing
+"Membuat Format Rupiah Dengan PHP",php
+"Operasi Penjumlahan Tanggal Menggunakan PHP",php
+"TUTORIAL CODEIGNITER: UPLOAD MULTIPLE IMAGE",Codeigniter
+"Tutorial CodeIgniter: Upload Image",Codeigniter
+"Mudahnya Membuat Pagination Pada CodeIgniter",Codeigniter
+"CRUD Sederhana CodeIgniter",Codeigniter
+"Tutorial Dasar Codeigniter 3 Untuk Pemula",Codeigniter
+Menulis,Contemplation
+"Salah Masuk Jurusan?",Contemplation
