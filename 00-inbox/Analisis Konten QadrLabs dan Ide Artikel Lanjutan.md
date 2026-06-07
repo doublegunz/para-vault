@@ -38,7 +38,7 @@ Dari pola di atas, beberapa celah potensial:
 4. Mengoptimalkan Query Eloquent yang Kompleks dengan Indexing dan Explain di MySQL
 5. Strategi Cache Berlapis (Application, Database, dan HTTP) di Laravel 13
 6. Menggunakan Redis Stream untuk Event Log Aplikasi Laravel
-7. Membangun Fitur Soft Delete yang Aman dengan Database Transactions di Laravel
+7. [Membangun Fitur Soft Delete yang Aman dengan Database Transactions di Laravel](obsidian://open?vault=obsidian-vault&file=01-projects%2Fqadrlabs%2Fpost%2F01-draft%2Fsafe-soft-delete-database-transactions-laravel-13)
 8. Audit Trail di Laravel: Menyimpan Riwayat Perubahan Data di Tabel Terpisah
 9. Menangani File Upload Besar di Laravel: Chunked Upload dan Storage yang Efisien
 10. Implementasi Multi-Tenancy Sederhana di Laravel Menggunakan Scope dan Middleware

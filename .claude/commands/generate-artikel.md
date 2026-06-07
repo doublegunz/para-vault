@@ -98,7 +98,7 @@ Wajib ada. Berisi **key takeaways dalam format bullet points**. Setiap bullet di
 ### View Conventions
 - Use STANDALONE HTML with Tailwind CDN (no `@extends('layouts.app')`)
 - Structure: `<body class="bg-gray-100 text-gray-800 font-sans p-6">` with inner `<div class="max-w-2xl mx-auto bg-white p-6 md:p-8 rounded-lg shadow-md">`
-- ALWAYS add footer at bottom of every view:
+- ALWAYS add footer at bottom of every Blade view file (`*.blade.php`), NOT in the markdown tutorial file itself. The footer belongs inside the view code that the reader creates, not at the end of the article:
   ```html
   <div class="mt-8 mb-6 text-center text-sm text-gray-500">
       <a href="https://qadrlabs.com" class="text-blue-600 hover:text-blue-800 hover:underline transition"
