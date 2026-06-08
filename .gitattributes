@@ -1,0 +1,21 @@
+# Normalize all text files to LF in the repository and on checkout.
+# Prevents spurious "modified" diffs from line-ending (CRLF vs LF) flips.
+* text=auto eol=lf
+
+# Treat common binary assets as binary so git never touches their bytes.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.svg  binary
+*.ico  binary
+*.pdf  binary
+*.zip  binary
+*.mp4  binary
+*.mp3  binary
+*.mov  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.otf  binary
