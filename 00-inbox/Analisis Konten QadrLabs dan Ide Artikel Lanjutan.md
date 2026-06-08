@@ -52,7 +52,7 @@ Dari pola di atas, beberapa celah potensial:
 18. Mengintegrasikan Elasticsearch dengan Eloquent untuk Full-Text Search Multi-Field
 19. Menambahkan Autocomplete Search di Laravel dengan Elasticsearch dan Alpine.js
 20. Menjalankan Scheduled Tasks Laravel di Kubernetes CronJob
-21. Membuat Health Check Endpoint untuk Laravel dan Mengintegrasikannya dengan Uptime Robot
+21. [Membuat Health Check Endpoint untuk Laravel dan Mengintegrasikannya dengan Uptime Robot](obsidian://open?vault=obsidian-vault&file=01-projects%2Fqadrlabs%2Fpost%2F01-draft%2Flaravel-health-check-endpoint-uptime-robot)
 22. Centralized Logging untuk Laravel Menggunakan Monolog dan Stack Driver
 23. Menggunakan OpenTelemetry di Laravel untuk Distributed Tracing Dasar
 24. Penerapan Rate Limiting Berbasis User Role Menggunakan RateLimiter Facade
