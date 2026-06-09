@@ -1,0 +1,1 @@
+ini untuk post yang sudah diterjemahkan
