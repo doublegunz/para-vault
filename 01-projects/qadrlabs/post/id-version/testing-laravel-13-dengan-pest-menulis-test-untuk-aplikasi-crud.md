@@ -1,47 +1,48 @@
 ---
-title: "Laravel 13 Testing with Pest: Write Tests for Your CRUD Application"
-slug: "laravel-13-testing-with-pest-write-tests-for-your-crud-application"
+title: "Testing Laravel 13 dengan Pest: Menulis Test untuk Aplikasi CRUD Anda"
+slug: "testing-laravel-13-dengan-pest-menulis-test-untuk-aplikasi-crud"
+original_title: "Laravel 13 Testing with Pest: Write Tests for Your CRUD Application"
+original_slug: "laravel-13-testing-with-pest-write-tests-for-your-crud-application"
 category: "Laravel"
 date: "2026-03-24"
-status: "published"
-id_version: "testing-laravel-13-dengan-pest-menulis-test-untuk-aplikasi-crud"
+status: "draft"
 ---
 
-You have built a working CRUD application, and everything looks fine when you test it manually in the browser. But what happens when you add a new feature next week and accidentally break the create form? Or when a teammate changes a validation rule without realizing it affects the update flow? Without automated tests, you will not catch these regressions until a user reports them.
+Anda sudah membangun aplikasi CRUD yang berfungsi, dan semuanya terlihat baik-baik saja ketika Anda mengujinya secara manual di browser. Tapi apa yang terjadi ketika Anda menambahkan fitur baru minggu depan dan secara tidak sengaja merusak form create? Atau ketika rekan satu tim mengubah aturan validasi tanpa menyadari bahwa hal itu memengaruhi alur update? Tanpa automated test, Anda tidak akan menangkap regression semacam ini sampai ada pengguna yang melaporkannya.
 
-This tutorial picks up where our [Laravel 13 CRUD Tutorial](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step) left off. We will write feature tests for every CRUD operation in the blog application using Pest, the modern testing framework that ships with Laravel 13 by default.
+Tutorial ini melanjutkan dari titik di mana [Laravel 13 CRUD Tutorial](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step) kita berakhir. Kita akan menulis feature test untuk setiap operasi CRUD dalam aplikasi blog menggunakan Pest, testing framework modern yang sudah disertakan secara default di Laravel 13.
 
 
 ## Overview {#overview}
 
-In this tutorial, we will write automated tests for the blog application we built in the previous tutorial. The application has a `Post` model with `title`, `slug`, `content`, and `status` fields, managed through a resource controller with full CRUD functionality.
+Dalam tutorial ini, kita akan menulis automated test untuk aplikasi blog yang kita bangun di tutorial sebelumnya. Aplikasi ini memiliki model `Post` dengan field `title`, `slug`, `content`, dan `status`, yang dikelola melalui resource controller dengan fungsionalitas CRUD lengkap.
 
 ### What You'll Do
 
-You will write Pest feature tests that cover every CRUD operation: listing posts, creating a new post, viewing a single post, editing a post, and deleting a post. Each test will verify both the HTTP response and the database state.
+Anda akan menulis Pest feature test yang mencakup setiap operasi CRUD: menampilkan daftar post, membuat post baru, melihat satu post, mengedit post, dan menghapus post. Setiap test akan memverifikasi baik HTTP response maupun state database.
 
 ### What You'll Learn
 
-By following this tutorial, you will learn how to:
+Dengan mengikuti tutorial ini, Anda akan belajar cara:
 
-- Replace PHPUnit with Pest in an existing Laravel 13 project.
-- Create model factories for generating test data.
-- Write feature tests for each CRUD operation.
-- Use `RefreshDatabase` to keep tests isolated.
-- Assert HTTP responses, redirects, session data, and database state.
-- Validate that form validation rules work correctly.
-- Run and interpret Pest test results.
+- Mengganti PHPUnit dengan Pest di proyek Laravel 13 yang sudah ada.
+- Membuat model factory untuk menghasilkan data test.
+- Menulis feature test untuk setiap operasi CRUD.
+- Menggunakan `RefreshDatabase` agar test tetap terisolasi.
+- Melakukan assert pada HTTP response, redirect, session data, dan state database.
+- Memvalidasi bahwa aturan validasi form bekerja dengan benar.
+- Menjalankan dan menafsirkan hasil test Pest.
 
 ### What You'll Need
 
-- The completed blog project from the [Laravel 13 CRUD Tutorial](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step).
-- PHP 8.3 or higher.
-- Basic familiarity with Laravel and testing concepts.
+- Proyek blog yang sudah selesai dari [Laravel 13 CRUD Tutorial](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step).
+- PHP 8.3 atau lebih tinggi.
+- Familiaritas dasar dengan konsep Laravel dan testing.
 
 
 ## Step 1: Install Pest {#step-1-install-pest}
 
-The blog project from the previous tutorial ships with PHPUnit as its testing framework. We need to replace it with Pest. Open `composer.json` and you will see PHPUnit listed in the dev dependencies:
+Proyek blog dari tutorial sebelumnya sudah disertai PHPUnit sebagai testing framework-nya. Kita perlu menggantinya dengan Pest. Buka `composer.json` dan Anda akan melihat PHPUnit terdaftar di dev dependencies:
 
 ```json
 "require-dev": {
@@ -55,16 +56,16 @@ The blog project from the previous tutorial ships with PHPUnit as its testing fr
 },
 ```
 
-First, remove PHPUnit, then install Pest with all its dependencies:
+Pertama, hapus PHPUnit, lalu install Pest beserta semua dependensinya:
 
 ```
 composer remove phpunit/phpunit
 composer require pestphp/pest --dev --with-all-dependencies
 ```
 
-The `--with-all-dependencies` flag tells Composer to also update any existing packages that need to be adjusted for compatibility with Pest.
+Flag `--with-all-dependencies` memberi tahu Composer untuk juga memperbarui paket-paket yang sudah ada yang perlu disesuaikan agar kompatibel dengan Pest.
 
-Next, initialize Pest in your project:
+Selanjutnya, inisialisasi Pest di proyek Anda:
 
 ```
 ./vendor/bin/pest --init
@@ -80,11 +81,11 @@ $ ./vendor/bin/pest --init
   tests/Feature/ExampleTest.php ......................... File already exists.  
 ```
 
-The `--init` command creates a `tests/Pest.php` file, which is Pest's configuration file. The existing test files and `phpunit.xml` are left untouched since they are already compatible.
+Perintah `--init` membuat file `tests/Pest.php`, yang merupakan file konfigurasi Pest. File test yang sudah ada dan `phpunit.xml` dibiarkan tidak tersentuh karena keduanya sudah kompatibel.
 
 ### Verify the Test Database Configuration
 
-Open `phpunit.xml` and check the environment variables section. In this project, the SQLite in-memory database is already configured by default:
+Buka `phpunit.xml` dan periksa bagian environment variable. Pada proyek ini, database SQLite in-memory sudah dikonfigurasi secara default:
 
 ```xml
     <php>
@@ -105,11 +106,11 @@ Open `phpunit.xml` and check the environment variables section. In this project,
     </php>
 ```
 
-The `DB_CONNECTION` is set to `sqlite` and `DB_DATABASE` is set to `:memory:`. This means tests will run against a fresh in-memory SQLite database that is created and destroyed with each test run, keeping your development database completely untouched.
+`DB_CONNECTION` diatur ke `sqlite` dan `DB_DATABASE` diatur ke `:memory:`. Ini berarti test akan berjalan terhadap database SQLite in-memory yang fresh yang dibuat dan dihancurkan pada setiap kali test dijalankan, sehingga database development Anda sama sekali tidak tersentuh.
 
 ### Verify Pest Is Working
 
-Run Pest to confirm everything is set up correctly:
+Jalankan Pest untuk memastikan semuanya sudah diatur dengan benar:
 
 ```
 ./vendor/bin/pest
@@ -125,18 +126,18 @@ $ ./vendor/bin/pest
   Duration: 0.13s
 ```
 
-Both default tests pass. Pest is installed and working. You can also run tests using `php artisan test`, which internally calls Pest now that PHPUnit has been replaced.
+Kedua test default lolos. Pest sudah terinstal dan berfungsi. Anda juga bisa menjalankan test menggunakan `php artisan test`, yang secara internal memanggil Pest sekarang setelah PHPUnit diganti.
 
 
 ## Step 2: Create a Post Factory {#step-2-create-post-factory}
 
-Tests need sample data, and Laravel's model factories are the standard way to generate it. Create a factory for the `Post` model:
+Test membutuhkan data sampel, dan model factory Laravel adalah cara standar untuk menghasilkannya. Buat factory untuk model `Post`:
 
 ```
 php artisan make:factory PostFactory --model=Post
 ```
 
-Open `database/factories/PostFactory.php` and define the default state:
+Buka `database/factories/PostFactory.php` dan definisikan default state-nya:
 
 ```php
 <?php
@@ -170,25 +171,25 @@ class PostFactory extends Factory
 }
 ```
 
-Here is what each field generates:
+Berikut adalah apa yang dihasilkan oleh masing-masing field:
 
-- `title` uses Faker's `sentence()` to produce a realistic-looking title like "The quick brown fox jumps over."
-- `slug` converts the generated title into a URL-friendly format using `Str::slug()`. For example, "The Quick Brown Fox" becomes "the-quick-brown-fox".
-- `content` uses `paragraphs(3, true)` to generate three paragraphs of lorem ipsum text joined as a single string. The `true` parameter returns a string instead of an array.
-- `status` randomly picks either "draft" or "publish" from the allowed enum values.
+- `title` menggunakan `sentence()` milik Faker untuk menghasilkan judul yang terlihat realistis seperti "The quick brown fox jumps over."
+- `slug` mengubah judul yang dihasilkan menjadi format yang ramah URL menggunakan `Str::slug()`. Sebagai contoh, "The Quick Brown Fox" menjadi "the-quick-brown-fox".
+- `content` menggunakan `paragraphs(3, true)` untuk menghasilkan tiga paragraf teks lorem ipsum yang digabungkan sebagai satu string tunggal. Parameter `true` mengembalikan sebuah string alih-alih sebuah array.
+- `status` secara acak memilih antara "draft" atau "publish" dari nilai enum yang diizinkan.
 
-Save the file.
+Simpan file tersebut.
 
 
 ## Step 3: Write Tests for Listing Posts {#step-3-test-listing-posts}
 
-Now let's start writing the actual tests. Create a new test file:
+Sekarang mari kita mulai menulis test yang sebenarnya. Buat file test baru:
 
 ```
 php artisan make:test PostControllerTest --pest
 ```
 
-The `--pest` flag generates a Pest-style test file instead of a traditional PHPUnit class. Open `tests/Feature/PostControllerTest.php` and replace its content with:
+Flag `--pest` menghasilkan file test bergaya Pest alih-alih class PHPUnit tradisional. Buka `tests/Feature/PostControllerTest.php` dan ganti isinya dengan:
 
 ```php
 <?php
@@ -220,25 +221,25 @@ test('index page shows empty state when no posts exist', function () {
 });
 ```
 
-Let's break down the structure:
+Mari kita uraikan strukturnya:
 
-- `uses(RefreshDatabase::class)` is placed at the top of the file and applies to every test in this file. It runs migrations before the first test and wraps each test in a database transaction that rolls back when the test finishes. This ensures every test starts with a clean database.
-- `test('description', function () { ... })` is Pest's syntax for defining a test case. The first argument is a human-readable description that appears in the test output.
-- `Post::factory()->count(3)->create()` uses the factory we created in Step 2 to insert three post records into the database.
-- `$this->get(route('posts.index'))` sends a GET request to the posts index route and captures the response.
-- `assertStatus(200)` verifies the HTTP status code.
-- `assertViewIs('posts.index')` confirms that the correct Blade view is returned.
-- `assertViewHas('posts')` checks that a `posts` variable is passed to the view.
-- `assertSee($post->title)` verifies that each post title appears somewhere in the rendered HTML.
+- `uses(RefreshDatabase::class)` ditempatkan di bagian atas file dan berlaku untuk setiap test dalam file ini. Ia menjalankan migration sebelum test pertama dan membungkus setiap test dalam sebuah database transaction yang di-rollback ketika test selesai. Ini memastikan setiap test dimulai dengan database yang bersih.
+- `test('description', function () { ... })` adalah sintaks Pest untuk mendefinisikan sebuah test case. Argumen pertama adalah deskripsi yang mudah dibaca manusia yang muncul di output test.
+- `Post::factory()->count(3)->create()` menggunakan factory yang kita buat di Step 2 untuk memasukkan tiga record post ke dalam database.
+- `$this->get(route('posts.index'))` mengirim sebuah GET request ke route index post dan menangkap response-nya.
+- `assertStatus(200)` memverifikasi HTTP status code.
+- `assertViewIs('posts.index')` memastikan bahwa Blade view yang benar dikembalikan.
+- `assertViewHas('posts')` memeriksa bahwa sebuah variabel `posts` diteruskan ke view.
+- `assertSee($post->title)` memverifikasi bahwa setiap judul post muncul di suatu tempat dalam HTML yang dirender.
 
-The second test checks the empty state: when no posts exist in the database, the page should display "No posts found." as we defined in the Blade view.
+Test kedua memeriksa empty state: ketika tidak ada post di dalam database, halaman seharusnya menampilkan "No posts found." seperti yang kita definisikan di Blade view.
 
-Save the file.
+Simpan file tersebut.
 
 
 ## Step 4: Write Tests for Creating Posts {#step-4-test-creating-posts}
 
-Add the following tests to the same file:
+Tambahkan test berikut ke file yang sama:
 
 ```php
 test('create page displays the form', function () {
@@ -319,20 +320,20 @@ test('store validates slug uniqueness', function () {
 });
 ```
 
-These tests cover both the happy path and the validation edge cases:
+Test-test ini mencakup baik happy path maupun edge case validasi:
 
-- The first test verifies that the create form page loads correctly.
-- The store test sends a POST request with valid data, then checks three things: the response redirects to the index page, a success flash message is present in the session, and the data exists in the database with the correct slug.
-- The slug test specifically verifies the auto-generation behavior. We send "Laravel 13 Is Amazing" as the title and confirm that "laravel-13-is-amazing" is stored as the slug.
-- `assertSessionHasErrors(['title', 'content', 'status'])` verifies that validation errors are returned when required fields are missing.
-- The max length test sends a title longer than 255 characters and expects a validation error.
-- The status test sends an invalid status value ("archived") and expects it to be rejected since only "draft" and "publish" are allowed.
-- The uniqueness test creates a post with a specific slug first, then attempts to create another post with the same title (and therefore the same slug) and expects a validation error.
+- Test pertama memverifikasi bahwa halaman form create dimuat dengan benar.
+- Test store mengirim sebuah POST request dengan data yang valid, lalu memeriksa tiga hal: response melakukan redirect ke halaman index, sebuah success flash message hadir di dalam session, dan data ada di dalam database dengan slug yang benar.
+- Test slug secara khusus memverifikasi perilaku auto-generation. Kita mengirim "Laravel 13 Is Amazing" sebagai judul dan memastikan bahwa "laravel-13-is-amazing" disimpan sebagai slug.
+- `assertSessionHasErrors(['title', 'content', 'status'])` memverifikasi bahwa error validasi dikembalikan ketika field yang wajib diisi tidak ada.
+- Test max length mengirim judul yang lebih panjang dari 255 karakter dan mengharapkan sebuah error validasi.
+- Test status mengirim nilai status yang tidak valid ("archived") dan mengharapkannya ditolak karena hanya "draft" dan "publish" yang diizinkan.
+- Test uniqueness terlebih dahulu membuat sebuah post dengan slug tertentu, lalu mencoba membuat post lain dengan judul yang sama (dan karenanya slug yang sama) dan mengharapkan sebuah error validasi.
 
 
 ## Step 5: Write Tests for Viewing a Post {#step-5-test-viewing-post}
 
-Add these tests to verify the show page:
+Tambahkan test berikut untuk memverifikasi halaman show:
 
 ```php
 test('show page displays a single post', function () {
@@ -353,12 +354,12 @@ test('show returns 404 for non-existent post', function () {
 });
 ```
 
-The first test creates a post, requests its detail page, and verifies that both the title and content are visible in the response. The second test requests a post ID that does not exist and confirms that Laravel returns a 404 status code, which is handled automatically by route model binding.
+Test pertama membuat sebuah post, meminta halaman detailnya, dan memverifikasi bahwa baik judul maupun content terlihat di dalam response. Test kedua meminta sebuah ID post yang tidak ada dan memastikan bahwa Laravel mengembalikan status code 404, yang ditangani secara otomatis oleh route model binding.
 
 
 ## Step 6: Write Tests for Updating Posts {#step-6-test-updating-posts}
 
-Add tests for the edit form and update operation:
+Tambahkan test untuk form edit dan operasi update:
 
 ```php
 test('edit page displays the form with existing data', function () {
@@ -423,14 +424,14 @@ test('update allows same slug for the same post', function () {
 });
 ```
 
-The update test creates a post with known values, sends a PUT request with new data, and verifies that the database reflects the changes. Notice that we also assert the `id` to confirm the correct record was updated.
+Test update membuat sebuah post dengan nilai yang sudah diketahui, mengirim sebuah PUT request dengan data baru, dan memverifikasi bahwa database mencerminkan perubahan tersebut. Perhatikan bahwa kita juga melakukan assert pada `id` untuk memastikan record yang benar yang di-update.
 
-The last test is particularly important. It verifies that updating a post without changing its title does not trigger a slug uniqueness error. Recall from the CRUD tutorial that the controller's validation rule includes `unique:posts,slug,' . $post->id`, which excludes the current record from the uniqueness check. This test confirms that behavior.
+Test terakhir sangat penting. Ia memverifikasi bahwa meng-update sebuah post tanpa mengubah judulnya tidak memicu error slug uniqueness. Ingat dari tutorial CRUD bahwa aturan validasi controller mencakup `unique:posts,slug,' . $post->id`, yang mengecualikan record saat ini dari pemeriksaan uniqueness. Test ini memastikan perilaku tersebut.
 
 
 ## Step 7: Write Tests for Deleting Posts {#step-7-test-deleting-posts}
 
-Add tests for the delete operation:
+Tambahkan test untuk operasi delete:
 
 ```php
 test('a post can be deleted', function () {
@@ -453,20 +454,20 @@ test('deleting a non-existent post returns 404', function () {
 });
 ```
 
-The first test creates a post, sends a DELETE request, and then verifies three things: the response redirects to the index page, a success message is flashed, and the record no longer exists in the database. `assertDatabaseMissing` is the counterpart to `assertDatabaseHas`, confirming that no row with the given ID exists.
+Test pertama membuat sebuah post, mengirim sebuah DELETE request, lalu memverifikasi tiga hal: response melakukan redirect ke halaman index, sebuah success message di-flash, dan record tidak lagi ada di dalam database. `assertDatabaseMissing` adalah lawan dari `assertDatabaseHas`, yang memastikan bahwa tidak ada row dengan ID yang diberikan.
 
-The second test attempts to delete a post that does not exist and verifies that a 404 response is returned.
+Test kedua mencoba menghapus sebuah post yang tidak ada dan memverifikasi bahwa sebuah response 404 dikembalikan.
 
 
 ## Step 8: Run the Tests {#step-8-run-tests}
 
-With all tests written, let's run them. Open your terminal and execute:
+Dengan semua test sudah ditulis, mari kita jalankan. Buka terminal Anda dan eksekusi:
 
 ```
 php artisan test
 ```
 
-You should see output similar to this:
+Anda seharusnya melihat output yang mirip dengan ini:
 
 ```
    PASS  Tests\Unit\ExampleTest
@@ -498,21 +499,21 @@ You should see output similar to this:
   Duration: 0.52s
 ```
 
-All 19 tests pass. Here is what we covered:
+Seluruh 19 test lolos. Berikut adalah apa yang sudah kita cakup:
 
-- 2 tests for the listing page (with data and empty state).
-- 7 tests for creating posts (form display, successful store, slug generation, and 4 validation scenarios).
-- 2 tests for viewing a post (existing and non-existent).
-- 4 tests for updating posts (form display, successful update, validation, and slug uniqueness edge case).
-- 2 tests for deleting posts (successful delete and non-existent post).
+- 2 test untuk halaman listing (dengan data dan empty state).
+- 7 test untuk membuat post (tampilan form, store yang berhasil, slug generation, dan 4 skenario validasi).
+- 2 test untuk melihat sebuah post (yang ada dan yang tidak ada).
+- 4 test untuk meng-update post (tampilan form, update yang berhasil, validasi, dan edge case slug uniqueness).
+- 2 test untuk menghapus post (delete yang berhasil dan post yang tidak ada).
 
-You can also run only the PostControllerTest file:
+Anda juga bisa menjalankan hanya file PostControllerTest:
 
 ```
 php artisan test --filter=PostControllerTest
 ```
 
-Or run a specific test by name:
+Atau menjalankan sebuah test tertentu berdasarkan nama:
 
 ```
 php artisan test --filter="a new post can be stored"
@@ -521,7 +522,7 @@ php artisan test --filter="a new post can be stored"
 
 ## The Complete Test File {#complete-test-file}
 
-Here is the full `tests/Feature/PostControllerTest.php` for reference:
+Berikut adalah `tests/Feature/PostControllerTest.php` lengkap untuk referensi:
 
 ```php
 <?php
@@ -735,17 +736,17 @@ test('deleting a non-existent post returns 404', function () {
 
 ## Conclusion {#conclusion}
 
-In this tutorial, we wrote 19 feature tests using Pest to cover every CRUD operation in our Laravel 13 blog application. Each test verifies not just the HTTP response, but also the database state, session data, and view content.
+Dalam tutorial ini, kita menulis 19 feature test menggunakan Pest untuk mencakup setiap operasi CRUD dalam aplikasi blog Laravel 13 kita. Setiap test memverifikasi bukan hanya HTTP response, tetapi juga state database, session data, dan content view.
 
-Here are the key takeaways:
+Berikut adalah poin-poin penting yang bisa diambil:
 
-- **Pest's syntax is cleaner than PHPUnit.** Writing `test('description', function () { ... })` is more readable than creating class methods with `/** @test */` annotations. The test descriptions read like plain English.
-- **`RefreshDatabase` keeps tests isolated.** Each test starts with a clean database, so the order in which tests run does not matter.
-- **Model factories make test data easy.** With `Post::factory()->create()`, you generate realistic data in one line. You can override specific fields when you need precise values for your assertions.
-- **Test both happy paths and edge cases.** We tested not only that valid data gets stored correctly, but also that invalid data is rejected by validation. This catches bugs before they reach production.
-- **Slug uniqueness needs a specific test.** The edge case where updating a post without changing its title should not trigger a uniqueness error is easy to overlook. Writing a test for it documents the expected behavior and prevents regressions.
-- **Run tests frequently.** Get into the habit of running `php artisan test` after every change. The faster your feedback loop, the easier it is to track down issues.
+- **Sintaks Pest lebih bersih daripada PHPUnit.** Menulis `test('description', function () { ... })` lebih mudah dibaca daripada membuat method class dengan anotasi `/** @test */`. Deskripsi test terbaca seperti bahasa Inggris biasa.
+- **`RefreshDatabase` menjaga test tetap terisolasi.** Setiap test dimulai dengan database yang bersih, sehingga urutan test dijalankan tidak menjadi masalah.
+- **Model factory membuat data test menjadi mudah.** Dengan `Post::factory()->create()`, Anda menghasilkan data yang realistis dalam satu baris. Anda bisa meng-override field tertentu ketika Anda membutuhkan nilai yang presisi untuk assertion Anda.
+- **Uji baik happy path maupun edge case.** Kita menguji bukan hanya bahwa data yang valid tersimpan dengan benar, tetapi juga bahwa data yang tidak valid ditolak oleh validasi. Ini menangkap bug sebelum mencapai production.
+- **Slug uniqueness membutuhkan test khusus.** Edge case di mana meng-update sebuah post tanpa mengubah judulnya seharusnya tidak memicu error uniqueness mudah terlewatkan. Menulis test untuknya mendokumentasikan perilaku yang diharapkan dan mencegah regression.
+- **Jalankan test secara berkala.** Biasakan menjalankan `php artisan test` setelah setiap perubahan. Semakin cepat feedback loop Anda, semakin mudah untuk melacak masalah.
 
-From here, you can extend the test suite with additional scenarios like testing pagination, testing that draft posts display differently from published ones, or adding authentication tests when you introduce login functionality.
+Dari sini, Anda bisa memperluas test suite dengan skenario tambahan seperti menguji pagination, menguji bahwa draft post ditampilkan berbeda dari published post, atau menambahkan test autentikasi ketika Anda memperkenalkan fungsionalitas login.
 
-In the next tutorial, we will  [refactor our Controller with Form Request Validation](https://qadrlabs.com/post/laravel-13-refactor-your-controller-with-form-request-validation).
+Di tutorial berikutnya, kita akan [me-refactor Controller kita dengan Form Request Validation](https://qadrlabs.com/post/laravel-13-refactor-your-controller-with-form-request-validation).
