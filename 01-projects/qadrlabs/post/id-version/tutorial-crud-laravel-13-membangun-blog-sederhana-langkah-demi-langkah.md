@@ -1,57 +1,58 @@
 ---
-title: "Laravel 13 CRUD Tutorial: Build a Simple Blog Step by Step"
-slug: "laravel-13-crud-tutorial-build-a-simple-blog-step-by-step"
+title: "Tutorial CRUD Laravel 13: Membangun Blog Sederhana Langkah demi Langkah"
+slug: "tutorial-crud-laravel-13-membangun-blog-sederhana-langkah-demi-langkah"
+original_title: "Laravel 13 CRUD Tutorial: Build a Simple Blog Step by Step"
+original_slug: "laravel-13-crud-tutorial-build-a-simple-blog-step-by-step"
 category: "Laravel"
 date: "2026-03-23"
-status: "published"
-id_version: "tutorial-crud-laravel-13-membangun-blog-sederhana-langkah-demi-langkah"
+status: "draft"
 ---
 
-Laravel 13 just landed with exciting new features like the `#[Fillable]` attribute and expanded PHP attributes. But if you are new to the framework or upgrading from an older version, figuring out how to apply these changes in a real project can be confusing. The official documentation covers the "what" but not always the "how" in a practical context. This tutorial bridges that gap. We will build a simple blog with full CRUD functionality using Laravel 13 step by step, so you can see exactly how the pieces fit together in a working application.
+Laravel 13 baru saja hadir dengan fitur-fitur baru yang menarik, seperti atribut `#[Fillable]` dan perluasan dukungan PHP attributes. Namun jika Anda baru mengenal framework ini atau sedang melakukan upgrade dari versi lama, menerapkan perubahan-perubahan tersebut dalam proyek nyata bisa terasa membingungkan. Dokumentasi resmi menjelaskan "apa"-nya, tetapi tidak selalu menjelaskan "bagaimana"-nya secara praktis. Tutorial ini hadir untuk menjembatani kesenjangan tersebut. Kita akan membangun blog sederhana dengan fitur CRUD lengkap menggunakan Laravel 13 secara bertahap, sehingga Anda bisa melihat secara langsung bagaimana setiap bagian saling terhubung dalam sebuah aplikasi yang berjalan.
 
 
-## Overview {#overview}
+## Ikhtisar {#overview}
 
-This tutorial walks you through building a basic blog application from scratch using Laravel 13. We will create a post management system where you can create, view, edit, and delete blog posts.
+Tutorial ini memandu Anda dalam membangun aplikasi blog dasar dari awal menggunakan Laravel 13. Kita akan membuat sistem manajemen post di mana Anda bisa membuat, melihat, mengedit, dan menghapus blog post.
 
 ### What You'll Build
 
-A simple blog application with the following features:
+Aplikasi blog sederhana dengan fitur-fitur berikut:
 
-- A listing page that displays all posts with pagination.
-- A form to create new posts with title, content, and status fields.
-- A detail page to view a single post.
-- A form to edit existing posts.
-- A delete function with confirmation prompt.
+- Halaman daftar yang menampilkan semua post dengan pagination.
+- Formulir untuk membuat post baru dengan kolom title, content, dan status.
+- Halaman detail untuk melihat satu post.
+- Formulir untuk mengedit post yang sudah ada.
+- Fungsi hapus dengan konfirmasi.
 
 ![Project Preview](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/00-app-preview.webp)
 
 ### What You'll Learn
 
-By following this tutorial, you will learn how to:
+Dengan mengikuti tutorial ini, Anda akan belajar cara:
 
-- Set up a new Laravel 13 project from scratch.
-- Create models, migrations, and controllers using Artisan commands.
-- Define database schemas and run migrations.
-- Build CRUD operations with a resource controller.
-- Create Blade views styled with Tailwind CSS.
-- Use Laravel 13's new `#[Fillable]` attribute on Eloquent models.
-- Set up resource routes for RESTful URL patterns.
+- Menyiapkan proyek Laravel 13 baru dari awal.
+- Membuat model, migration, dan controller menggunakan perintah Artisan.
+- Mendefinisikan skema database dan menjalankan migration.
+- Membangun operasi CRUD dengan resource controller.
+- Membuat Blade view yang diberi style dengan Tailwind CSS.
+- Menggunakan atribut baru `#[Fillable]` di Laravel 13 pada Eloquent model.
+- Menyiapkan resource route untuk pola URL RESTful.
 
 ### What You'll Need
 
-Before getting started, make sure you have:
+Sebelum memulai, pastikan Anda sudah memiliki:
 
-- PHP 8.3 or higher
-- Composer installed globally
-- MySQL (or another supported database)
-- A code editor (Visual Studio Code recommended)
-- Basic familiarity with PHP and Laravel concepts
+- PHP 8.3 atau lebih tinggi
+- Composer terinstal secara global
+- MySQL (atau database lain yang didukung)
+- Code editor (Visual Studio Code direkomendasikan)
+- Pemahaman dasar tentang PHP dan konsep Laravel
 
 
-## Step 1: Create a Laravel Project {#step-1-create-laravel-project}
+## Langkah 1: Buat Proyek Laravel {#step-1-create-laravel-project}
 
-Start by creating a fresh Laravel project using Composer. We will name the project `blog`:
+Mulailah dengan membuat proyek Laravel baru menggunakan Composer. Kita akan menamai proyek ini `blog`:
 
 ```
 composer create-project laravel/laravel --prefer-dist blog
@@ -66,26 +67,26 @@ Installing laravel/laravel (v13.1.0)
 .
 ```
 
-Wait for Composer to finish downloading and installing all dependencies. The output confirms that Laravel v13.1.0 is being installed.
+Tunggu hingga Composer selesai mengunduh dan menginstal semua dependencies. Output mengonfirmasi bahwa Laravel v13.1.0 sedang diinstal.
 
-Once the installation is complete, navigate into the project directory:
+Setelah instalasi selesai, masuk ke direktori proyek:
 
 ```
 cd blog
 ```
 
-If you are using Visual Studio Code, you can open the project directly from the terminal:
+Jika Anda menggunakan Visual Studio Code, Anda bisa membuka proyek langsung dari terminal:
 
 ```
 code .
 ```
 
-This opens the entire project folder in your editor, making it easy to navigate between files as we build the application.
+Ini akan membuka seluruh folder proyek di editor Anda, sehingga mudah untuk berpindah antar file saat kita membangun aplikasi.
 
 
-## Step 2: Set Up Database Configuration {#step-2-setup-database-configuration}
+## Langkah 2: Konfigurasi Database {#step-2-setup-database-configuration}
 
-Before we can store any data, we need to tell Laravel how to connect to our database. Open the `.env` file in your project root and update the database settings:
+Sebelum bisa menyimpan data, kita perlu memberi tahu Laravel cara terhubung ke database. Buka file `.env` di root proyek Anda dan perbarui pengaturan database:
 
 ```
 DB_CONNECTION=mysql
@@ -96,14 +97,14 @@ DB_USERNAME=root
 DB_PASSWORD=password
 ```
 
-**Note:** Adjust the `DB_USERNAME` and `DB_PASSWORD` values to match your local MySQL credentials. The `DB_DATABASE` value is the name of the database that Laravel will use. You do not need to create the database manually, as Laravel will offer to create it for you when you run the migration command later.
+**Catatan:** Sesuaikan nilai `DB_USERNAME` dan `DB_PASSWORD` dengan kredensial MySQL lokal Anda. Nilai `DB_DATABASE` adalah nama database yang akan digunakan Laravel. Anda tidak perlu membuat database secara manual, karena Laravel akan menawarkan untuk membuatnya saat Anda menjalankan perintah migration nanti.
 
-Save the `.env` file after making your changes.
+Simpan file `.env` setelah melakukan perubahan.
 
 
-## Step 3: Create Model and Migration {#step-3-create-model-and-migration}
+## Langkah 3: Buat Model dan Migration {#step-3-create-model-and-migration}
 
-Laravel provides Artisan commands that generate boilerplate code for you. The following command creates both a `Post` model and its corresponding migration file in a single step:
+Laravel menyediakan perintah Artisan yang menghasilkan boilerplate code untuk Anda. Perintah berikut membuat model `Post` dan file migration yang sesuai dalam satu langkah:
 
 ```
 php artisan make:model Post -m
@@ -118,11 +119,11 @@ $ php artisan make:model Post -m
 
 ```
 
-The `-m` flag tells Artisan to generate a migration file alongside the model. This saves you from running two separate commands.
+Flag `-m` memberi tahu Artisan untuk menghasilkan file migration bersamaan dengan model. Ini menghemat Anda dari menjalankan dua perintah terpisah.
 
-### Define the Database Schema
+### Definisikan Skema Database
 
-Open the generated migration file at `database/migrations/xxxx_xx_xx_xxxxxx_create_posts_table.php` and modify it with the following content:
+Buka file migration yang dihasilkan di `database/migrations/xxxx_xx_xx_xxxxxx_create_posts_table.php` dan modifikasi dengan konten berikut:
 
 ```php
 <?php
@@ -158,20 +159,20 @@ return new class extends Migration
 };
 ```
 
-Here is what each column does:
+Berikut fungsi masing-masing kolom:
 
-- `id()` creates an auto-incrementing primary key.
-- `string('title')` stores the post title as a VARCHAR column.
-- `string('slug')->unique()` stores a URL-friendly version of the title. The `unique()` constraint ensures no two posts share the same slug.
-- `text('content')` stores the post body, which can be longer than a VARCHAR allows.
-- `enum('status', ['draft', 'publish'])->default('draft')` restricts the status to two possible values and defaults new posts to "draft."
-- `timestamps()` adds `created_at` and `updated_at` columns that Laravel manages automatically.
+- `id()` membuat primary key yang auto-increment.
+- `string('title')` menyimpan title post sebagai kolom VARCHAR.
+- `string('slug')->unique()` menyimpan versi title yang ramah URL. Constraint `unique()` memastikan tidak ada dua post dengan slug yang sama.
+- `text('content')` menyimpan isi post, yang bisa lebih panjang dari yang diizinkan VARCHAR.
+- `enum('status', ['draft', 'publish'])->default('draft')` membatasi status hanya pada dua nilai yang mungkin dan mengatur post baru ke "draft" secara default.
+- `timestamps()` menambahkan kolom `created_at` dan `updated_at` yang dikelola otomatis oleh Laravel.
 
-Save the migration file.
+Simpan file migration.
 
-### Configure the Model
+### Konfigurasi Model
 
-Open `app/Models/Post.php` and replace its content with:
+Buka `app/Models/Post.php` dan ganti isinya dengan:
 
 ```php
 <?php
@@ -189,13 +190,13 @@ class Post extends Model
 }
 ```
 
-Notice the `#[Fillable]` attribute on the class declaration. This is a new feature in Laravel 13 that uses PHP's native attribute syntax to define which fields can be mass-assigned. In previous versions, you would set a `$fillable` property inside the class. The attribute approach keeps the configuration declarative and colocated with the class definition.
+Perhatikan atribut `#[Fillable]` pada deklarasi class. Ini adalah fitur baru di Laravel 13 yang menggunakan sintaks native PHP attribute untuk mendefinisikan kolom mana yang bisa di-mass-assign. Pada versi sebelumnya, Anda perlu mengatur properti `$fillable` di dalam class. Pendekatan dengan attribute ini membuat konfigurasi lebih deklaratif dan terletak bersama definisi class.
 
-Save the model file.
+Simpan file model.
 
-### Run the Migration
+### Jalankan Migration
 
-Now execute the migration to create the `posts` table in your database:
+Sekarang jalankan migration untuk membuat tabel `posts` di database Anda:
 
 ```
 php artisan migrate
@@ -212,16 +213,16 @@ $ php artisan migrate
 
 ```
 
-Since the database does not exist yet, Laravel asks if you want to create it. Select **Yes** and press Enter to continue. Laravel will create the database and run all pending migrations, including the `posts` table we just defined.
+Karena database belum ada, Laravel menanyakan apakah Anda ingin membuatnya. Pilih **Yes** dan tekan Enter untuk melanjutkan. Laravel akan membuat database dan menjalankan semua migration yang tertunda, termasuk tabel `posts` yang baru saja kita definisikan.
 
 
-## Step 4: Build the Post Listing Feature {#step-4-build-post-listing}
+## Langkah 4: Bangun Fitur Daftar Post {#step-4-build-post-listing}
 
-With the database ready, let's start building the application layer. We will begin with the post listing page.
+Dengan database yang sudah siap, mari mulai membangun lapisan aplikasi. Kita akan mulai dengan halaman daftar post.
 
-### Generate a Resource Controller
+### Buat Resource Controller
 
-Use Artisan to generate a resource controller pre-wired to the `Post` model:
+Gunakan Artisan untuk menghasilkan resource controller yang sudah terhubung dengan model `Post`:
 
 ```
 php artisan make:controller PostController --model=Post --resource
@@ -234,11 +235,11 @@ $ php artisan make:controller PostController --model=Post --resource
 
 ```
 
-The `--resource` flag generates a controller with all seven RESTful methods (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy`) already stubbed out. The `--model=Post` flag type-hints the `Post` model in methods that need it, such as `show`, `edit`, `update`, and `destroy`.
+Flag `--resource` menghasilkan controller dengan tujuh metode RESTful (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy`) yang sudah dibuat. Flag `--model=Post` menambahkan type-hint model `Post` pada metode yang membutuhkannya, seperti `show`, `edit`, `update`, dan `destroy`.
 
-### Implement the Index Method
+### Implementasi Metode Index
 
-Open `app/Http/Controllers/PostController.php` and modify the `index()` method:
+Buka `app/Http/Controllers/PostController.php` dan modifikasi metode `index()`:
 
 ```php
 <?php
@@ -263,13 +264,13 @@ class PostController extends Controller
 }
 ```
 
-`Post::latest()` orders the query by `created_at` in descending order, so the newest posts appear first. `paginate(10)` limits the results to 10 per page and automatically generates pagination links. The `compact('posts')` function passes the `$posts` variable to the Blade view.
+`Post::latest()` mengurutkan query berdasarkan `created_at` secara descending, sehingga post terbaru muncul pertama. `paginate(10)` membatasi hasil hingga 10 per halaman dan secara otomatis menghasilkan link pagination. Fungsi `compact('posts')` meneruskan variabel `$posts` ke Blade view.
 
-Save the controller file.
+Simpan file controller.
 
-### Create the Index View
+### Buat Index View
 
-Create a new file at `resources/views/posts/index.blade.php` and add the following content:
+Buat file baru di `resources/views/posts/index.blade.php` dan tambahkan konten berikut:
 
 ```html
 <!DOCTYPE html>
@@ -347,19 +348,19 @@ Create a new file at `resources/views/posts/index.blade.php` and add the followi
 </html>
 ```
 
-A few things to note about this view:
+Beberapa hal yang perlu diperhatikan tentang view ini:
 
-- We use **Tailwind CSS via CDN** for styling, which keeps the tutorial simple without requiring a build step.
-- The `@forelse` / `@empty` directive handles both cases: when posts exist and when the table is empty.
-- `$posts->firstItem() + $loop->index` calculates the correct row number across paginated pages. For example, on page 2 with 10 items per page, the numbering starts at 11 instead of resetting to 1.
-- The delete button is wrapped in a form with `@method('DELETE')` because HTML forms only support GET and POST. Laravel uses this hidden field to interpret the request as a DELETE method.
-- `{{ $posts->links() }}` renders the pagination controls automatically.
+- Kita menggunakan **Tailwind CSS via CDN** untuk styling, yang membuat tutorial ini sederhana tanpa memerlukan proses build.
+- Direktif `@forelse` / `@empty` menangani kedua kondisi: saat post ada dan saat tabel kosong.
+- `$posts->firstItem() + $loop->index` menghitung nomor baris yang benar di halaman yang berbeda-beda. Misalnya, di halaman 2 dengan 10 item per halaman, penomoran dimulai dari 11, bukan kembali ke 1.
+- Tombol delete dibungkus dalam form dengan `@method('DELETE')` karena form HTML hanya mendukung GET dan POST. Laravel menggunakan hidden field ini untuk menginterpretasikan request sebagai metode DELETE.
+- `{{ $posts->links() }}` merender kontrol pagination secara otomatis.
 
-Save the view file.
+Simpan file view.
 
-### Register Routes
+### Daftarkan Routes
 
-Open `routes/web.php` and register a resource route for the `PostController`:
+Buka `routes/web.php` dan daftarkan resource route untuk `PostController`:
 
 ```php
 <?php
@@ -374,18 +375,18 @@ Route::get('/', function () {
 Route::resource('posts', PostController::class); // add this resource route
 ```
 
-`Route::resource()` registers all seven RESTful routes (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy`) in a single line. This is equivalent to writing seven individual route definitions manually. Laravel maps each route to the corresponding method in `PostController`.
+`Route::resource()` mendaftarkan semua tujuh route RESTful (`index`, `create`, `store`, `show`, `edit`, `update`, `destroy`) dalam satu baris. Ini setara dengan menulis tujuh definisi route secara manual. Laravel memetakan setiap route ke metode yang sesuai di `PostController`.
 
-Save the route file.
+Simpan file route.
 
 
-## Step 5: Build the Create Post Feature {#step-5-build-create-post}
+## Langkah 5: Bangun Fitur Buat Post {#step-5-build-create-post}
 
-Now let's implement the ability to add new posts.
+Sekarang mari implementasikan kemampuan untuk menambahkan post baru.
 
-### Implement the Create Method
+### Implementasi Metode Create
 
-Open `app/Http/Controllers/PostController.php` and update the `create()` method:
+Buka `app/Http/Controllers/PostController.php` dan perbarui metode `create()`:
 
 ```php
 <?php
@@ -411,13 +412,13 @@ class PostController extends Controller
 }
 ```
 
-This method simply returns the create form view. No data needs to be passed since the form starts empty.
+Metode ini cukup mengembalikan view form create. Tidak ada data yang perlu diteruskan karena form dimulai dalam keadaan kosong.
 
-Save the controller file.
+Simpan file controller.
 
-### Create the Form View
+### Buat Form View
 
-Create a new file at `resources/views/posts/create.blade.php` and add the following content:
+Buat file baru di `resources/views/posts/create.blade.php` dan tambahkan konten berikut:
 
 ```html
 <!DOCTYPE html>
@@ -486,17 +487,17 @@ Create a new file at `resources/views/posts/create.blade.php` and add the follow
 </html>
 ```
 
-A few things to highlight in this form:
+Beberapa hal yang perlu disorot dari form ini:
 
-- `@csrf` generates a hidden CSRF token field. Laravel requires this on all POST, PUT, PATCH, and DELETE forms to prevent cross-site request forgery attacks.
-- `{{ old('title') }}` repopulates the field with previously submitted data if validation fails, so the user does not have to re-type everything.
-- The `@if($errors->any())` block at the top displays validation error messages when the form submission is rejected.
+- `@csrf` menghasilkan hidden field token CSRF. Laravel mewajibkan ini pada semua form POST, PUT, PATCH, dan DELETE untuk mencegah serangan cross-site request forgery.
+- `{{ old('title') }}` mengisi ulang kolom dengan data yang sebelumnya dikirimkan jika validasi gagal, sehingga pengguna tidak perlu mengetik ulang semuanya.
+- Blok `@if($errors->any())` di bagian atas menampilkan pesan error validasi ketika pengiriman form ditolak.
 
-Save the view file.
+Simpan file view.
 
-### Implement the Store Method
+### Implementasi Metode Store
 
-Open `app/Http/Controllers/PostController.php` again and update the `store()` method:
+Buka `app/Http/Controllers/PostController.php` lagi dan perbarui metode `store()`:
 
 ```php
 <?php
@@ -536,14 +537,14 @@ class PostController extends Controller
 }
 ```
 
-Here is what happens step by step:
+Berikut yang terjadi langkah per langkah:
 
-1. `$request->merge()` generates a slug from the title using `Str::slug()`. For example, "My First Post" becomes "my-first-post". This is merged into the request data before validation.
-2. `$request->validate()` checks that all required fields are present and valid. The `unique:posts,slug` rule ensures no duplicate slugs exist in the database. The `in:draft,publish` rule restricts the status to only those two values. If validation fails, Laravel automatically redirects back to the form with error messages.
-3. `Post::create($validatedData)` inserts a new record into the `posts` table using only the validated fields. This works because we defined the `#[Fillable]` attribute on the model earlier.
-4. `redirect()->route('posts.index')->with('success', ...)` sends the user back to the listing page with a flash message confirming the post was created.
+1. `$request->merge()` menghasilkan slug dari title menggunakan `Str::slug()`. Misalnya, "My First Post" menjadi "my-first-post". Ini digabungkan ke data request sebelum validasi.
+2. `$request->validate()` memeriksa bahwa semua kolom yang wajib ada dan valid. Aturan `unique:posts,slug` memastikan tidak ada slug duplikat di database. Aturan `in:draft,publish` membatasi status hanya pada dua nilai tersebut. Jika validasi gagal, Laravel secara otomatis redirect kembali ke form dengan pesan error.
+3. `Post::create($validatedData)` menyisipkan record baru ke tabel `posts` menggunakan hanya kolom yang sudah divalidasi. Ini berfungsi karena kita mendefinisikan atribut `#[Fillable]` pada model sebelumnya.
+4. `redirect()->route('posts.index')->with('success', ...)` mengirim pengguna kembali ke halaman daftar dengan flash message yang mengonfirmasi bahwa post berhasil dibuat.
 
-Since we are going to convert the title into a slug, we will use a helper class from the Laravel framework by adding `use Illuminate\Support\Str;`.
+Karena kita akan mengonversi title menjadi slug, kita akan menggunakan helper class dari framework Laravel dengan menambahkan `use Illuminate\Support\Str;`.
 
 ```php
 use Illuminate\Support\Str; // add this line of code
@@ -554,16 +555,16 @@ class PostController extends Controller
 }
 ```
 
-Save the controller file.
+Simpan file controller.
 
 
-## Step 6: Build the View Post Detail Feature {#step-6-build-view-post-detail}
+## Langkah 6: Bangun Fitur Lihat Detail Post {#step-6-build-view-post-detail}
 
-Next, let's add the ability to view a single post in detail.
+Selanjutnya, mari tambahkan kemampuan untuk melihat detail satu post.
 
-### Implement the Show Method
+### Implementasi Metode Show
 
-Open `app/Http/Controllers/PostController.php` and update the `show()` method:
+Buka `app/Http/Controllers/PostController.php` dan perbarui metode `show()`:
 
 ```php
 <?php
@@ -590,13 +591,13 @@ class PostController extends Controller
 }
 ```
 
-The `Post $post` parameter uses Laravel's **route model binding**. When a user visits `/posts/1`, Laravel automatically finds the `Post` with ID 1 and injects it into the method. If no matching record is found, Laravel returns a 404 response.
+Parameter `Post $post` menggunakan **route model binding** dari Laravel. Ketika pengguna mengunjungi `/posts/1`, Laravel secara otomatis mencari `Post` dengan ID 1 dan menyuntikkannya ke dalam metode. Jika tidak ada record yang cocok, Laravel mengembalikan respons 404.
 
-Save the controller file.
+Simpan file controller.
 
-### Create the Show View
+### Buat Show View
 
-Create a new file at `resources/views/posts/show.blade.php` and add:
+Buat file baru di `resources/views/posts/show.blade.php` dan tambahkan:
 
 ```html
 <!DOCTYPE html>
@@ -648,18 +649,18 @@ Create a new file at `resources/views/posts/show.blade.php` and add:
 </html>
 ```
 
-This view displays the post title, slug, status badge, full content, and timestamps. The `$post->created_at->format('M d, Y H:i')` call uses Carbon (which Laravel includes by default) to format the timestamp into a human-readable string like "Mar 23, 2026 15:30".
+View ini menampilkan title post, slug, badge status, konten lengkap, dan timestamp. Pemanggilan `$post->created_at->format('M d, Y H:i')` menggunakan Carbon (yang sudah disertakan Laravel secara default) untuk memformat timestamp menjadi string yang mudah dibaca seperti "Mar 23, 2026 15:30".
 
-Save the view file.
+Simpan file view.
 
 
-## Step 7: Build the Update Post Feature {#step-7-build-update-post}
+## Langkah 7: Bangun Fitur Perbarui Post {#step-7-build-update-post}
 
-Now let's add the ability to edit existing posts.
+Sekarang mari tambahkan kemampuan untuk mengedit post yang sudah ada.
 
-### Implement the Edit Method
+### Implementasi Metode Edit
 
-Open `app/Http/Controllers/PostController.php` and update the `edit()` method:
+Buka `app/Http/Controllers/PostController.php` dan perbarui metode `edit()`:
 
 ```php
 <?php
@@ -686,13 +687,13 @@ class PostController extends Controller
 }
 ```
 
-Like the `show()` method, `edit()` uses route model binding to fetch the post. The existing post data is passed to the view so the form can be pre-filled.
+Seperti metode `show()`, `edit()` menggunakan route model binding untuk mengambil post. Data post yang ada diteruskan ke view agar form bisa diisi sebelumnya.
 
-Save the controller file.
+Simpan file controller.
 
-### Create the Edit View
+### Buat Edit View
 
-Create a new file at `resources/views/posts/edit.blade.php` and add:
+Buat file baru di `resources/views/posts/edit.blade.php` dan tambahkan:
 
 ```html
 <!DOCTYPE html>
@@ -763,16 +764,16 @@ Create a new file at `resources/views/posts/edit.blade.php` and add:
 </html>
 ```
 
-The edit form is similar to the create form, with two key differences:
+Form edit mirip dengan form create, dengan dua perbedaan utama:
 
-- `@method('PUT')` adds a hidden field that tells Laravel to treat this form submission as a PUT request, which maps to the `update()` controller method.
-- `{{ old('title', $post->title) }}` uses the second parameter as a fallback. If there is no old input (i.e., the form has not been submitted yet), it displays the current value from the database. This ensures the form is pre-filled with existing data when the user first opens it.
+- `@method('PUT')` menambahkan hidden field yang memberi tahu Laravel untuk memperlakukan pengiriman form ini sebagai request PUT, yang dipetakan ke metode controller `update()`.
+- `{{ old('title', $post->title) }}` menggunakan parameter kedua sebagai fallback. Jika tidak ada old input (yaitu form belum pernah dikirimkan), maka nilai saat ini dari database yang ditampilkan. Ini memastikan form terisi dengan data yang ada saat pengguna pertama kali membukanya.
 
-Save the view file.
+Simpan file view.
 
-### Implement the Update Method
+### Implementasi Metode Update
 
-Open `app/Http/Controllers/PostController.php` and update the `update()` method:
+Buka `app/Http/Controllers/PostController.php` dan perbarui metode `update()`:
 
 ```php
 <?php
@@ -812,18 +813,18 @@ class PostController extends Controller
 }
 ```
 
-The `update()` method follows a similar pattern to `store()`, but with one important difference in the validation rule. The slug uniqueness check includes `$post->id` as an exception: `unique:posts,slug,' . $post->id`. This tells Laravel to ignore the current post when checking for duplicate slugs. Without this exception, updating a post without changing its title would fail validation because the existing slug would be flagged as a duplicate of itself.
+Metode `update()` mengikuti pola yang mirip dengan `store()`, tetapi dengan satu perbedaan penting dalam aturan validasi. Pengecekan keunikan slug menyertakan `$post->id` sebagai pengecualian: `unique:posts,slug,' . $post->id`. Ini memberi tahu Laravel untuk mengabaikan post saat ini ketika memeriksa slug duplikat. Tanpa pengecualian ini, memperbarui post tanpa mengubah title-nya akan gagal validasi karena slug yang ada akan ditandai sebagai duplikat dari dirinya sendiri.
 
-Save the controller file.
+Simpan file controller.
 
 
-## Step 8: Build the Delete Post Feature {#step-8-build-delete-post}
+## Langkah 8: Bangun Fitur Hapus Post {#step-8-build-delete-post}
 
-The final CRUD operation is deleting a post.
+Operasi CRUD terakhir adalah menghapus post.
 
-### Implement the Destroy Method
+### Implementasi Metode Destroy
 
-Open `app/Http/Controllers/PostController.php` and update the `destroy()` method:
+Buka `app/Http/Controllers/PostController.php` dan perbarui metode `destroy()`:
 
 ```php
 <?php
@@ -850,39 +851,39 @@ class PostController extends Controller
 }
 ```
 
-The `destroy()` method is straightforward. It calls `$post->delete()` to remove the record from the database, then redirects back to the listing page with a success message. The delete button in the index view already includes a JavaScript `confirm()` dialog, so the user gets a confirmation prompt before the deletion is executed.
+Metode `destroy()` cukup sederhana. Ia memanggil `$post->delete()` untuk menghapus record dari database, lalu redirect kembali ke halaman daftar dengan pesan sukses. Tombol delete di index view sudah menyertakan dialog JavaScript `confirm()`, sehingga pengguna mendapat konfirmasi sebelum penghapusan dieksekusi.
 
-Save the controller file.
+Simpan file controller.
 
 
-## Step 9: Test the Application {#step-9-test-the-application}
+## Langkah 9: Uji Aplikasi {#step-9-test-the-application}
 
-With all CRUD operations implemented, it is time to test the application. Start the development server:
+Dengan semua operasi CRUD yang sudah diimplementasikan, saatnya menguji aplikasi. Jalankan development server:
 
 ```
 php artisan serve
 ```
 
-Open your browser and navigate to `http://127.0.0.1:8000/posts`. You should see the post listing page with an empty table and a "Create New Post" button.
+Buka browser dan navigasikan ke `http://127.0.0.1:8000/posts`. Anda akan melihat halaman daftar post dengan tabel kosong dan tombol "Create New Post".
 ![View Post listing page](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/01-view-post-lists.webp)
 
-### Test Creating a Post
+### Uji Membuat Post
 
-Click the **Create New Post** button. Fill in the form with a title, content, and status, then click **Submit Post**. You should be redirected back to the listing page with a green success message, and your new post should appear in the table.
+Klik tombol **Create New Post**. Isi form dengan title, content, dan status, lalu klik **Submit Post**. Anda akan diarahkan kembali ke halaman daftar dengan pesan sukses berwarna hijau, dan post baru Anda akan muncul di tabel.
 
 ![test create new post feature](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/02-test-create-new-post-feature.webp)
 
 ![post created](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/03-post-created.webp)
 
-### Test Viewing a Post
+### Uji Melihat Post
 
-Click the **View** button on any post in the table. You should see a detail page showing the post title, slug, status, full content, and timestamps.
+Klik tombol **View** pada salah satu post di tabel. Anda akan melihat halaman detail yang menampilkan title post, slug, status, konten lengkap, dan timestamp.
 
 ![view post by id](https://cdn.jsdelivr.net/gh/gungunpriatna/qadrlabs-assets@main/laravel/laravel-13/crud-tutorial/04-test-view-post-by-id.webp)
 
-### Test Editing a Post
+### Uji Mengedit Post
 
-Click the **Edit** button on any post. The form should be pre-filled with the current post data. Make some changes and click **Update Post**. You should be redirected back to the listing page with a success message, and the updated data should be reflected in the table.
+Klik tombol **Edit** pada salah satu post. Form akan terisi otomatis dengan data post saat ini. Lakukan beberapa perubahan dan klik **Update Post**. Anda akan diarahkan kembali ke halaman daftar dengan pesan sukses, dan data yang diperbarui akan terlihat di tabel.
 
 ![test view edit post form](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/05-test-view-edit-post-form.webp)
 
@@ -890,25 +891,25 @@ Click the **Edit** button on any post. The form should be pre-filled with the cu
 
 ![post updated](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/07-post-updated.webp)
 
-### Test Deleting a Post
+### Uji Menghapus Post
 
-Click the **Delete** button on any post. A browser confirmation dialog should appear. Click OK to confirm. The post should be removed from the table, and a success message should be displayed.
+Klik tombol **Delete** pada salah satu post. Dialog konfirmasi browser akan muncul. Klik OK untuk mengonfirmasi. Post akan dihapus dari tabel dan pesan sukses akan ditampilkan.
 
 ![test delete post feature](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/08-test-delete-post-feature.webp)
 
 ![post deleted](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/laravel/laravel-13/crud-tutorial/09-post-deleted.webp)
 
-## Conclusion {#conclusion}
+## Kesimpulan {#conclusion}
 
-In this tutorial, we built a complete CRUD application using Laravel 13 from scratch. Starting with a fresh project, we set up the database, created a model with the new `#[Fillable]` attribute, generated a resource controller, built Blade views with Tailwind CSS, and implemented all four CRUD operations.
+Dalam tutorial ini, kita membangun aplikasi CRUD lengkap menggunakan Laravel 13 dari awal. Dimulai dari proyek baru, kita menyiapkan database, membuat model dengan atribut baru `#[Fillable]`, menghasilkan resource controller, membangun Blade view dengan Tailwind CSS, dan mengimplementasikan semua empat operasi CRUD.
 
-Here are the key takeaways:
+Berikut adalah poin-poin penting yang bisa dipetik:
 
-- **Artisan makes scaffolding fast.** Commands like `make:model -m` and `make:controller --resource` generate boilerplate code so you can focus on business logic.
-- **Resource controllers and routes reduce repetition.** A single `Route::resource()` line registers all seven RESTful routes, and the `--resource` flag on the controller generates matching method stubs.
-- **The `#[Fillable]` attribute is a Laravel 13 addition.** Instead of defining a `$fillable` property inside your model, you can now use a PHP attribute on the class declaration for a cleaner, more declarative approach.
-- **Validation and slug generation work together.** By merging the slug into the request before validation, you can validate it like any other field, including checking for uniqueness.
-- **Route model binding simplifies data retrieval.** Type-hinting a model in your controller method lets Laravel automatically find the record or return a 404.
-- **Always test after each feature.** Running the application and verifying each CRUD operation ensures that everything works before moving on to the next step.
+- **Artisan mempercepat proses scaffolding.** Perintah seperti `make:model -m` dan `make:controller --resource` menghasilkan boilerplate code sehingga Anda bisa fokus pada logika bisnis.
+- **Resource controller dan route mengurangi pengulangan.** Satu baris `Route::resource()` mendaftarkan semua tujuh route RESTful, dan flag `--resource` pada controller menghasilkan stub metode yang sesuai.
+- **Atribut `#[Fillable]` adalah tambahan baru di Laravel 13.** Alih-alih mendefinisikan properti `$fillable` di dalam model, sekarang Anda bisa menggunakan PHP attribute pada deklarasi class untuk pendekatan yang lebih bersih dan deklaratif.
+- **Validasi dan pembuatan slug bekerja bersama.** Dengan menggabungkan slug ke dalam request sebelum validasi, Anda bisa memvalidasinya seperti kolom lainnya, termasuk memeriksa keunikannya.
+- **Route model binding menyederhanakan pengambilan data.** Type-hinting sebuah model dalam metode controller membuat Laravel secara otomatis menemukan record atau mengembalikan 404.
+- **Selalu uji setelah setiap fitur.** Menjalankan aplikasi dan memverifikasi setiap operasi CRUD memastikan semuanya berfungsi sebelum melanjutkan ke langkah berikutnya.
 
-The complete source code for this project is available for reference at [https://github.com/qadrLabs/laravel-13-crud-demo](https://github.com/qadrLabs/laravel-13-crud-demo). In the next tutorial, we’ll learn [how to test using Pest](https://qadrlabs.com/post/laravel-13-testing-with-pest-write-tests-for-your-crud-application) on the blog application we’ve developed in this tutorial.
+Source code lengkap untuk proyek ini tersedia sebagai referensi di [https://github.com/qadrLabs/laravel-13-crud-demo](https://github.com/qadrLabs/laravel-13-crud-demo). Pada tutorial berikutnya, kita akan belajar [cara melakukan testing menggunakan Pest](https://qadrlabs.com/post/laravel-13-testing-with-pest-write-tests-for-your-crud-application) pada aplikasi blog yang sudah kita kembangkan dalam tutorial ini.
