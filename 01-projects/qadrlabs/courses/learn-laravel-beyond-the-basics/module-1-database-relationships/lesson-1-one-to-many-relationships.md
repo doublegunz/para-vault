@@ -245,7 +245,7 @@ In this course we write each route explicitly so every URL is visible, but `Rout
 
 Route names are used with the `route()` helper throughout views and controllers. Instead of hardcoding `href="/entries/{{ $entry->id }}"`, you write `href="{{ route('entries.show', $entry) }}"`. The helper resolves the name to the correct URL and fills in any route parameters from the model or array you pass as the second argument. The naming convention `resource.action` (for example, `entries.index`, `entries.show`, `entries.destroy`) is Laravel's standard pattern: you can always guess the name without looking it up. The other benefit is that if you ever rename a URL, you update one line in `routes/web.php` and every `route(...)` call in your views and controllers updates automatically, because they reference the name, not the raw path.
 
-Now add the comment route inside the same group, below the entry routes.
+Now add the comment routes inside the same group, below the entry routes. We register two: one to create a comment, and one to delete it (which you will implement in Step 4).
 
 ```php
 use App\Http\Controllers\CommentController;
@@ -254,10 +254,37 @@ Route::middleware('auth')->group(function () {
     // ... entry routes above ...
     Route::post('/entries/{entry}/comments', [CommentController::class, 'store'])
         ->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])
+        ->name('comments.destroy');
 });
 ```
 
-The URL pattern `/entries/{entry}/comments` nests the comment endpoint under the entry, and the `{entry}` segment is what triggers route model binding in the controller so Laravel resolves the Entry automatically from the URL. `Route::post(...)` means this route accepts only POST requests, which is correct for creating a resource. The `->name('comments.store')` assigns the name used in the form action: `route('comments.store', $entry)`. Passing the entry model as the second argument tells the `route()` helper to fill in `{entry}` with the entry's ID.
+The URL pattern `/entries/{entry}/comments` nests the comment endpoint under the entry, and the `{entry}` segment is what triggers route model binding in the controller so Laravel resolves the Entry automatically from the URL. `Route::post(...)` means this route accepts only POST requests, which is correct for creating a resource. The `->name('comments.store')` assigns the name used in the form action: `route('comments.store', $entry)`. Passing the entry model as the second argument tells the `route()` helper to fill in `{entry}` with the entry's ID. The second route, `comments.destroy`, takes a `{comment}` parameter directly because deleting a comment only needs the comment's ID, not the entry's.
+
+### Step 4: Add a Method to Delete Comments
+
+A comment author should be able to remove their own comment. Open `app/Http/Controllers/CommentController.php` and add a `destroy` method below the existing `store` method.
+
+```php
+public function destroy(Comment $comment)
+{
+    if ($comment->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $comment->delete();
+
+    return back()->with('success', 'Comment deleted.');
+}
+```
+
+You will also need to import the `Comment` model at the top of the file, alongside the existing `use App\Models\Entry;` line:
+
+```php
+use App\Models\Comment;
+```
+
+The method receives a `Comment` through route model binding (the `{comment}` parameter in the route resolves to the matching record, returning 404 if it does not exist). The `if ($comment->user_id !== auth()->id())` check is an ownership guard: it compares the comment's author with the currently authenticated user and calls `abort(403)` if they do not match, so a user cannot delete someone else's comment by guessing the URL. This is the same manual check style used in the beginner course. In Lesson 5 you will replace this inline `if` with a dedicated **Policy** (`CommentPolicy`) and `Gate::authorize('delete', $comment)`, which centralizes authorization logic — but the manual check is correct and sufficient for now. After deleting, `back()->with('success', ...)` returns to the entry page with a flash message.
 
 ---
 
@@ -315,6 +342,17 @@ Open `resources/views/entries/show.blade.php` and update it with the comments se
                     <span style="color: #9ca3af; font-size: 0.8em;">{{ $comment->created_at->diffForHumans() }}</span>
                 </div>
                 <p style="color: #4b5563; margin: 0;">{{ $comment->body }}</p>
+                @if (auth()->id() === $comment->user_id)
+                    <form method="POST" action="{{ route('comments.destroy', $comment) }}"
+                          onsubmit="return confirm('Delete this comment?')" style="margin-top: 6px;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            style="font-size: 0.8em; color: #dc2626; background: none; border: none; cursor: pointer; padding: 0;">
+                            Delete
+                        </button>
+                    </form>
+                @endif
             </div>
         @empty
             <p style="color: #9ca3af; text-align: center; padding: 20px 0;">
@@ -358,7 +396,7 @@ Open `resources/views/entries/show.blade.php` and update it with the comments se
 
 Let us walk through the view section by section so you understand how every part contributes to the page. The `<x-layout>` component wraps everything in the shared page layout from the beginner course so you inherit the navigation bar and footer. The entry content block at the top displays the entry title with `{{ $entry->title }}`, uses Carbon's `diffForHumans()` method to produce a friendly relative timestamp like "3 hours ago", and renders the entry body.
 
-The comments heading uses `$entry->comments->count()` to show how many comments exist. Note that `comments` here is accessed as a property (without parentheses) because we already loaded the collection with `$entry->load(...)`, so `count()` does not run another query. The `@forelse` directive is a Blade shortcut that combines `@foreach` with an `@empty` fallback: it loops through the comments if any exist, otherwise renders the "no comments yet" message. Inside the loop, each comment shows the author's name from the eager-loaded `user` relationship and a relative timestamp.
+The comments heading uses `$entry->comments->count()` to show how many comments exist. Note that `comments` here is accessed as a property (without parentheses) because we already loaded the collection with `$entry->load(...)`, so `count()` does not run another query. The `@forelse` directive is a Blade shortcut that combines `@foreach` with an `@empty` fallback: it loops through the comments if any exist, otherwise renders the "no comments yet" message. Inside the loop, each comment shows the author's name from the eager-loaded `user` relationship and a relative timestamp. The `@if (auth()->id() === $comment->user_id)` block renders a small **Delete** form only when the logged-in user wrote that comment, posting to the `comments.destroy` route via `@method('DELETE')`. Hiding the button is a UX convenience; the real protection is the `abort(403)` ownership guard in the `destroy` method, so the form is safe even if someone forges a request.
 
 The comment form uses `method="POST"` and `action="{{ route('comments.store', $entry) }}"` to submit to the route you defined, passing the current entry as the route parameter. The `@csrf` directive inserts a hidden CSRF token that Laravel requires for all POST forms to prevent cross-site request forgery. The textarea uses `{{ old('body') }}` so that if validation fails, the user's typed text is preserved when the form re-renders. The `@error('body')` block displays the validation error message if one exists for the `body` field.
 
@@ -490,7 +528,7 @@ Without `#[Fillable]`, calling `$entry->comments()->create(['body' => 'Hello', '
 
 **Exercise 2:** Display a comment count badge next to each entry in the feed (index page). In the controller, use `Entry::withCount('comments')->latest()->get()` to load entries with a `comments_count` attribute. Display it in the view with `{{ $entry->comments_count }} comments`.
 
-**Exercise 3:** Add a delete button next to each comment. Create a `destroy` method in `CommentController` that validates ownership (the comment's `user_id` must match the authenticated user) and calls `$comment->delete()`. Add the route `Route::delete('/comments/{comment}', ...)`.
+**Exercise 3:** Show a preview of each entry's most recent comment on the feed (index page). Add a `latestComment` relationship to the `Entry` model using `hasOne(Comment::class)->latestOfMany()`, eager load it in the controller, and display the latest comment's body and author under each entry. (Comment deletion is already built in the main lesson, so this exercise practices a different one-to-many tool: turning a `hasMany` into a single "latest" record.)
 
 ---
 
@@ -537,33 +575,39 @@ This expression reads the `comments_count` virtual attribute that `withCount` in
 
 **Solution for Exercise 3:**
 
-In `CommentController`, add the following destroy method after the existing `store` method.
+Open `app/Models/Entry.php` and add a `latestComment` relationship inside the class body.
 
 ```php
-public function destroy(Comment $comment)
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+public function latestComment(): HasOne
 {
-    if ($comment->user_id !== auth()->id()) {
-        abort(403);
-    }
-
-    $comment->delete();
-
-    return back()->with('success', 'Comment deleted.');
+    return $this->hasOne(Comment::class)->latestOfMany();
 }
 ```
 
-The method first compares the comment's `user_id` against the ID of the currently authenticated user. If they do not match, `abort(403)` immediately stops execution and returns a 403 Forbidden HTTP response, preventing any user from deleting someone else's comment. If the check passes, `$comment->delete()` removes the record from the database and the user is redirected back with a success message. Register the route in `routes/web.php` inside the `auth` middleware group by adding the line below.
+`hasOne(Comment::class)->latestOfMany()` is a one-to-one variant of the `hasMany` relationship: out of all the comments belonging to an entry, it resolves to the single most recent one (by primary key, or by a column you pass to `latestOfMany()`). This is the idiomatic way to grab "the latest related record" without loading the whole collection. Eager load it in the `EntryController` index method so the view does not run a query per entry.
 
 ```php
-Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+$entries = Entry::with('latestComment.user')->latest()->get();
 ```
 
-This route accepts DELETE requests on the URL `/comments/{id}`. Route model binding automatically resolves `{comment}` to the corresponding `Comment` model, so you never need to manually call `Comment::find()` inside the controller.
+The dotted `latestComment.user` preloads the latest comment and its author in one go. In the entry card (or index view), display the preview only when a comment exists.
+
+```blade
+@if ($entry->latestComment)
+    <p style="color: #6b7280; font-size: 0.85em; margin-top: 6px;">
+        Latest: "{{ $entry->latestComment->body }}" — {{ $entry->latestComment->user->name }}
+    </p>
+@endif
+```
+
+Because `latestComment` is a `hasOne`, `$entry->latestComment` is a single `Comment` model (or `null` when there are no comments), so the `@if` guard prevents a "property on null" error on entries without comments.
 
 ---
 
 ## Next Up - Lesson 2
 
-In this lesson you built the foundation of relational data in Laravel. You created a migration with foreign key constraints, defined `hasMany` and `belongsTo` methods on your Eloquent models, and used those relationships to create comments through `$entry->comments()->create()`. You also learned the difference between accessing a relationship as a property (to get a Collection) and as a method (to get a query builder), and you protected your application with mass assignment restrictions and authentication-based authorization in the controller.
+In this lesson you built the foundation of relational data in Laravel. You created a migration with foreign key constraints, defined `hasMany` and `belongsTo` methods on your Eloquent models, and used those relationships to create comments through `$entry->comments()->create()`. You added a `destroy` method so a comment's author can delete it, guarded by a manual `abort(403)` ownership check (which Lesson 5 will upgrade to a Policy). You also learned the difference between accessing a relationship as a property (to get a Collection) and as a method (to get a query builder), and you protected your application with mass assignment restrictions and authentication-based authorization in the controller.
 
 In Lesson 2, you will learn many-to-many relationships: adding tags to entries using a pivot table, and using the `attach`, `detach`, and `sync` methods to manage which tags belong to which entry.

@@ -353,8 +353,7 @@ Create a new entry and confirm the observer fires.
 
 ```php
 $user = \App\Models\User::first();
-$entry = \App\Models\Entry::create([
-    'user_id' => $user->id,
+$entry = $user->entries()->create([
     'title'   => 'My Vacation Photos',
     'content' => 'A great trip.',
 ]);

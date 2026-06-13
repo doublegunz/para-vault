@@ -276,6 +276,8 @@ class CommentController extends Controller
 
 The key addition is the `if ($entry->user_id !== $request->user()->id)` check. This prevents sending a notification when users comment on their own entries, which would produce unnecessary email traffic and feel spammy to the user. If the commenter is a different person from the entry author, `Mail::to($entry->user)` reads the entry author's email from the user model and sends the notification. The `$entry->user` relationship must be loaded; if you have not eager loaded it, Eloquent will run a query automatically (which is acceptable here since this runs once per comment).
 
+> **Heads up — this notification is forward-looking.** Catatku is a *private* journal: the `EntryPolicy@view` rule from Lesson 5 makes the entry detail page (where the comment form lives) visible only to the entry's owner. That means a *different* user cannot currently open someone else's entry to comment on it through the UI, so in normal browsing this cross-user email never fires — the only person who can reach the form is the owner, and their own comments are suppressed by the guard above. The notification code is correct and we test it directly below, but it only becomes user-facing once entries can be shared or made public (a natural next feature). We keep it now so the comment system is ready for that day, and so you can see the full Mailable + queue pattern (Lesson 13) in action.
+
 ---
 
 ## 5. Run and Test
@@ -306,7 +308,25 @@ The `tail -50` command outputs the last 50 lines of the log file. You should see
 
 ### Step 3: Test Comment Notification
 
-Log in as User A and create an entry. Log out and log in as User B. Post a comment on User A's entry. Check the log file again. You should see a "New comment on..." email addressed to User A's email address, confirming the notification was dispatched.
+Because the entry detail page is owner-only (see the heads-up above), you cannot reach another user's comment form through the browser yet, so trigger the notification directly with Tinker instead:
+
+```bash
+php artisan tinker
+```
+
+```php
+$author = \App\Models\User::first();
+$entry = $author->entries()->first();
+$commenter = \App\Models\User::skip(1)->first(); // any other user
+$comment = $entry->comments()->create([
+    'body' => 'Nice entry!',
+    'user_id' => $commenter->id,
+]);
+\Illuminate\Support\Facades\Mail::to($entry->user)
+    ->send(new \App\Mail\NewCommentEmail($comment, $entry));
+```
+
+Now check the log file. You should see a "New comment on..." email addressed to the entry author's email address, confirming the notification renders and is dispatched correctly.
 
 ### Step 4: Verify Self-Comment Suppression
 

@@ -6,16 +6,17 @@ This lesson teaches `belongsToMany`, pivot tables, and the `attach`, `detach`, `
 
 ### What You'll Build
 
-You will create a Tag model, a pivot table, and integrate tag selection into the entry creation and editing forms. Tags will display as colored badges on each entry.
+You will create a Tag model, a pivot table, and integrate tag selection into the entry creation and editing forms. Tags will display as colored badges on each entry, and you will add tag-browsing pages so readers can list all tags and see every entry under a given tag.
 
 ### What You'll Learn
 
 - ✅ `belongsToMany()` on both models
 - ✅ Pivot table migration and naming convention
 - ✅ `attach()`, `detach()`, `sync()`, `toggle()`
-- ✅ Querying many-to-many relationships
+- ✅ Querying many-to-many relationships from both sides (`$entry->tags`, `$tag->entries`)
 - ✅ Displaying tags in Blade views
 - ✅ Tag selection with checkboxes in forms
+- ✅ Browsing entries by tag with slug-based route model binding
 
 ### What You'll Need
 
@@ -93,6 +94,8 @@ php artisan migrate
 ```
 
 You should see output confirming both the `tags` table and the `entry_tag` table were created. If either migration fails, check that your `entries` table already exists (from the beginner course) so the foreign key constraint can point to it.
+
+> **Note on migration order.** Laravel runs migrations in filename order, which starts with the timestamp. If you generated the `tags` and `entry_tag` migrations within the *same second* (so their timestamps are identical), Laravel falls back to alphabetical order, and `create_entry_tag_table` sorts *before* `create_tags_table`. The pivot migration would then run first and fail with a foreign-key error like `Base table or view not found: ... 'tags'`, because the `tags` table it points to does not exist yet. If that happens, rename the pivot migration file so its timestamp is later than the `tags` migration (for example, bump the trailing digits by one), or delete and regenerate it a moment later, then run `php artisan migrate` again. Normally the few seconds between the two `make:` commands is enough to keep the timestamps distinct, so this only matters if you script the commands back to back.
 
 ---
 
@@ -362,7 +365,128 @@ Looking at this carefully: the `@if($entry->tags->isNotEmpty())` check prevents 
 
 ---
 
-## 7. Run and Test
+## 7. Browsing Entries by Tag
+
+Tags are most useful when readers can click one and see every entry that carries it. In this section you will add a dedicated `TagController` with two pages — a list of all tags, and a page of entries for a single tag — wired up with named routes. This puts the *other* direction of the many-to-many relationship (`$tag->entries`) to work.
+
+### Step 1: Generate the Tag Controller
+
+```bash
+php artisan make:controller TagController
+```
+
+Open `app/Http/Controllers/TagController.php` and add the `index` and `show` methods.
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Tag;
+
+class TagController extends Controller
+{
+    public function index()
+    {
+        $tags = Tag::withCount('entries')->orderBy('name')->get();
+
+        return view('tags.index', compact('tags'));
+    }
+
+    public function show(Tag $tag)
+    {
+        $entries = $tag->entries()->with('user')->latest()->paginate(10);
+
+        return view('tags.show', compact('tag', 'entries'));
+    }
+}
+```
+
+The `index` method uses `withCount('entries')` to attach an `entries_count` attribute to every tag with a single efficient subquery, then orders the tags alphabetically. The `show` method receives a `Tag` through route model binding and queries the inverse relationship `$tag->entries()` (as a query builder, with parentheses) so it can chain `with('user')` to avoid N+1 on the author, `latest()` to show newest first, and `paginate(10)` for navigable pages.
+
+### Step 2: Register the Tag Routes
+
+Open `routes/web.php` and add the two tag routes inside the `auth` middleware group, alongside the entry routes.
+
+```php
+use App\Http\Controllers\TagController;
+
+Route::middleware('auth')->group(function () {
+    // ... entry and comment routes above ...
+    Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
+    Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
+});
+```
+
+The `{tag:slug}` syntax tells Laravel to resolve the `Tag` by its `slug` column instead of its `id`, giving you friendly URLs like `/tags/travel` instead of `/tags/3`. This works because the `slug` column is unique, which you guaranteed in the migration.
+
+### Step 3: Create the Tag Views
+
+Create `resources/views/tags/index.blade.php` to list every tag with its entry count.
+
+```blade
+<x-layout title="Tags — Catatku">
+
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold text-gray-900">Tags</h2>
+        <a href="{{ route('entries.index') }}" class="text-sm text-blue-600 hover:underline">
+            ← Back to Entries
+        </a>
+    </div>
+
+    <div class="space-y-2">
+        @forelse ($tags as $tag)
+            <div class="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between">
+                <a href="{{ route('tags.show', $tag) }}" class="font-bold text-blue-700 hover:underline">
+                    {{ $tag->name }}
+                </a>
+                <span style="color: #888;">({{ $tag->entries_count }} entries)</span>
+            </div>
+        @empty
+            <p class="text-gray-400">No tags yet.</p>
+        @endforelse
+    </div>
+
+</x-layout>
+```
+
+Then create `resources/views/tags/show.blade.php` to list the entries for one tag.
+
+```blade
+<x-layout :title="$tag->name . ' — Catatku'">
+
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-semibold text-gray-900">Tag: {{ $tag->name }}</h2>
+        <a href="{{ route('tags.index') }}" class="text-sm text-blue-600 hover:underline">
+            ← All Tags
+        </a>
+    </div>
+
+    <div class="space-y-4">
+        @forelse ($entries as $entry)
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <a href="{{ route('entries.show', $entry) }}" class="font-semibold text-gray-900 hover:text-gray-600">
+                    {{ $entry->title }}
+                </a>
+                <p class="text-xs text-gray-400 mt-1">by {{ $entry->user->name }}</p>
+            </div>
+        @empty
+            <p class="text-gray-400">No entries with this tag.</p>
+        @endforelse
+    </div>
+
+    <div style="margin-top: 20px;">
+        {{ $entries->links() }}
+    </div>
+
+</x-layout>
+```
+
+The index view loops over the tags and reads the `entries_count` attribute that `withCount` injected. The show view loops over the paginated entries and renders `{{ $entries->links() }}` at the bottom, which works because `show()` returns `paginate(10)` rather than `get()`. Passing `$tag` to `route('tags.show', $tag)` fills in the `{tag:slug}` segment with the tag's slug automatically because of the `:slug` binding you declared. Visit `/tags` in the browser to see the tag list, then click any tag to see its entries.
+
+---
+
+## 8. Run and Test
 
 Let us verify the complete tagging system works end to end.
 
@@ -410,7 +534,7 @@ The first block fetches the first entry with its tags eager loaded, then uses `p
 
 ---
 
-## 8. Fix the Errors in Your Code
+## 9. Fix the Errors in Your Code
 
 These are the most common mistakes when working with many-to-many relationships. Understanding them now will save you from confusing database errors later.
 
@@ -479,66 +603,69 @@ Without `withTimestamps()`, every insert through `attach()` or `sync()` leaves `
 
 ---
 
-## 9. Exercises
+## 10. Exercises
 
-**Exercise 1:** Create a "tag cloud" page at `/tags` that lists all tags with the number of entries for each. Use `Tag::withCount('entries')->orderBy('name')->get()` in the controller and display each tag with its count.
+**Exercise 1:** Turn the tags list (built in the main lesson) into a popularity-ranked "tag cloud". Change `TagController@index` to order tags by their entry count descending, and in the view scale each tag's font size by how many entries it has, so popular tags appear larger.
 
-**Exercise 2:** Create a route `/tags/{slug}` that shows all entries with a specific tag. In the controller, find the tag by slug, then use `$tag->entries()->with('user')->latest()->paginate(10)` to get the entries.
+**Exercise 2:** Add tag filtering to the entries feed. Accept a `tag` query-string parameter like `/entries?tag=travel`, and in `EntryController@index` use `whereHas('tags', ...)` to show only entries that carry a tag with that slug when the parameter is present.
 
 **Exercise 3:** Add the ability to create new tags inline. Add a text input in the entry form where users can type a new tag name. In the controller, use `Tag::firstOrCreate(['name' => $name, 'slug' => Str::slug($name)])` before syncing.
 
 ---
 
-## 10. Solutions
+## 11. Solutions
 
 **Solution for Exercise 1:**
 
-Create a `TagController` with an `index` method and a `show` method. In the `index` method, fetch all tags with their entry counts.
+In `TagController@index`, order the tags by their entry count instead of by name.
 
 ```php
 public function index()
 {
-    $tags = Tag::withCount('entries')->orderBy('name')->get();
+    $tags = Tag::withCount('entries')->orderByDesc('entries_count')->get();
 
     return view('tags.index', compact('tags'));
 }
 ```
 
-The `withCount('entries')` method adds an `entries_count` attribute to each tag without loading all the entry records. It is a cheap subquery that only returns the count. In the view, loop through the tags and display each name alongside its count.
+`withCount('entries')` still attaches the `entries_count` attribute, but `orderByDesc('entries_count')` now sorts by that aggregate so the most-used tags come first. In `resources/views/tags/index.blade.php`, scale the font size by the count to get the classic tag-cloud look.
 
 ```blade
 @foreach ($tags as $tag)
-    <div>
-        <span style="font-weight: bold;">{{ $tag->name }}</span>
-        <span style="color: #888;">({{ $tag->entries_count }} entries)</span>
-    </div>
+    <a href="{{ route('tags.show', $tag) }}"
+       style="font-size: {{ 0.8 + min($tag->entries_count, 10) * 0.15 }}em; margin-right: 10px;"
+       class="text-blue-700 hover:underline">
+        {{ $tag->name }}
+    </a>
 @endforeach
 ```
 
-Each `$tag->entries_count` reads the virtual attribute that `withCount` injected onto the model. No additional query runs when the view accesses it.
+The inline `font-size` grows with `entries_count` (capped via `min(..., 10)` so one wildly popular tag does not dominate the layout), turning the flat list into a weighted cloud.
 
 ---
 
 **Solution for Exercise 2:**
 
-Register the route using the `{tag:slug}` syntax so Laravel resolves the Tag by its slug column instead of `id`.
+In `EntryController@index`, apply a `whereHas` filter when the `tag` query parameter is present. Because the index method already builds a query before calling `get()`/`paginate()`, you only need to insert the conditional filter.
 
 ```php
-Route::get('/tags/{tag:slug}', [TagController::class, 'show'])->name('tags.show');
-```
-
-The `{tag:slug}` syntax tells Laravel to look up the Tag by its `slug` column, giving you friendly URLs like `/tags/travel` instead of `/tags/3`. In the TagController, add the show method.
-
-```php
-public function show(Tag $tag)
+public function index(Request $request)
 {
-    $entries = $tag->entries()->with('user')->latest()->paginate(10);
+    $query = auth()->user()->entries()->with('tags')->withCount('comments');
 
-    return view('tags.show', compact('tag', 'entries'));
+    if ($request->filled('tag')) {
+        $query->whereHas('tags', function ($q) use ($request) {
+            $q->where('slug', $request->input('tag'));
+        });
+    }
+
+    $entries = $query->latest()->paginate(15);
+
+    return view('entries.index', compact('entries'));
 }
 ```
 
-The controller uses route model binding to receive the resolved `Tag` directly. It then queries `$tag->entries()` as a query builder (with parentheses) so it can chain `with('user')`, `latest()`, and `paginate(10)` before executing. The `with('user')` eager loads each entry's author to avoid N+1 queries in the view.
+`$request->filled('tag')` is true only when `?tag=` is present and non-empty. `whereHas('tags', ...)` adds an `EXISTS` subquery that keeps only entries linked to a tag whose `slug` matches, running the filter in the database rather than in PHP. Now `/entries?tag=travel` shows just the travel-tagged entries; without the parameter, the full feed is returned unchanged. You can turn the tag badges on each card into links (`route('tags.show', $tag)` or `/entries?tag={{ $tag->slug }}`) to let users trigger this filter by clicking.
 
 ---
 
@@ -584,6 +711,6 @@ $entry->tags()->sync($tagIds);
 
 ## Next Up - Lesson 3
 
-In this lesson you built a complete many-to-many tagging system. You created a `tags` table and an `entry_tag` pivot table following Laravel's alphabetical, singular naming convention. You defined `belongsToMany()` on both the Entry and Tag models, used `sync()` to replace tag associations when a form is submitted, and validated submitted tag IDs with the `exists:tags,id` rule. You also learned the difference between `attach`, `detach`, `sync`, and `toggle`, and when to use each one.
+In this lesson you built a complete many-to-many tagging system. You created a `tags` table and an `entry_tag` pivot table following Laravel's alphabetical, singular naming convention. You defined `belongsToMany()` on both the Entry and Tag models, used `sync()` to replace tag associations when a form is submitted, and validated submitted tag IDs with the `exists:tags,id` rule. You added a `TagController` with slug-based routes so readers can browse all tags and drill into the entries under any one of them, exercising the inverse `$tag->entries` side of the relationship. You also learned the difference between `attach`, `detach`, `sync`, and `toggle`, and when to use each one.
 
 In Lesson 3, you will learn scopes, accessors, and mutators: how to define reusable query filters directly on the Entry model, how to transform data on read with accessors, and how to clean input automatically on write with mutators.

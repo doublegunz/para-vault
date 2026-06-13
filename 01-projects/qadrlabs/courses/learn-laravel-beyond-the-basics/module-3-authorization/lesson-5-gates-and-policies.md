@@ -72,6 +72,8 @@ Let us walk through this Policy carefully. The `namespace App\Policies;` declara
 
 The logic is the same for all three actions: compare the user's ID with the entry's `user_id`. If they match, the user is the owner and the action is permitted. Because Catatku is a private journal application, even viewing is restricted to the owner. In a public blog application, you might allow anyone to view but restrict editing to the author.
 
+> **Note:** Restricting `view` to the owner also means that the cross-user comment notification you build in Lesson 8 (an email to the entry author when *someone else* comments) cannot be reached through the UI yet — no one but the owner can open the entry to comment on it. That feature only becomes user-facing once entries can be shared or made public. If you later relax this `view` rule to allow shared entries, the comment system and its notification are already in place.
+
 ### Step 3: Apply in the Controller
 
 Open `app/Http/Controllers/EntryController.php` and update the methods that access a specific entry. In Laravel 13, controllers no longer ship with an `authorize()` helper by default — use `Gate::authorize()` from the `Gate` facade instead, which behaves identically: it throws a 403 Forbidden exception if the Policy method returns `false`. Add the `Gate` import alongside the existing `use` statements. These calls also replace the manual `if ($entry->user_id !== auth()->id()) { abort(403); }` checks from the basic course.
@@ -241,6 +243,52 @@ After the change, the full `entry-card.blade.php` looks like this:
 </div>
 ```
 
+### Step 5: Apply the Same Pattern to Comments
+
+Entries are not the only model with an owner. In Lesson 1 you added a `destroy` method to `CommentController` that deletes a comment after a manual ownership check. Now that you understand Policies, give comments their own Policy and refactor that method to use it — exactly the same upgrade you just made for entries.
+
+Generate the policy:
+
+```bash
+php artisan make:policy CommentPolicy --model=Comment
+```
+
+Open `app/Policies/CommentPolicy.php` and replace its content with a single `delete` rule.
+
+```php
+<?php
+
+namespace App\Policies;
+
+use App\Models\Comment;
+use App\Models\User;
+
+class CommentPolicy
+{
+    public function delete(User $user, Comment $comment): bool
+    {
+        return $user->id === $comment->user_id;
+    }
+}
+```
+
+Then open `app/Http/Controllers/CommentController.php` and replace the manual `if (...) abort(403)` check in `destroy` with `Gate::authorize('delete', $comment)`. Add the `Gate` facade import at the top of the file.
+
+```php
+use Illuminate\Support\Facades\Gate;
+
+public function destroy(Comment $comment)
+{
+    Gate::authorize('delete', $comment);
+
+    $comment->delete();
+
+    return back()->with('success', 'Comment deleted.');
+}
+```
+
+Laravel auto-discovers `CommentPolicy` for the `Comment` model the same way it does `EntryPolicy`, so `Gate::authorize('delete', $comment)` calls `CommentPolicy::delete()` and throws a 403 when the authenticated user is not the comment's author. The behavior is identical to the manual check from Lesson 1, but the authorization rule now lives in one reusable place — and the `@can('delete', $comment)` directive becomes available for hiding the comment's Delete button too, just like the entry buttons above.
+
 ---
 
 ## 3. Gates for Admin Bypass
@@ -401,7 +449,7 @@ The wrong version uses `void` as the return type and calls `abort(403)` inside t
 
 Practice applying the authorization patterns from this lesson to parts of Catatku that are not yet protected. Each exercise extends what you built without requiring changes to the core policy logic you already wrote.
 
-**Exercise 1:** Create a `CommentPolicy` with a `delete` method that allows only the comment author to delete their comment. Apply it in the `CommentController@destroy` method.
+**Exercise 1:** In Lesson 1 the comment Delete button in `entries/show.blade.php` was wrapped in `@if (auth()->id() === $comment->user_id)`. Now that `CommentPolicy` exists (added in the main lesson above), refactor that view condition to use the `@can('delete', $comment)` directive instead, so the button's visibility is driven by the same Policy the controller enforces.
 
 **Exercise 2:** Add an `is_admin` boolean column to the users table. Update the `Gate::before()` check to use this column instead of email comparison.
 
@@ -415,54 +463,35 @@ Each solution below is complete and directly applicable to your Catatku project.
 
 **Solution for Exercise 1:**
 
-Run the Artisan command to generate the policy file.
+Open `resources/views/entries/show.blade.php` and find the comment Delete form you added in Lesson 1. Replace the raw `@if` ownership check with the `@can` directive.
 
-```bash
-php artisan make:policy CommentPolicy --model=Comment
+```blade
+{{-- Before (Lesson 1): manual ownership check --}}
+@if (auth()->id() === $comment->user_id)
+    <form method="POST" action="{{ route('comments.destroy', $comment) }}"
+          onsubmit="return confirm('Delete this comment?')" style="margin-top: 6px;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" style="font-size: 0.8em; color: #dc2626; background: none; border: none; cursor: pointer; padding: 0;">
+            Delete
+        </button>
+    </form>
+@endif
+
+{{-- After: driven by CommentPolicy --}}
+@can('delete', $comment)
+    <form method="POST" action="{{ route('comments.destroy', $comment) }}"
+          onsubmit="return confirm('Delete this comment?')" style="margin-top: 6px;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" style="font-size: 0.8em; color: #dc2626; background: none; border: none; cursor: pointer; padding: 0;">
+            Delete
+        </button>
+    </form>
+@endcan
 ```
 
-Open `app/Policies/CommentPolicy.php` and add the delete method.
-
-```php
-<?php
-
-namespace App\Policies;
-
-use App\Models\Comment;
-use App\Models\User;
-
-class CommentPolicy
-{
-    public function delete(User $user, Comment $comment): bool
-    {
-        return $user->id === $comment->user_id;
-    }
-}
-```
-
-This follows the same pattern as `EntryPolicy`: compare the authenticated user's ID with the record's `user_id`. In `app/Http/Controllers/CommentController.php`, add `Gate::authorize()` as the first line of the `destroy` method in the `CommentController` class.
-
-```php
-<?php
-// ... others lines of code
-use Illuminate\Support\Facades\Gate;
-
-class CommentController extends Controller
-{
-    // ... other methods
-
-    public function destroy(Comment $comment)
-    {
-        Gate::authorize('delete', $comment);
-
-        $comment->delete();
-
-        return back()->with('success', 'Comment deleted.');
-    }
-}
-```
-
-`Gate::authorize('delete', $comment)` calls `CommentPolicy::delete()` with the current user and the comment. If the IDs do not match, Laravel throws a 403 exception before `$comment->delete()` is ever reached.
+`@can('delete', $comment)` asks `CommentPolicy::delete()` whether the current user may delete this comment, returning the same answer the controller's `Gate::authorize('delete', $comment)` enforces. Routing the button's visibility through the Policy keeps the UI and the server in lockstep: if you ever change the deletion rule (for example, also letting the entry's owner remove comments on their entry), you edit the Policy once and both the button and the controller follow. As always, the `@can` is only a UX nicety — the controller's `Gate::authorize()` is the real protection.
 
 ---
 
