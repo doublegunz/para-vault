@@ -71,7 +71,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 - **Outline singkat**: Apa itu stampede/thundering herd → demo masalah dengan load test sederhana → `Cache::flexible()` → `Cache::lock()` untuk regenerasi tunggal → kapan pakai yang mana.
 - **Level**: Menengah
 
-### 4. Don't Send the Email Before the Commit: Transaction-Aware Side Effects in Laravel
+### 4. Don't Send the Email Before the Commit: Transaction-Aware Side Effects in Laravel (PUBLISHED)
 - **Kategori**: Laravel
 - **Kenapa**: Lanjutan langsung post database transactions multi-table (terbit 10 Juni). Bug klasik (job/email terkirim padahal transaksi rollback) yang belum disentuh post maupun backlog.
 - **Target keyword**: `laravel afterCommit`, `laravel dispatch after commit`
@@ -159,7 +159,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 - **Outline singkat**: Aktifkan `net/http/pprof` di API Gin → rekam CPU & heap profile → baca flame graph → temukan & perbaiki hotspot nyata (N+1 query / alokasi berlebih) → benchmark sebelum-sesudah.
 - **Level**: Lanjutan
 
-### 16. Spring Boot 4 File Upload and Download: Multipart, Validation, and Storage
+### 16. Spring Boot 4 File Upload and Download: Multipart, Validation, and Storage (DRAFT)
 - **Kategori**: Java / Spring Boot
 - **Kenapa**: Mengikuti pola topik yang terbukti di empat ekosistem lain (Laravel, CI4, Gin semua punya tutorial upload). Backlog Spring lama (Flyway, Redis, RabbitMQ, HATEOAS) belum punya upload.
 - **Target keyword**: `spring boot file upload tutorial`, `spring boot download file`
