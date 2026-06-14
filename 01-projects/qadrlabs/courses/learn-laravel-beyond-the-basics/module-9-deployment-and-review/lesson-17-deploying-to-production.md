@@ -2,18 +2,18 @@
 
 You have built a complete application on your local machine. Lesson 16 produced an optimized Vite build that bundles the CSS and JavaScript Catatku needs in production. The final step is making everything available on the public internet so real users can reach it. Deployment is more than just copying files: you provision a server, install the right software, configure a real database, secure traffic with HTTPS, lock down file permissions, and keep background workers alive after every reboot.
 
-This lesson walks through a real, end-to-end deployment of Catatku to a fresh Ubuntu VPS using Nginx, PHP-FPM 8.3, MariaDB, and Supervisor. You will deploy to a domain that you own yourself, so prepare one before starting: any domain from any registrar (Niagahoster, Namecheap, Cloudflare, and others) works, and a subdomain of a domain you already own is fine too. Because every reader's domain is different, this lesson uses `catatku.example.com` as a placeholder; every time it appears in a command or configuration file, replace it with your own domain. The application is pulled from `https://github.com/qadrLabs/catatku`. You will obtain a free SSL certificate from Let's Encrypt, configure the production `.env`, set ownership and permissions correctly for `www-data`, run the queue worker as a managed service, and learn a simple `git pull` workflow for shipping future updates. By the end you will have a HTTPS site, a healthy queue worker, and a repeatable deployment script.
+This lesson walks through a real, end-to-end deployment of Catatku to a fresh Ubuntu VPS using Nginx, PHP-FPM 8.3, MariaDB, and Supervisor. You will deploy to a domain that you own yourself, so prepare one before starting: any domain from any registrar (Niagahoster, Namecheap, Cloudflare, and others) works, and a subdomain of a domain you already own is fine too. Because every reader's domain is different, this lesson uses `catatku.example.com` as a placeholder; every time it appears in a command or configuration file, replace it with your own domain. The application is pulled from `https://github.com/qadrLabs/catatku`. You will obtain a free SSL certificate from Let's Encrypt, configure the production `.env`, set up a secure ownership model where your own deploy user owns the code and `www-data` only reads it (with ACL write access on the two writable directories), run the queue worker as a managed service, and learn a simple `git pull` workflow for shipping future updates. By the end you will have a HTTPS site, a healthy queue worker, and a repeatable deployment script.
 
 ### What You'll Build
 
-You will deploy Catatku to an Ubuntu VPS so it is reachable over HTTPS at your own domain. Two queue workers will run permanently under Supervisor, the application files will be owned by `www-data` with safe permissions, and you will save a short shell script that performs the entire update flow with a single command.
+You will deploy Catatku to an Ubuntu VPS so it is reachable over HTTPS at your own domain. Two queue workers will run permanently under Supervisor, the application files will be owned by your own deploy user (the SSH user you log in as) while `www-data` gets read-only access to the code plus ACL write access to the two directories Laravel must write to, and you will save a short shell script that performs the entire update flow with a single command.
 
 ### What You'll Learn
 
 - ✅ Provisioning an Ubuntu VPS for Laravel (Nginx, PHP 8.3, MariaDB, Supervisor, Certbot)
 - ✅ Pointing DNS and obtaining an SSL certificate via Let's Encrypt
 - ✅ Production `.env` configuration with `APP_DEBUG=false`, MariaDB, and database drivers
-- ✅ Correct file ownership and permissions for `www-data`
+- ✅ A secure ownership model: your deploy user owns the code, `www-data` is read-only on it, with ACLs granting write access only to `storage/` and `bootstrap/cache/`
 - ✅ Optimizing Laravel with `php artisan optimize`
 - ✅ Running queue workers permanently with Supervisor (`database` driver)
 - ✅ Updating the application with a simple `git pull` workflow
@@ -40,10 +40,10 @@ sudo apt update
 sudo apt install -y nginx mariadb-server php8.3-fpm php8.3-cli \
     php8.3-mysql php8.3-mbstring php8.3-xml php8.3-curl php8.3-zip \
     php8.3-bcmath php8.3-gd php8.3-intl php8.3-tokenizer php8.3-fileinfo \
-    composer git unzip supervisor certbot python3-certbot-nginx
+    composer git unzip supervisor certbot python3-certbot-nginx acl
 ```
 
-Each package plays a specific role. `nginx` is the web server that accepts HTTPS requests from the internet. `mariadb-server` is the production database; it is a drop-in compatible fork of MySQL maintained by the original MySQL authors. `php8.3-fpm` is the FastCGI Process Manager that runs your PHP code behind Nginx, and `php8.3-cli` is the command-line PHP binary Artisan uses. `php8.3-mysql` is the PDO driver Laravel uses to talk to MariaDB (the package keeps the legacy `mysql` name even though it also drives MariaDB). The remaining `php8.3-*` packages enable the extensions Laravel requires for string handling, XML, HTTP, archive files, math, image generation, internationalization, tokenizing, and file metadata. `composer` installs PHP dependencies, `git` pulls your code from GitHub, `unzip` is required by Composer for archive packages, `supervisor` keeps the queue worker running, and the two Certbot packages obtain and auto-renew the Let's Encrypt SSL certificate.
+Each package plays a specific role. `nginx` is the web server that accepts HTTPS requests from the internet. `mariadb-server` is the production database; it is a drop-in compatible fork of MySQL maintained by the original MySQL authors. `php8.3-fpm` is the FastCGI Process Manager that runs your PHP code behind Nginx, and `php8.3-cli` is the command-line PHP binary Artisan uses. `php8.3-mysql` is the PDO driver Laravel uses to talk to MariaDB (the package keeps the legacy `mysql` name even though it also drives MariaDB). The remaining `php8.3-*` packages enable the extensions Laravel requires for string handling, XML, HTTP, archive files, math, image generation, internationalization, tokenizing, and file metadata. `composer` installs PHP dependencies, `git` pulls your code from GitHub, `unzip` is required by Composer for archive packages, `supervisor` keeps the queue worker running, and the two Certbot packages obtain and auto-renew the Let's Encrypt SSL certificate. `acl` provides the `setfacl` command you will use in Section 3 to grant `www-data` write access to `storage/` and `bootstrap/cache/` without making it the owner of your code.
 
 Ubuntu's default repository often ships an outdated Node.js version, but Vite 8 (the bundler you configured in Lesson 16) requires Node 20.19 or newer, or 22.12 or newer. Node 20 reached its end of life in April 2026 and no longer receives security updates, so a new server should run Node 22 LTS. Install it from the official NodeSource repository.
 
@@ -80,7 +80,7 @@ The server now has the right software and the domain resolves to its IP, so you 
 
 ### Step 1: Clone the Repository
 
-The conventional location for web applications on Ubuntu is `/var/www`. Create the project directory and temporarily give your SSH user ownership so you can run `git clone`, `composer install`, and `npm install` without `sudo` on every command.
+The conventional location for web applications on Ubuntu is `/var/www`. Create the project directory and give your SSH user ownership so you can run `git clone`, `composer install`, and `npm install` without `sudo` on every command. Your SSH user keeps ownership permanently in this lesson: it is your *deploy user*, the account you use to ship code. In Step 4 you will give `www-data` read access to the code through group membership and write access to just two directories through ACLs, so the web server never needs to own your code.
 
 ```bash
 sudo mkdir -p /var/www/catatku
@@ -89,7 +89,7 @@ git clone https://github.com/qadrLabs/catatku.git /var/www/catatku
 cd /var/www/catatku
 ```
 
-`sudo mkdir -p` creates `/var/www/catatku` and any missing parent directories. The `chown -R $USER:$USER` transfers ownership to your current shell user; `$USER` expands to whoever is logged in, so you do not need to type your username manually. `git clone` then copies the repository into the directory. The final `cd` switches into the project root so every subsequent command runs from there. Ownership will be flipped back to `www-data` in Step 4 once installation is complete.
+`sudo mkdir -p` creates `/var/www/catatku` and any missing parent directories. The `chown -R $USER:$USER` transfers ownership to your current shell user; `$USER` expands to whoever is logged in, so you do not need to type your username manually. `git clone` then copies the repository into the directory. The final `cd` switches into the project root so every subsequent command runs from there. Your deploy user keeps ownership of the code from here on; Step 4 only adjusts the group and adds ACLs so `www-data` can read the code and write to the two directories Laravel needs.
 
 ### Step 2: Install PHP and Node Dependencies
 
@@ -152,17 +152,23 @@ Walk through the values that matter most. `APP_ENV=production` flips Laravel int
 
 ### Step 4: Set File Permissions
 
-Wrong permissions are the most common first-deploy failure. The rule is straightforward: every file is owned by `www-data` (the user Nginx and PHP-FPM run as), directories use `755`, files use `644`, and the two writable directories (`storage/` and `bootstrap/cache/`) get `775` so PHP-FPM can write logs, compiled views, cache files, and queued job state.
+Wrong permissions are the most common first-deploy failure. The secure model has three rules. First, your deploy user (`$USER`) owns every file and the group is set to `www-data`, so the web server can *read* the code but not modify it. Second, directories use `755` and files use `644`, which gives the group (and therefore `www-data`) read and traverse access but no write access to the code. Third, the only two directories Laravel must write to at runtime, `storage/` and `bootstrap/cache/`, get `775` plus an ACL that grants `www-data` write access, including on files created later.
 
 ```bash
-sudo chown -R www-data:www-data /var/www/catatku
+sudo chown -R $USER:www-data /var/www/catatku
 sudo find /var/www/catatku -type d -exec chmod 755 {} \;
 sudo find /var/www/catatku -type f -exec chmod 644 {} \;
-sudo chmod -R 775 /var/www/catatku/storage
-sudo chmod -R 775 /var/www/catatku/bootstrap/cache
+
+sudo chmod 640 /var/www/catatku/.env
+
+sudo chmod -R 775 /var/www/catatku/storage /var/www/catatku/bootstrap/cache
+sudo setfacl -R  -m u:www-data:rwX,g:www-data:rwX /var/www/catatku/storage /var/www/catatku/bootstrap/cache
+sudo setfacl -dR -m u:www-data:rwX,g:www-data:rwX /var/www/catatku/storage /var/www/catatku/bootstrap/cache
 ```
 
-`chown -R www-data:www-data` recursively transfers ownership from your SSH user to `www-data`, which is the same user PHP-FPM uses to execute Laravel code. The two `find` commands normalize permissions across the whole tree: directories need the executable bit (`5` = `r-x`) so processes can enter them, while files only need read (`4` = `r--`) for group and others. This is the secure default; do not use `chmod -R 777` because it grants write access to every user on the system, including any process compromised by an attacker. The two `chmod -R 775` overrides give `www-data` (the owner) and its group write access to the two directories where PHP must save data; without write access here, Laravel fails on the very first request with a "Permission denied" error when it tries to compile a Blade view or write a log entry. If any deployment step later complains about permissions in `storage/logs/laravel.log` or `bootstrap/cache/config.php`, simply re-run these four commands.
+`chown -R $USER:www-data` keeps your deploy user as the owner and sets the group to `www-data`. This is the heart of the secure model: because `www-data` (the user PHP-FPM runs as) does not own the code and the files are not group-writable, a compromised PHP process cannot rewrite your application's source. The two `find` commands normalize permissions across the whole tree: directories get `755` (`rwxr-xr-x`) so the group can enter them, files get `644` (`rw-r--r--`) so the group can read but not write them. `chmod 640 .env` is tighter still: the `.env` holds your database password and `APP_KEY`, so it is readable only by you (owner) and `www-data` (group), and invisible to every other account on the box.
+
+Do not use `chmod -R 777` anywhere; it grants write access to every user on the system, including any process an attacker manages to run. Instead, the two writable directories get `775` *and* an ACL. The first `setfacl -R` grants the `www-data` user and group `rwX` (`X` adds the execute bit to directories only, never to plain files) on everything currently under `storage/` and `bootstrap/cache/`. The second `setfacl -dR` sets a *default* ACL, which every new file and directory created inside those trees inherits automatically. This is the part a plain `chmod` cannot do: during a deploy *you* write to `bootstrap/cache/` (via `php artisan optimize`), while at runtime *`www-data`* writes to `storage/logs/` and `storage/framework/`. With two different users writing the same directories, a default umask would leave each other's new files unwritable; the default ACL guarantees `www-data` always gets write access regardless of who created the file. If any deployment step later complains about permissions in `storage/logs/laravel.log` or `bootstrap/cache/config.php`, re-run the three `chmod`/`setfacl` commands above.
 
 ---
 
@@ -205,25 +211,25 @@ EXIT;
 
 ### Step 3: Run Migrations
 
-With the database created, run the migrations from the project directory. Execute the command as `www-data` so any files Laravel writes during migration (config cache, migration log) end up with the correct ownership.
+With the database created, run the migrations from the project directory as your deploy user. There is no `sudo` here: you own the code, so the command runs as yourself, and any files Laravel writes during migration land in directories the ACLs from Section 3 already make writable by both you and `www-data`.
 
 ```bash
 cd /var/www/catatku
-sudo -u www-data php artisan migrate --force
+php artisan migrate --force
 ```
 
-`sudo -u www-data` runs the command as `www-data` instead of root, which keeps file ownership consistent with what PHP-FPM expects. `--force` is required in production because Laravel asks for an interactive confirmation by default, and that prompt would hang in a non-interactive shell or fail in a script. After the command finishes, verify the migration state with `sudo -u www-data php artisan migrate:status`; every migration must be listed as `Ran`. This also confirms the application can actually connect to MariaDB using the credentials in `.env`.
+`--force` is required in production because Laravel asks for an interactive confirmation by default, and that prompt would hang in a non-interactive shell or fail in a script. After the command finishes, verify the migration state with `php artisan migrate:status`; every migration must be listed as `Ran`. This also confirms the application can actually connect to MariaDB using the credentials in `.env`.
 
 ### Step 4: Symlink Storage and Optimize
 
 Two final commands wrap up application setup: expose user uploads to the web server, then cache configuration for performance.
 
 ```bash
-sudo -u www-data php artisan storage:link
-sudo -u www-data php artisan optimize
+php artisan storage:link
+php artisan optimize
 ```
 
-`storage:link` creates a symbolic link from `public/storage` to `storage/app/public`. Without this link, the cover images uploaded in Lesson 7 are unreachable from the browser because anything outside `public/` is hidden from Nginx by design. `php artisan optimize` is Laravel 13's single convenience command that compiles configuration, routes, Blade templates, and auto-discovered event mappings into optimized PHP files in `bootstrap/cache/`. It replaces the older sequence of `config:cache`, `route:cache`, `view:cache`, and `event:cache`, and typically reduces request times by 15 to 30 percent because Laravel no longer re-parses those files on every request. If you ever need to clear all of these caches at once, run `php artisan optimize:clear`.
+Run both as your deploy user, no `sudo` needed. `storage:link` creates a symbolic link from `public/storage` to `storage/app/public`. Without this link, the cover images uploaded in Lesson 7 are unreachable from the browser because anything outside `public/` is hidden from Nginx by design. `php artisan optimize` is Laravel 13's single convenience command that compiles configuration, routes, Blade templates, and auto-discovered event mappings into optimized PHP files in `bootstrap/cache/`. It replaces the older sequence of `config:cache`, `route:cache`, `view:cache`, and `event:cache`, and typically reduces request times by 15 to 30 percent because Laravel no longer re-parses those files on every request. If you ever need to clear all of these caches at once, run `php artisan optimize:clear`.
 
 ---
 
@@ -348,7 +354,7 @@ stdout_logfile=/var/www/catatku/storage/logs/worker.log
 stopwaitsecs=3600
 ```
 
-Each directive earns its place. `[program:catatku-worker]` names the program; you will use this name with `supervisorctl` to start, stop, or check status. The `process_name` template formats instance names like `catatku-worker_00` and `catatku-worker_01` when multiple parallel workers run. `command` is the actual shell command Supervisor executes: `queue:work database` matches `QUEUE_CONNECTION=database` from your `.env` and tells the worker to read jobs from the `jobs` table in MariaDB. `--sleep=3` waits three seconds between polls when no jobs are pending, which keeps idle CPU usage near zero. `--tries=3` allows each job up to three attempts before being moved to `failed_jobs`. `--max-time=3600` recycles the worker after one hour to release any memory it accumulated. `autostart=true` starts the worker when Supervisor itself starts (which happens on boot). `autorestart=true` brings the worker back automatically if it exits unexpectedly. `user=www-data` runs the worker as the same user as PHP-FPM so file permissions stay consistent. `numprocs=2` runs two parallel worker instances; raise this number if you observe queue backlogs and your server has spare CPU. `redirect_stderr=true` merges stderr into stdout so a single log file captures everything. `stdout_logfile` directs that combined output to `storage/logs/worker.log`. `stopwaitsecs=3600` gives the worker up to one hour to finish its current job gracefully when Supervisor is asked to stop it, which prevents losing work mid-execution.
+Each directive earns its place. `[program:catatku-worker]` names the program; you will use this name with `supervisorctl` to start, stop, or check status. The `process_name` template formats instance names like `catatku-worker_00` and `catatku-worker_01` when multiple parallel workers run. `command` is the actual shell command Supervisor executes: `queue:work database` matches `QUEUE_CONNECTION=database` from your `.env` and tells the worker to read jobs from the `jobs` table in MariaDB. `--sleep=3` waits three seconds between polls when no jobs are pending, which keeps idle CPU usage near zero. `--tries=3` allows each job up to three attempts before being moved to `failed_jobs`. `--max-time=3600` recycles the worker after one hour to release any memory it accumulated. `autostart=true` starts the worker when Supervisor itself starts (which happens on boot). `autorestart=true` brings the worker back automatically if it exits unexpectedly. `user=www-data` runs the worker as the same user as PHP-FPM; this is deliberate. The worker executes your application code to process jobs, so running it as `www-data` (rather than your deploy user) means a compromised job cannot modify the source on disk, exactly the security boundary you set up in Section 3. The worker can still read the code through its group membership and write `worker.log` into `storage/logs/` through the ACL you applied earlier. `numprocs=2` runs two parallel worker instances; raise this number if you observe queue backlogs and your server has spare CPU. `redirect_stderr=true` merges stderr into stdout so a single log file captures everything. `stdout_logfile` directs that combined output to `storage/logs/worker.log`. `stopwaitsecs=3600` gives the worker up to one hour to finish its current job gracefully when Supervisor is asked to stop it, which prevents losing work mid-execution.
 
 ### Step 2: Start the Workers
 
@@ -375,39 +381,39 @@ Switch the application into maintenance mode so visitors receive a "Be right bac
 
 ```bash
 cd /var/www/catatku
-sudo -u www-data php artisan down
+php artisan down
 ```
 
-`php artisan down` writes a flag file at `storage/framework/maintenance.php`. As long as that file exists, every HTTP request returns `HTTP 503 Service Unavailable` with Laravel's default maintenance page. Run the command as `www-data` so the flag file has the right ownership and PHP-FPM can read it.
+`php artisan down` writes a flag file at `storage/framework/maintenance.php`. As long as that file exists, every HTTP request returns `HTTP 503 Service Unavailable` with Laravel's default maintenance page. You run this (and every other command in this section) as your deploy user, with no `sudo`. The flag file lands in `storage/framework/`, which the ACL from Section 3 keeps readable by PHP-FPM, so the maintenance page shows correctly.
 
 ### Step 2: Pull the Latest Code
 
-Pull the latest commit from `origin/main` while keeping ownership of every file under `www-data`.
+Pull the latest commit from `origin/main` as your deploy user, the same account that owns the code.
 
 ```bash
-sudo -u www-data git pull origin main
+git pull origin main
 ```
 
-`sudo -u www-data git pull` runs git as `www-data`, so any files created or modified by the pull are owned by `www-data` too. If you instead use plain `sudo git pull` (which runs as root), newly added files are owned by `root` and PHP-FPM cannot read them, which surfaces as confusing `500` errors after deploy. Always use `sudo -u www-data` for writes inside `/var/www/catatku`.
+Because your deploy user owns every file under `/var/www/catatku`, a plain `git pull` just works and every file it creates stays owned by you with the group set to `www-data`. Do not prefix this with `sudo`: running as `root` would create `root`-owned files that PHP-FPM cannot read (confusing `500` errors after deploy), and running as `www-data` would hand the web-facing user write access to your code, defeating the security model from Section 3. Always run code-updating commands as your own deploy user.
 
 ### Step 3: Install Updated Dependencies
 
 `composer.lock` and `package-lock.json` may have changed in the new commit. Reinstall both and rebuild the frontend bundle.
 
 ```bash
-sudo -u www-data composer install --no-dev --optimize-autoloader
-sudo -u www-data npm ci
-sudo -u www-data npm run build
+composer install --no-dev --optimize-autoloader
+npm ci
+npm run build
 ```
 
-These are the same three commands you ran during the first deploy. `composer install` is incremental: it only downloads packages that changed in `composer.lock`. `npm ci` wipes `node_modules/` and reinstalls the exact tree from `package-lock.json`, which is faster and more reliable than `npm install` during deploys. `npm run build` recompiles Vite assets into `public/build/` with fresh content hashes so browsers download the new files instead of serving stale ones from cache.
+These are exactly the same three commands you ran during the first deploy, run by the same deploy user, so the update flow and the initial flow stay consistent. Running them as your own account (which has a normal home directory) also means Composer and npm find their caches in `~/.composer` and `~/.npm` without any HOME juggling. `composer install` is incremental: it only downloads packages that changed in `composer.lock`. `npm ci` wipes `node_modules/` and reinstalls the exact tree from `package-lock.json`, which is faster and more reliable than `npm install` during deploys. `npm run build` recompiles Vite assets into `public/build/` with fresh content hashes so browsers download the new files instead of serving stale ones from cache.
 
 ### Step 4: Run New Migrations
 
 Apply any new migrations that came with the pull. The command is a no-op if there is nothing new to run, so it is safe to include in every deploy.
 
 ```bash
-sudo -u www-data php artisan migrate --force
+php artisan migrate --force
 ```
 
 `migrate --force` runs only the migrations that have not been recorded in the `migrations` table yet, then records them. Skipping this step is the most common cause of `500` errors right after a deploy: the new code references a column the database does not have, and every request that touches that column fails.
@@ -417,8 +423,8 @@ sudo -u www-data php artisan migrate --force
 The cached config, routes, and views from the previous deploy still describe the old code. Clear and rebuild them.
 
 ```bash
-sudo -u www-data php artisan optimize:clear
-sudo -u www-data php artisan optimize
+php artisan optimize:clear
+php artisan optimize
 ```
 
 `optimize:clear` removes every compiled file under `bootstrap/cache/`. `optimize` recompiles them based on the new code. Doing both ensures Laravel cannot accidentally serve a stale cached route or a Blade view that references a method removed in this deploy.
@@ -428,7 +434,7 @@ sudo -u www-data php artisan optimize
 Running PHP worker processes still hold the old code in memory. Signal them to exit so Supervisor can start fresh workers with the new code.
 
 ```bash
-sudo -u www-data php artisan queue:restart
+php artisan queue:restart
 ```
 
 `queue:restart` writes a timestamp to the cache. Each worker checks this timestamp between jobs; when it sees a newer value, the worker finishes its current job and then exits gracefully. Supervisor notices the process is gone and starts a new one (because `autorestart=true`), and that new process loads the new code. Without this step, jobs would keep running against the old code until the workers happen to recycle on their `--max-time` limit.
@@ -438,7 +444,7 @@ sudo -u www-data php artisan queue:restart
 Take the app out of maintenance mode so real traffic comes back.
 
 ```bash
-sudo -u www-data php artisan up
+php artisan up
 ```
 
 `php artisan up` deletes the `storage/framework/maintenance.php` flag file. The next HTTP request is processed normally and your users see the updated site. End-to-end downtime for the whole sequence is usually under a minute.
@@ -448,35 +454,35 @@ sudo -u www-data php artisan up
 Running seven commands by hand every time is tedious and error-prone. Save them as a shell script so you can deploy with a single command.
 
 ```bash
-sudo nano /var/www/catatku/deploy.sh
+nano /var/www/catatku/deploy.sh
 ```
 
-Paste the following.
+No `sudo` here either: your deploy user owns the directory, so the script is created owned by you and stays runnable without elevation. Paste the following.
 
 ```bash
 #!/bin/bash
 set -e
 cd /var/www/catatku
-sudo -u www-data php artisan down
-sudo -u www-data git pull origin main
-sudo -u www-data composer install --no-dev --optimize-autoloader
-sudo -u www-data npm ci
-sudo -u www-data npm run build
-sudo -u www-data php artisan migrate --force
-sudo -u www-data php artisan optimize:clear
-sudo -u www-data php artisan optimize
-sudo -u www-data php artisan queue:restart
-sudo -u www-data php artisan up
+php artisan down
+git pull origin main
+composer install --no-dev --optimize-autoloader
+npm ci
+npm run build
+php artisan migrate --force
+php artisan optimize:clear
+php artisan optimize
+php artisan queue:restart
+php artisan up
 echo "Deploy finished."
 ```
 
-Make it executable.
+Make it executable. You own the file, so no `sudo` is needed.
 
 ```bash
-sudo chmod +x /var/www/catatku/deploy.sh
+chmod +x /var/www/catatku/deploy.sh
 ```
 
-`set -e` makes the script abort immediately on the first command that fails, so a broken migration does not silently leave the app half-deployed. Running `sudo /var/www/catatku/deploy.sh` from now on performs the entire update in order. If any step fails, the app stays in maintenance mode until you fix the problem and finish the script manually with `php artisan up`.
+`set -e` makes the script abort immediately on the first command that fails, so a broken migration does not silently leave the app half-deployed. Run it as your deploy user with `/var/www/catatku/deploy.sh` (not `sudo`) from now on, and it performs the entire update in order. If any step fails, the app stays in maintenance mode until you fix the problem and finish the script manually with `php artisan up`.
 
 ---
 
@@ -496,7 +502,7 @@ APP_DEBUG=true
 APP_DEBUG=false
 ```
 
-With `APP_DEBUG=true`, the browser shows database credentials and API keys whenever something throws an exception. With `APP_DEBUG=false`, the browser shows a generic "Server Error" page and the real details go to `storage/logs/laravel.log` where only you can read them. After changing the value, run `sudo -u www-data php artisan optimize:clear && sudo -u www-data php artisan optimize` so the cached config picks up the new value.
+With `APP_DEBUG=true`, the browser shows database credentials and API keys whenever something throws an exception. With `APP_DEBUG=false`, the browser shows a generic "Server Error" page and the real details go to `storage/logs/laravel.log` where only you can read them. After changing the value, run `php artisan optimize:clear && php artisan optimize` (as your deploy user) so the cached config picks up the new value.
 
 ---
 
@@ -506,32 +512,42 @@ New code often references new columns or tables. If the migration has not run ye
 
 ```bash
 // Wrong:
-sudo -u www-data git pull origin main
-sudo -u www-data php artisan up
+git pull origin main
+php artisan up
 
 // Correct:
-sudo -u www-data git pull origin main
-sudo -u www-data php artisan migrate --force
-sudo -u www-data php artisan up
+git pull origin main
+php artisan migrate --force
+php artisan up
 ```
 
 In the wrong version, the code now expects a `cover_image` column that does not exist in production yet, and the SQL query fails on the very first request. The correct version always runs `migrate --force` after `git pull`, so the schema catches up before users see the new code. If a migration ever breaks production, `php artisan migrate:rollback` reverts the most recent batch while you investigate.
 
 ---
 
-**Error 3: File ownership becomes `root` after running `git pull` with plain `sudo`.**
+**Error 3: Running deploy commands as the wrong user.**
 
-PHP-FPM runs as `www-data`. If you pull new code as `root`, the new files are owned by `root:root` and PHP-FPM cannot read them, which surfaces as `500` errors on routes that touch the new files.
+Code-updating commands must run as your deploy user, the account that owns `/var/www/catatku`. Running as `root` (plain `sudo`) creates `root`-owned files that PHP-FPM cannot read, which surfaces as `500` errors on routes that touch the new files. Running as `www-data` "works" but hands the web-facing user write access to your source code, defeating the secure model from Section 3.
 
 ```bash
-// Wrong:
+// Wrong (root-owned files):
 sudo git pull origin main
 
-// Correct:
+// Also wrong (web user can now write your code):
 sudo -u www-data git pull origin main
+
+// Correct (your deploy user owns the code):
+git pull origin main
 ```
 
-The wrong version creates new files owned by `root`, so requests fail with permission errors that look unrelated to the deploy. The correct version pulls as `www-data` directly, so ownership stays consistent across the whole project tree. If you ever accidentally run a write command as `root`, restore ownership with `sudo chown -R www-data:www-data /var/www/catatku` before bringing the site back up.
+The correct version runs as your own deploy user, so files stay owned by you with the group set to `www-data`, the security boundary holds, and PHP-FPM still reads the code through its group membership. If you ever accidentally run a write command as `root`, restore the ownership and ACLs before bringing the site back up:
+
+```bash
+sudo chown -R $USER:www-data /var/www/catatku
+sudo chmod -R 775 /var/www/catatku/storage /var/www/catatku/bootstrap/cache
+sudo setfacl -R  -m u:www-data:rwX,g:www-data:rwX /var/www/catatku/storage /var/www/catatku/bootstrap/cache
+sudo setfacl -dR -m u:www-data:rwX,g:www-data:rwX /var/www/catatku/storage /var/www/catatku/bootstrap/cache
+```
 
 ---
 
@@ -638,6 +654,6 @@ To monitor it externally, sign up at uptimerobot.com (free tier allows 50 monito
 
 ## Next Up - Lesson 18
 
-In this lesson you took Catatku from a clean Ubuntu VPS to a live HTTPS application at your own domain. You installed Nginx, PHP 8.3, MariaDB, Supervisor, and Certbot; pointed the domain at the server; cloned `https://github.com/qadrLabs/catatku` into `/var/www/catatku`; created a production `.env` with `APP_DEBUG=false` and `database` drivers for cache, queue, and session; locked down ownership and permissions for `www-data`; obtained a free SSL certificate from Let's Encrypt; wrote an Nginx server block with HTTP-to-HTTPS redirect; ran two Supervisor-managed queue workers; and saved a `deploy.sh` script that updates the site with a single command using `git pull`.
+In this lesson you took Catatku from a clean Ubuntu VPS to a live HTTPS application at your own domain. You installed Nginx, PHP 8.3, MariaDB, Supervisor, and Certbot; pointed the domain at the server; cloned `https://github.com/qadrLabs/catatku` into `/var/www/catatku`; created a production `.env` with `APP_DEBUG=false` and `database` drivers for cache, queue, and session; set up a secure ownership model where your deploy user owns the code and `www-data` only reads it, with ACLs granting write access to `storage/` and `bootstrap/cache/`; obtained a free SSL certificate from Let's Encrypt; wrote an Nginx server block with HTTP-to-HTTPS redirect; ran two Supervisor-managed queue workers; and saved a `deploy.sh` script that updates the site with a single command using `git pull`.
 
 In Lesson 18, you will step back and review the full path you have walked across this course: a recap of all 17 features you added on top of the basic Catatku app, a comparison of beginner versus intermediate Laravel skills, and a roadmap of advanced topics including Livewire, Inertia.js, Scout, Horizon, and Cashier that you can explore next.
