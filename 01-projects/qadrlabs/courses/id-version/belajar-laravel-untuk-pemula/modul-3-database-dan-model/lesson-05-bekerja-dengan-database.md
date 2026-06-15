@@ -22,6 +22,10 @@ Di akhir lesson ini, tabel `entries` akan ada di database Anda dengan kolom-kolo
 - MySQL yang sedang berjalan (jika Anda menggunakan Laragon, klik **Start All**)
 - Kredensial MySQL Anda: nama database, username, dan password. Jika Anda menggunakan Laragon dengan konfigurasi default, username-nya adalah `root` dan password-nya kosong
 
+> **MySQL atau MariaDB?** Course ini menggunakan **MySQL**, yang diinstal Laragon di Windows. Jika Anda menggunakan Linux atau macOS dan memiliki **MariaDB**, semuanya berfungsi persis sama, karena Laravel berkomunikasi dengan keduanya melalui connection driver `mysql` yang sama, sehingga setiap perintah dan setting `.env` pada lesson ini identik.
+>
+> Jika Anda **tidak** menggunakan Laragon (misalnya Anda menggunakan Linux, atau Laravel Herd gratis yang database-nya merupakan fitur berbayar), pastikan **MySQL atau MariaDB sudah terinstal dan berjalan** sebelum Anda melanjutkan, seperti yang disebutkan pada Lesson 2.
+
 ---
 
 ## Step 1: Konfigurasi Koneksi Database {#step-1-configure-the-database-connection}
