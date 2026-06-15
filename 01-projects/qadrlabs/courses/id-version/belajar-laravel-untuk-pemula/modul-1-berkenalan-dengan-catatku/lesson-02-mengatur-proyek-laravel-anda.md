@@ -19,17 +19,19 @@ Anda akan mengatur lingkungan pengembangan lokal yang lengkap dan membuat proyek
 
 ### Tools You'll Need {#tools-youll-need}
 
-Course ini berjalan di sistem operasi apa pun. Apa pun platform yang Anda gunakan, Anda hanya memerlukan tiga hal yang sudah siap sebelum membuat proyek:
+Course ini berjalan di sistem operasi apa pun. Apa pun platform yang Anda gunakan, Anda hanya memerlukan empat hal yang sudah siap sebelum membuat proyek:
 
 - **PHP 8.3 atau lebih tinggi:** diperlukan oleh Laravel 13. Inilah yang menjalankan perintah `php artisan` yang akan Anda jalankan sepanjang course ini. (Course ini juga telah diuji berjalan pada PHP 8.4.)
 - **Composer:** dependency manager PHP, digunakan untuk membuat proyek dengan `composer create-project`.
+- **MySQL (atau MariaDB):** database server yang menyimpan data Anda. Anda baru akan mengonfigurasinya pada Lesson 5, tetapi instal sekarang agar sudah siap. Database ini sudah disertakan bersama Laragon; pada setup lain Anda menginstalnya secara terpisah (lihat catatan di bawah).
 - **Code editor:** Visual Studio Code direkomendasikan, tetapi editor apa pun bisa digunakan.
 
-Anda dapat memastikan kedua tools tersebut sudah siap dengan menjalankan perintah berikut di terminal Anda:
+Anda dapat memastikan tools tersebut sudah siap dengan menjalankan perintah berikut di terminal Anda:
 
 ```bash
-php -v        # must report version 8.3 or higher
-composer -V   # should print the Composer version
+php -v            # must report version 8.3 or higher
+composer -V       # should print the Composer version
+mysql --version   # should print the MySQL or MariaDB version
 ```
 
 > **Note:** Node.js **tidak** diperlukan untuk course pemula ini. Tooling front-end dan asset building dibahas pada course *Beyond the Basics*.

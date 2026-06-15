@@ -19,17 +19,19 @@ You will set up a complete local development environment and create a fresh Lara
 
 ### Tools You'll Need {#tools-youll-need}
 
-This course works on any operating system. Whatever platform you use, you only need three things in place before creating the project:
+This course works on any operating system. Whatever platform you use, you only need four things in place before creating the project:
 
 - **PHP 8.3 or higher:** required by Laravel 13. This is what powers the `php artisan` commands you will run throughout the course. (The course has also been tested working on PHP 8.4.)
 - **Composer:** the PHP dependency manager, used to create the project with `composer create-project`.
+- **MySQL (or MariaDB):** the database server that stores your data. You will not configure it until Lesson 5, but install it now so it is ready. It comes bundled with Laragon; on other setups you install it separately (see the note below).
 - **A code editor:** Visual Studio Code is recommended, but any editor works.
 
-You can confirm both tools are ready by running these commands in your terminal:
+You can confirm these tools are ready by running these commands in your terminal:
 
 ```bash
-php -v        # must report version 8.3 or higher
-composer -V   # should print the Composer version
+php -v            # must report version 8.3 or higher
+composer -V       # should print the Composer version
+mysql --version   # should print the MySQL or MariaDB version
 ```
 
 > **Note:** Node.js is **not** required for this beginner course. Front-end tooling and asset building are covered in the *Beyond the Basics* course.
