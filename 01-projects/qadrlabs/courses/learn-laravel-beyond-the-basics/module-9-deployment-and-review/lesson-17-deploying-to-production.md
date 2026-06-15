@@ -2,11 +2,13 @@
 
 You have built a complete application on your local machine. Lesson 16 produced an optimized Vite build that bundles the CSS and JavaScript Catatku needs in production. The final step is making everything available on the public internet so real users can reach it. Deployment is more than just copying files: you provision a server, install the right software, configure a real database, secure traffic with HTTPS, lock down file permissions, and keep background workers alive after every reboot.
 
-This lesson walks through a real, end-to-end deployment of Catatku to a fresh Ubuntu VPS using Nginx, PHP-FPM 8.3, MariaDB, and Supervisor. You will deploy to a domain that you own yourself, so prepare one before starting: any domain from any registrar (Niagahoster, Namecheap, Cloudflare, and others) works, and a subdomain of a domain you already own is fine too. Because every reader's domain is different, this lesson uses `catatku.example.com` as a placeholder; every time it appears in a command or configuration file, replace it with your own domain. The application is pulled from `https://github.com/qadrLabs/catatku`. You will obtain a free SSL certificate from Let's Encrypt, configure the production `.env`, set up a secure ownership model where your own deploy user owns the code and `www-data` only reads it (with ACL write access on the two writable directories), run the queue worker as a managed service, and learn a simple `git pull` workflow for shipping future updates. By the end you will have a HTTPS site, a healthy queue worker, and a repeatable deployment script.
+This lesson walks through a real, end-to-end deployment of Catatku to a fresh Ubuntu VPS using Nginx, PHP-FPM 8.3, MariaDB, and Supervisor. You will deploy to a domain that you own yourself, so prepare one before starting: any domain from any registrar (Niagahoster, Namecheap, Cloudflare, and others) works, and a subdomain of a domain you already own is fine too. Because every reader's domain is different, this lesson uses `catatku.example.com` as a placeholder; every time it appears in a command or configuration file, replace it with your own domain. The application is pulled from `https://github.com/qadrLabs/catatku-deploy-demo`, a ready-to-deploy version of Catatku that already includes the Vite build setup from Lesson 16; if you have been following along and pushed your own Catatku to GitHub, clone your personal repository instead. You will obtain a free SSL certificate from Let's Encrypt, configure the production `.env`, set up a secure ownership model where your own deploy user owns the code and `www-data` only reads it (with ACL write access on the two writable directories), run the queue worker as a managed service, and learn a simple `git pull` workflow for shipping future updates. By the end you will have a HTTPS site, a healthy queue worker, and a repeatable deployment script.
 
 ### What You'll Build
 
 You will deploy Catatku to an Ubuntu VPS so it is reachable over HTTPS at your own domain. Two queue workers will run permanently under Supervisor, the application files will be owned by your own deploy user (the SSH user you log in as) while `www-data` gets read-only access to the code plus ACL write access to the two directories Laravel must write to, and you will save a short shell script that performs the entire update flow with a single command.
+
+![preview app](https://cdn.jsdelivr.net/gh/qadrLabs/catatku-deploy-demo@main/docs/screenshot/01-preview-app.png)
 
 ### What You'll Learn
 
@@ -23,7 +25,7 @@ You will deploy Catatku to an Ubuntu VPS so it is reachable over HTTPS at your o
 - Lesson 16 completed
 - An Ubuntu 24.04 VPS with SSH access and `sudo`
 - A domain (or subdomain) you own, with access to its DNS management panel; you will point it to the VPS in Section 2, and this lesson uses `catatku.example.com` as a placeholder for it
-- A GitHub account that can clone `https://github.com/qadrLabs/catatku`
+- A GitHub account that can clone `https://github.com/qadrLabs/catatku-deploy-demo` (or your own Catatku repository)
 
 ---
 
@@ -52,7 +54,19 @@ curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-The first command adds NodeSource's signed repository for Node.js 22 LTS to apt. The second command installs the `nodejs` package from that repository, which bundles `npm`. Verify the versions with `node -v` (should print `v22.x.x`) and `npm -v` (should print `10.x.x` or higher). With a too-old Node version, `npm run build` will fail with cryptic errors deep inside Vite or its plugins.
+The first command adds NodeSource's signed repository for Node.js 22 LTS to apt. The second command installs the `nodejs` package from that repository, which bundles `npm`. Verify the versions with `node -v` (should print `v22.x.x`) and confirm PHP is on 8.3 with `php -v`. With a too-old Node version, `npm run build` will fail with cryptic errors deep inside Vite or its plugins.
+
+```
+gungun@qadrlabs:$ node -v
+v22.22.3
+gungun@qadrlabs:$ php -v
+PHP 8.3.6 (cli) (built: May 25 2026 13:12:06) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.3.6, Copyright (c) Zend Technologies
+    with Zend OPcache v8.3.6, Copyright (c), by Zend Technologies
+```
+
+Your patch numbers may differ slightly, but the major versions must read `v22` for Node and `8.3` for PHP. If `node -v` still shows an older major version, the NodeSource step did not take effect; re-run the two commands above before continuing.
 
 ### Step 2: Point the Domain to the Server
 
@@ -85,9 +99,11 @@ The conventional location for web applications on Ubuntu is `/var/www`. Create t
 ```bash
 sudo mkdir -p /var/www/catatku
 sudo chown -R $USER:$USER /var/www/catatku
-git clone https://github.com/qadrLabs/catatku.git /var/www/catatku
+git clone https://github.com/qadrLabs/catatku-deploy-demo.git /var/www/catatku
 cd /var/www/catatku
 ```
+
+This lesson clones `qadrLabs/catatku-deploy-demo`, a complete version of Catatku that already includes the Vite build configuration you set up in Lesson 16. If you have followed the course and pushed your own Catatku to GitHub, replace the URL above with your personal repository so you deploy the code you actually wrote. Do **not** clone the beginner-course repository here: it stops before the frontend build step, so `npm run build` later in this section would fail with errors because the Vite setup does not exist yet.
 
 `sudo mkdir -p` creates `/var/www/catatku` and any missing parent directories. The `chown -R $USER:$USER` transfers ownership to your current shell user; `$USER` expands to whoever is logged in, so you do not need to type your username manually. `git clone` then copies the repository into the directory. The final `cd` switches into the project root so every subsequent command runs from there. Your deploy user keeps ownership of the code from here on; Step 4 only adjusts the group and adds ACLs so `www-data` can read the code and write to the two directories Laravel needs.
 
@@ -114,7 +130,15 @@ php artisan key:generate
 
 `cp .env.example .env` creates the working `.env` from the template that ships with the repository. `php artisan key:generate` overwrites the `APP_KEY` line with a freshly generated 32-byte base64 string. This key is used to encrypt sessions and cookies, so each environment must have its own; reusing the local key in production is a security mistake.
 
-Open `/var/www/catatku/.env` in an editor and replace its contents with the following production configuration. Two values need your attention before saving: replace every occurrence of `catatku.example.com` with your own domain, and keep the `APP_KEY` line that `key:generate` just wrote (the `THE_VALUE_FROM_KEY_GENERATE` placeholder below stands for that generated value, so do not overwrite it).
+Open `/var/www/catatku/.env` in a terminal editor. This lesson uses `nano`, which is installed by default on Ubuntu and is the friendliest choice if you have never edited files over SSH before.
+
+```bash
+nano /var/www/catatku/.env
+```
+
+Inside nano, use the arrow keys to move around and type normally. When you are done, save with `Ctrl+O` then `Enter`, and exit with `Ctrl+X`. The shortcut hints at the bottom of the screen write `^` for the `Ctrl` key. You will use `nano` again later for the Nginx, Supervisor, and deploy-script files, so the same shortcuts apply throughout this lesson.
+
+Replace the file's contents with the following production configuration. Two values need your attention before saving: replace every occurrence of `catatku.example.com` with your own domain, and keep the `APP_KEY` line that `key:generate` just wrote (the `THE_VALUE_FROM_KEY_GENERATE` placeholder below stands for that generated value, so do not overwrite it).
 
 ```env
 APP_NAME=Catatku
@@ -184,7 +208,58 @@ Right after install, run the official security script. It sets a root password, 
 sudo mysql_secure_installation
 ```
 
-The script asks several questions interactively. Press Enter for the current root password (empty on a fresh install). When asked whether to switch to `unix_socket` authentication, answer `Y` (it is the default on Ubuntu and means root can log in via `sudo mariadb` without a password, while remote logins remain disabled). Set a strong root password when prompted, then answer `Y` to all four cleanup questions: remove anonymous users, disallow root login remotely, remove the test database, and reload privilege tables. These defaults are safe and recommended for any production server.
+The script asks several questions interactively. Answer them in this order:
+
+1. **Enter current password for root** — press Enter (it is empty on a fresh install).
+2. **Switch to unix_socket authentication** — type `Y`. This is the Ubuntu default and lets root log in via `sudo mariadb` without a password, while remote logins stay disabled.
+3. **Change the root password** — type `Y`, then type a strong password twice. (Nothing appears on screen as you type the password; that is normal.)
+4. **Remove anonymous users** — type `Y`.
+5. **Disallow root login remotely** — type `Y`.
+6. **Remove test database and access to it** — type `Y`.
+7. **Reload privilege tables now** — type `Y`.
+
+These defaults are safe and recommended for any production server. Your session should look like the example below, where every prompt was answered with `Y` (the password entries are hidden as you type).
+
+```
+gungun@qadrlabs:$ sudo mysql_secure_installation
+
+Enter current password for root (enter for none):
+OK, successfully used password, moving on...
+
+Switch to unix_socket authentication [Y/n] y
+Enabled successfully!
+Reloading privilege tables..
+ ... Success!
+
+Change the root password? [Y/n] y
+New password:
+Re-enter new password:
+Password updated successfully!
+Reloading privilege tables..
+ ... Success!
+
+Remove anonymous users? [Y/n] y
+ ... Success!
+
+Disallow root login remotely? [Y/n] y
+ ... Success!
+
+Remove test database and access to it? [Y/n] y
+ - Dropping test database...
+ ... Success!
+ - Removing privileges on test database...
+ ... Success!
+
+Reload privilege tables now? [Y/n] y
+ ... Success!
+
+Cleaning up...
+
+All done!  If you've completed all of the above steps, your MariaDB
+installation should now be secure.
+
+Thanks for using MariaDB!
+```
 
 ### Step 2: Create the Production Database and User
 
@@ -323,7 +398,11 @@ The symlink activates the new server block. `rm -f /etc/nginx/sites-enabled/defa
 
 ### Step 4: Verify in Browser
 
-Open `https://` followed by your own domain in a browser. The Catatku home page should load with the padlock icon indicating a valid certificate. If you see "502 Bad Gateway", check `sudo systemctl status php8.3-fpm` because Nginx could not reach the PHP-FPM socket. If you see "404 Not Found" on every route except `/`, the `root` directive in the Nginx config is pointing to the wrong directory. If you see a Let's Encrypt error or the browser warns about an invalid certificate, re-check that `dig +short catatku.example.com` returns the right IP and rerun Certbot.
+Open `https://` followed by your own domain in a browser. The Catatku home page should load with the padlock icon indicating a valid certificate. 
+
+![preview app](https://cdn.jsdelivr.net/gh/qadrLabs/catatku-deploy-demo@main/docs/screenshot/01-preview-app.png)
+
+If you see "502 Bad Gateway", check `sudo systemctl status php8.3-fpm` because Nginx could not reach the PHP-FPM socket. If you see "404 Not Found" on every route except `/`, the `root` directive in the Nginx config is pointing to the wrong directory. If you see a Let's Encrypt error or the browser warns about an invalid certificate, re-check that `dig +short catatku.example.com` returns the right IP and rerun Certbot.
 
 ---
 
@@ -367,7 +446,20 @@ sudo supervisorctl start catatku-worker:*
 sudo supervisorctl status
 ```
 
-`reread` rescans `/etc/supervisor/conf.d/` for new or changed configurations. `update` applies the changes by stopping or starting any program affected by the rescan. `start catatku-worker:*` starts every instance covered by the program (the `:*` wildcard expands to `catatku-worker_00` and `catatku-worker_01`). `status` lists every Supervisor-managed process; both worker entries must show `RUNNING`. From this moment on, the workers process queued jobs (emails, image processing, notifications, anything dispatched via `dispatch()` in your application) and will restart automatically across reboots and crashes.
+The output looks like this:
+
+```
+gungun@qadrlabs:/var/www/catatku$ sudo supervisorctl reread
+catatku-worker: available
+gungun@qadrlabs:/var/www/catatku$ sudo supervisorctl update
+catatku-worker: added process group
+gungun@qadrlabs:/var/www/catatku$ sudo supervisorctl start catatku-worker:*
+gungun@qadrlabs:/var/www/catatku$ sudo supervisorctl status
+catatku-worker:catatku-worker_00   STARTING
+catatku-worker:catatku-worker_01   STARTING
+```
+
+`reread` rescans `/etc/supervisor/conf.d/` for new or changed configurations. `update` applies the changes by stopping or starting any program affected by the rescan. `start catatku-worker:*` starts every instance covered by the program (the `:*` wildcard expands to `catatku-worker_00` and `catatku-worker_01`). `status` lists every Supervisor-managed process. Right after `start`, both entries may briefly show `STARTING` as in the example above; wait a few seconds and run `sudo supervisorctl status` again, and both worker entries must show `RUNNING`. From this moment on, the workers process queued jobs (emails, image processing, notifications, anything dispatched via `dispatch()` in your application) and will restart automatically across reboots and crashes.
 
 ---
 
@@ -385,6 +477,8 @@ php artisan down
 ```
 
 `php artisan down` writes a flag file at `storage/framework/maintenance.php`. As long as that file exists, every HTTP request returns `HTTP 503 Service Unavailable` with Laravel's default maintenance page. You run this (and every other command in this section) as your deploy user, with no `sudo`. The flag file lands in `storage/framework/`, which the ACL from Section 3 keeps readable by PHP-FPM, so the maintenance page shows correctly.
+
+![maintenance mode](https://cdn.jsdelivr.net/gh/qadrLabs/catatku-deploy-demo@main/docs/screenshot/02-maintenance-mode.png)
 
 ### Step 2: Pull the Latest Code
 
@@ -449,6 +543,8 @@ php artisan up
 
 `php artisan up` deletes the `storage/framework/maintenance.php` flag file. The next HTTP request is processed normally and your users see the updated site. End-to-end downtime for the whole sequence is usually under a minute.
 
+![preview app](https://cdn.jsdelivr.net/gh/qadrLabs/catatku-deploy-demo@main/docs/screenshot/01-preview-app.png)
+
 ### Step 8: Save as a Deploy Script
 
 Running seven commands by hand every time is tedious and error-prone. Save them as a shell script so you can deploy with a single command.
@@ -483,6 +579,75 @@ chmod +x /var/www/catatku/deploy.sh
 ```
 
 `set -e` makes the script abort immediately on the first command that fails, so a broken migration does not silently leave the app half-deployed. Run it as your deploy user with `/var/www/catatku/deploy.sh` (not `sudo`) from now on, and it performs the entire update in order. If any step fails, the app stays in maintenance mode until you fix the problem and finish the script manually with `php artisan up`.
+
+A successful run prints each step as it happens and ends with `Deploy finished.`:
+
+```
+gungun@qadrlabs:/var/www/catatku$ ./deploy.sh
+
+   INFO  Application is now in maintenance mode.
+
+From https://github.com/qadrLabs/catatku-deploy-demo
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+Installing dependencies from lock file
+Verifying lock file contents can be installed on current platform.
+Nothing to install, update or remove
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+
+   INFO  Discovering packages.
+
+  laravel/sanctum ....................................................... DONE
+  laravel/tinker ........................................................ DONE
+  nesbot/carbon ......................................................... DONE
+  nunomaduro/termwind ................................................... DONE
+
+added 63 packages, and audited 64 packages in 4s
+
+> build
+> vite build
+
+vite v8.0.16 building client environment for production...
+✓ 3 modules transformed.
+computing gzip size...
+public/build/manifest.json                  2.51 kB │ gzip:  0.43 kB
+public/build/assets/app-BK4ejP5Q.css        45.51 kB │ gzip: 10.49 kB
+public/build/assets/app-BvRk9kiK.js          0.00 kB │ gzip:  0.02 kB
+
+✓ built in 550ms
+
+   INFO  Nothing to migrate.
+
+
+   INFO  Clearing cached bootstrap files.
+
+  config ......................................................... 1.99ms DONE
+  cache ......................................................... 30.13ms DONE
+  compiled ....................................................... 1.28ms DONE
+  events ......................................................... 0.84ms DONE
+  routes ......................................................... 0.89ms DONE
+  views ......................................................... 77.70ms DONE
+
+
+   INFO  Caching framework bootstrap, configuration, and metadata.
+
+  config ........................................................ 16.78ms DONE
+  events ......................................................... 1.86ms DONE
+  routes ........................................................ 22.02ms DONE
+  views ......................................................... 49.00ms DONE
+
+
+   INFO  Broadcasting queue restart signal.
+
+
+   INFO  Application is now live.
+
+Deploy finished.
+```
+
+On the very first deploy you will see real output for the `git pull`, dependency installs, and migrations instead of "Already up to date" and "Nothing to migrate"; on later deploys with no new changes the output stays this short. The `From https://github.com/qadrLabs/catatku-deploy-demo` line reflects whichever repository you cloned in Section 3, so it will show your own repository URL if you used a personal one.
 
 ---
 
@@ -654,6 +819,6 @@ To monitor it externally, sign up at uptimerobot.com (free tier allows 50 monito
 
 ## Next Up - Lesson 18
 
-In this lesson you took Catatku from a clean Ubuntu VPS to a live HTTPS application at your own domain. You installed Nginx, PHP 8.3, MariaDB, Supervisor, and Certbot; pointed the domain at the server; cloned `https://github.com/qadrLabs/catatku` into `/var/www/catatku`; created a production `.env` with `APP_DEBUG=false` and `database` drivers for cache, queue, and session; set up a secure ownership model where your deploy user owns the code and `www-data` only reads it, with ACLs granting write access to `storage/` and `bootstrap/cache/`; obtained a free SSL certificate from Let's Encrypt; wrote an Nginx server block with HTTP-to-HTTPS redirect; ran two Supervisor-managed queue workers; and saved a `deploy.sh` script that updates the site with a single command using `git pull`.
+In this lesson you took Catatku from a clean Ubuntu VPS to a live HTTPS application at your own domain. You installed Nginx, PHP 8.3, MariaDB, Supervisor, and Certbot; pointed the domain at the server; cloned `https://github.com/qadrLabs/catatku-deploy-demo` (or your own repository) into `/var/www/catatku`; created a production `.env` with `APP_DEBUG=false` and `database` drivers for cache, queue, and session; set up a secure ownership model where your deploy user owns the code and `www-data` only reads it, with ACLs granting write access to `storage/` and `bootstrap/cache/`; obtained a free SSL certificate from Let's Encrypt; wrote an Nginx server block with HTTP-to-HTTPS redirect; ran two Supervisor-managed queue workers; and saved a `deploy.sh` script that updates the site with a single command using `git pull`.
 
 In Lesson 18, you will step back and review the full path you have walked across this course: a recap of all 17 features you added on top of the basic Catatku app, a comparison of beginner versus intermediate Laravel skills, and a roadmap of advanced topics including Livewire, Inertia.js, Scout, Horizon, and Cashier that you can explore next.

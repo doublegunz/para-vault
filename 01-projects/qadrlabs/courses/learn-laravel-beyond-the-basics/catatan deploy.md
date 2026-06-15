@@ -1,4 +1,4 @@
-
+cek versi php dan node
 ```
 gungun@qadrlabs:$ node -v
 v22.22.3
@@ -10,8 +10,9 @@ Zend Engine v4.3.6, Copyright (c) Zend Technologies
 
 ```
 
-review:
-arahkan clone dari repositori pribadi
+saat uji coba clone dari repo pribadi
+arahkan clone dari repositori pribadi atau https://github.com/qadrLabs/catatku-deploy-demo 
+
 
 ```
 sudo mkdir -p /var/www/catatku
