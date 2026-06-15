@@ -22,6 +22,10 @@ By the end of this lesson, the `entries` table will exist in your database with 
 - MySQL running (if you are using Laragon, click **Start All**)
 - Your MySQL credentials: database name, username, and password. If you are using Laragon with the default configuration, the username is `root` and the password is empty
 
+> **MySQL or MariaDB?** This course uses **MySQL**, which Laragon installs on Windows. If you are on Linux or macOS and have **MariaDB** instead, everything works exactly the same, because Laravel talks to both through the same `mysql` connection driver, so every command and `.env` setting in this lesson is identical.
+>
+> If you are **not** using Laragon (for example, you are on Linux, or on the free Laravel Herd whose database is a paid feature), make sure **MySQL or MariaDB is installed and running** before you continue, as mentioned back in Lesson 2.
+
 ---
 
 ## Step 1: Configure the Database Connection {#step-1-configure-the-database-connection}

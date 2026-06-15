@@ -11,17 +11,52 @@ You will set up a complete local development environment and create a fresh Lara
 ### What You'll Learn
 
 - How to install and configure Visual Studio Code as your code editor
-- How to install Laragon as your local server environment
-- How to upgrade PHP to version 8.3 (required for Laravel 13)
+- How to install Laragon as your local server environment (Windows example)
+- How to upgrade PHP to version 8.3 in Laragon (Windows example, required for Laravel 13)
 - How to create a new Laravel 13 project using Composer
 - How to navigate the Laravel folder structure
 - How to run the Laravel development server using Artisan
 
+### Tools You'll Need {#tools-youll-need}
+
+This course works on any operating system. Whatever platform you use, you only need three things in place before creating the project:
+
+- **PHP 8.3 or higher:** required by Laravel 13. This is what powers the `php artisan` commands you will run throughout the course. (The course has also been tested working on PHP 8.4.)
+- **Composer:** the PHP dependency manager, used to create the project with `composer create-project`.
+- **A code editor:** Visual Studio Code is recommended, but any editor works.
+
+You can confirm both tools are ready by running these commands in your terminal:
+
+```bash
+php -v        # must report version 8.3 or higher
+composer -V   # should print the Composer version
+```
+
+> **Note:** Node.js is **not** required for this beginner course. Front-end tooling and asset building are covered in the *Beyond the Basics* course.
+
+> **Database:** A database server is also part of this course. You do not need it yet (you will configure it in Lesson 5), but plan for it now, because **it is only bundled with Laragon**. This course uses **MySQL**, and **MariaDB works as a 100% drop-in replacement** since Laravel connects to both through the same `mysql` driver, so the common default on many Linux distributions is perfectly fine.
+>
+> - **Laragon (Windows):** MySQL is already included in both the free and paid versions. Nothing extra to install.
+> - **Laravel Herd (Windows/macOS):** the database service is part of the **paid Herd Pro** plan. On the free Herd, install **MySQL or MariaDB separately**.
+> - **Linux:** there is no bundled database, so install **MySQL or MariaDB** yourself before you reach Lesson 5.
+
 ### What You'll Need
 
-- A computer running Windows (this guide uses Windows as the primary OS)
+- A computer running Windows, Linux, or macOS (**this lesson uses Windows + Laragon as the worked example**)
 - An internet connection for downloading tools and packages
 - About 30 to 45 minutes of your time
+
+
+
+## Choose Your Operating System {#choose-your-operating-system}
+
+The rest of this lesson demonstrates the setup on **Windows using Laragon**, because that is what most learners in this course use. The goal for every platform is the same: get **PHP 8.3+** and **Composer** working in your terminal. Pick the path that matches your machine:
+
+- **Windows** → follow **Steps 1 to 5** below to install VS Code and Laragon. Laragon already includes MySQL, so you are fully covered. If you prefer an alternative, [Laravel Herd](https://herd.laravel.com) is an all-in-one option for Windows too (note: its database service requires the paid Herd Pro plan).
+- **Linux** → install PHP 8.3+ and Composer using the official [Laravel installation docs](https://laravel.com/docs) and the [Composer download guide](https://getcomposer.org/download/), then **skip to Step 6**. You will also need to install **MySQL or MariaDB** separately before Lesson 5, since nothing is bundled on Linux.
+- **macOS** → the easiest path is [Laravel Herd](https://herd.laravel.com), a native all-in-one environment that bundles PHP and a web server. Install Composer via the [Composer download guide](https://getcomposer.org/download/) if Herd does not provide it, then **skip to Step 6**. Note that Herd's database service is part of the paid Herd Pro plan, so on the free version you will install **MySQL or MariaDB** separately before Lesson 5.
+
+> **Tip:** No matter which OS you use, you are ready to continue once `php -v` reports version 8.3 or higher and `composer -V` prints a version. At that point, every platform rejoins the lesson at **Step 6: Create the Catatku Project**.
 
 
 
@@ -174,7 +209,9 @@ You should see the Composer help output, confirming that Composer is ready to us
 
 ## Step 4: Upgrade PHP to 8.3 {#step-4-upgrade-php-to-83}
 
-Laravel 13 requires PHP 8.3 or higher. The default Laragon installation comes with PHP 8.1, so we need to upgrade. This process involves downloading a newer PHP build and telling Laragon to use it.
+Laravel 13 requires PHP 8.3 or higher. This process involves downloading a newer PHP build and telling Laragon to use it.
+
+> **Important Note:** These manual download and extraction steps are only needed if you are on the **free Laragon 6** build, which ships an older PHP (such as 8.1). The current **Laragon Full** already bundles PHP 8.3, 8.4, and 8.5, so if you have it, you can simply select PHP 8.3 or newer via **Menu > PHP > Version** and skip straight to the "Select PHP 8.3 in Laragon" section below.
 
 ### Download PHP 8.3 {#download-php-83}
 
@@ -280,6 +317,8 @@ composer create-project --prefer-dist laravel/laravel catatku
 
 This command tells Composer to download the latest version of Laravel and set up the entire project structure inside a folder called `catatku`. The process requires an internet connection and may take a few minutes depending on your connection speed.
 
+> **Note:** This command is intentionally **not pinned** to a specific version, so it always installs the latest Laravel release. At the time of writing, that is **Laravel 13, which requires PHP 8.3 or higher**, and that is the version all examples in this course target. If a newer major version has been released by the time you take this course, the steps remain the same; only minor details may differ.
+
 In current Laravel 13 projects, this command may also create a local SQLite database file and run Laravel's default migrations automatically. That is expected. In this course, we will still use MySQL for Catatku so you can practice working with a database server. We will switch the project from Laravel's default SQLite setup to MySQL in the next lesson.
 
 Once the installation finishes, navigate into the project directory and open it in VS Code:
@@ -378,9 +417,9 @@ Think of Artisan as your project assistant. Instead of manually creating files a
 
 In this lesson, you built a complete local development environment from scratch and created your first Laravel 13 project. Here are the key takeaways:
 
+- **PHP 8.3 or higher and Composer** are the only hard requirements for this course, on any operating system. Once `php -v` reports 8.3+ and `composer -V` works, you are ready, whether you got there with Laragon, Laravel Herd, or a manual Linux/macOS install.
 - **Visual Studio Code** is your code editor. It provides syntax highlighting, an integrated terminal, and a rich extension ecosystem for PHP development.
-- **Laragon** bundles everything you need for local PHP development: a web server (Nginx), a database (MySQL), PHP, Node.js, and Composer.
-- **PHP 8.3 or higher** is required for Laravel 13. You can upgrade PHP in Laragon by downloading a new PHP build, extracting it to `C:\laragon\bin\php`, and selecting it in the Laragon menu.
+- On Windows, **Laragon** bundles everything you need for local PHP development: a web server (Nginx), a database (MySQL), PHP, Node.js, and Composer. In the Laragon setup used in this lesson, you upgrade or switch PHP versions through **Menu > PHP > Version**.
 - **Nginx** is the recommended web server for modern PHP applications, offering better performance than Apache for most use cases.
 - The `composer create-project` command scaffolds a complete Laravel project with all dependencies installed and configured.
 - The **Laravel folder structure** follows consistent conventions: `Controllers/` for logic, `Models/` for data, `migrations/` for database schemas, `views/` for templates, and `web.php` for routes.
