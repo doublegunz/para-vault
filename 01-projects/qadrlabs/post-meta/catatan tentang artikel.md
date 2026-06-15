@@ -121,3 +121,43 @@ The sequel article is written and verified, saved to 01-projects/qadrlabs/post
   Want me to proceed with the Indonesian translation, generate social media
   captions, or adjust anything in the draft?
 
+
+
+
+---
+
+1. Full markdown tutorial
+  Saved to:
+  01-projects/qadrlabs/post/01-draft/testing-time-dependent-code-in-laravel-with
+  -pest-travel-freezetime-and-date-assertions.md
+
+  Structure: PAS opening → Overview (Build / Learn / Need) → Step 1–7
+  (sequential, runnable, with real output) → three conceptual sections without
+  "Step" labels (helper comparison, closure auto-reset, timezone pitfalls) →
+  Conclusion with bold-led bullets. No em/en dashes, no --- separators, every H2
+  anchored, Laravel 13 conventions (#[Fillable], casts() method, --pest
+  --no-boost).
+
+  2. Article title
+
+  ▎ Testing Time-Dependent Code in Laravel with Pest: travel(), freezeTime, and 
+  ▎ Date Assertions
+
+  3. Short description (155 characters)
+ Stop flaky time-based tests in Laravel 13. Use Pest freezeTime(), travel() and travelTo() with date assertions to test trials, expiry, and token lifetimes.
+
+  4. Category and tags
+  - Category: Laravel / Testing
+  - Tags: laravel, pest, testing, time-travel, freezetime, carbon, laravel-13,
+  flaky-tests
+  
+  Notes:
+  - The demo is a lean single Subscription model with onTrial(), trialExpired(),
+  daysLeftOnTrial(), isActive(), exactly the scope you chose, and it opens
+  flaky-first per your second choice.
+  - I taught both freezeTime() (stop the clock) and freezeSecond()
+  (start-of-second, which makes strict equalTo() pass against the DB's
+  one-second precision), which turned out to be the cleanest honest explanation
+  for the microsecond failure.
+  - No Blade views are created (testing-focused), so the footer rule does not
+  apply here.
