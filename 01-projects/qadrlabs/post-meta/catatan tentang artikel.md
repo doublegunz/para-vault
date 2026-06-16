@@ -161,3 +161,38 @@ The sequel article is written and verified, saved to 01-projects/qadrlabs/post
   for the microsecond failure.
   - No Blade views are created (testing-focused), so the footer rule does not
   apply here.
+
+
+
+---
+  1. Article file
+
+  01-projects/qadrlabs/post/01-draft/laravel-log-rotation-daily-channel-and-logr
+  otate.md
+
+  Structure: PAS opening (the full-disk incident + the 23.4 GiB ncdu screenshot)
+  → Overview (Build / Learn / Need) → sequential Steps 1-5 (create project,
+  reproduce the single-file growth, switch to daily, cap retention with
+  LOG_DAILY_DAYS, Try It Out proving the prune to 7 files) → non-Step practical
+  section on logrotate for logs Laravel doesn't manage → conceptual reference on
+  channels & LOG_LEVEL → Conclusion with bold-led takeaways.
+
+  Every terminal block is real output captured from a live Laravel 13.15 demo
+  and a real logrotate 3.22 run in sandbox/: the 434K laravel.log, the
+  date-stamped laravel-2026-06-16.log, the 10-files-pruned-to-7 retention proof,
+  and the copytruncate + delaycompress worker rotation (115K → 5.5K gzip).
+
+  2. Title
+
+  How to Rotate Laravel Logs and Stop Them from Filling Your Disk
+
+  3. Short description (140 chars)
+
+  ▎ Laravel disk hit 100%? It is not your data, it is storage/logs. Rotate logs 
+  ▎ with the daily channel, LOG_DAILY_DAYS retention, and logrotate.
+
+  4. Category and tags
+
+  - Category: Laravel
+  - Tags: laravel, logging, log-rotation, monolog, logrotate, devops,
+  disk-space, production
