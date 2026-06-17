@@ -264,3 +264,49 @@ Deliverables
   wrote "Passing null as the options array" as shorthand for omitting options;
   the call itself omits the options argument, which is correct. Say the word if
   you'd like me to tighten that comment.
+
+
+
+---
+Saved to:
+  01-projects/qadrlabs/post/01-draft/cqrs-in-laravel-13-separate-your-read-and-w
+  rite-paths-with-commands-and-queries.md
+
+  Structure: PAS opening (fat-controller pain) with links to the
+  Service/Action/Use-Case and Repository articles → ## Overview (narrative +
+  Build/Learn/Need) → sequential Steps 1-7 (project & model →
+  CommandBus/QueryBus → write side → read side → controller/routes/view → Try It
+  Out → tests) → three conceptual sections without "Step" labels (commands vs
+  queries, CQRS vs CRUD/repositories/actions, when it is overkill) → ##
+  Conclusion with bold-led takeaways.
+
+  Every code block comes from a working project, and every terminal block is
+  real captured output: the migrate run, the three Tinker dispatches through the
+  buses, and php artisan test showing 7 passed (14 assertions). No em/en
+  dashes, no --- separators, all H2s anchored, footer inside the Blade view,
+  Laravel 13 conventions (#[Fillable], casts(), --pest --no-boost).
+
+  A note on Try It Out: artisan serve was unreliable in this sandbox (the
+  harness kept terminating the background process), so I verified the read/write
+  paths through Tinker dispatching real commands and queries against the buses,
+  which is honest reproducible output and is the medium the skill allows. The
+  HTTP endpoints and the rendered page are still proven by the passing Pest
+  feature test (it lists only published posts on the home page).
+
+  2. Title
+
+  CQRS in Laravel 13: Separate Your Read and Write Paths with Commands and
+  Queries
+
+  3. Short description (152 characters)
+
+  Learn pragmatic CQRS in Laravel 13: split writes and reads with command and
+  query objects, invokable handlers, and a tiny bus. One database, no event
+  sourcing.
+
+  4. Category and tags
+
+  - Category: Laravel
+  - Tags: laravel, laravel-13, cqrs, command-bus, query-bus, design-patterns,
+  architecture, read-model, dto, pest
+
