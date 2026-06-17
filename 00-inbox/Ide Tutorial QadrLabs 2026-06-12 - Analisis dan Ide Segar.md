@@ -106,7 +106,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 - **Outline singkat**: Install spatie/laravel-pdf + Browsershot/Chrome di Ubuntu → desain invoice Blade + Tailwind → generate & download → simpan ke storage + kirim via email → catatan deploy di VPS.
 - **Level**: Menengah
 
-### 9. Testing Time-Dependent Code in Laravel with Pest: travel(), freezeTime, and Date Assertions
+### 9. Testing Time-Dependent Code in Laravel with Pest: travel(), freezeTime, and Date Assertions (PUBLISHED)
 - **Kategori**: Laravel / Testing
 - **Kenapa**: Hampir semua tutorial situs ditutup test Pest, tapi belum ada yang membahas waktu — sumber flaky test nomor satu (expiry, scheduling, trial period). Backlog testing lama (queue, mocking, snapshot) tidak menyentuh ini.
 - **Target keyword**: `laravel test time travel`, `pest freezetime`
