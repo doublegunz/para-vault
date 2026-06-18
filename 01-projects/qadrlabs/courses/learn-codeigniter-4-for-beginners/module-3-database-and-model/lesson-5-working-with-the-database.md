@@ -170,6 +170,12 @@ class CreateEntriesTable extends Migration
 
 `addForeignKey('user_id', 'users', 'id', 'CASCADE', 'CASCADE')` creates a foreign key relationship. The first `CASCADE` means that if a user is updated, the change cascades. The second `CASCADE` means that if a user is deleted, all their entries are also deleted.
 
+> **Important: migration order matters.** CodeIgniter runs migrations in the order of the timestamp in their filename (the `YYYY-MM-DD-HHMMSS` prefix). When two files share the exact same timestamp, CodeIgniter falls back to the class name in alphabetical order. Because the `entries` table has a foreign key to `users`, the `users` table must be created first.
+>
+> You created `CreateUsersTable` before `CreateEntriesTable`, so normally its timestamp is earlier and everything works. But if you happened to generate both files within the same second, their timestamps are identical, and `CreateEntriesTable` will sort before `CreateUsersTable` (because "E" comes before "U"). Running `php spark migrate` then fails with a foreign key error, because `entries` tries to reference a `users` table that does not exist yet.
+>
+> If you hit this, open the `app/Database/Migrations/` folder and rename the `..._CreateEntriesTable.php` file so its seconds value is one higher than the users file (for example, change `...-120000_CreateEntriesTable.php` to `...-120001_CreateEntriesTable.php`). Then run `php spark migrate` again.
+
 ---
 
 ## Step 4: Run the Migrations {#step-4-run-the-migrations}
@@ -188,6 +194,8 @@ Running: App\Database\Migrations\CreateEntriesTable
 
 2 migration(s) were run.
 ```
+
+Notice that `CreateUsersTable` runs first and `CreateEntriesTable` second. That is the correct order. If you see them reversed or get a foreign key error instead, revisit the note at the end of Step 3.
 
 ---
 

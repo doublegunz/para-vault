@@ -38,9 +38,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/entries/create', 'EntryController::create');
     $routes->post('/entries', 'EntryController::store');
     $routes->get('/entries/(:num)', 'EntryController::show/$1');
-    $routes->get('/entries/(:num)/edit', 'EntryController::edit/$1'); // add this life of code
-    $routes->post('/entries/(:num)/update', 'EntryController::update/$1'); // add this life of code
-    $routes->post('/entries/(:num)/delete', 'EntryController::destroy/$1'); // add this life of code
+    $routes->get('/entries/(:num)/edit', 'EntryController::edit/$1'); // add this line of code
+    $routes->post('/entries/(:num)/update', 'EntryController::update/$1'); // add this line of code
+    $routes->post('/entries/(:num)/delete', 'EntryController::destroy/$1'); // add this line of code
 });
 ```
 
@@ -54,9 +54,9 @@ $routes->group('', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/entries/create', 'EntryController::create');
     $routes->post('/entries', 'EntryController::store');
     $routes->get('/entries/(:num)', 'EntryController::show/$1');
-    $routes->get('/entries/(:num)/edit', 'EntryController::edit/$1'); // add this life of code
-    $routes->post('/entries/(:num)/update', 'EntryController::update/$1'); // add this life of code
-    $routes->post('/entries/(:num)/delete', 'EntryController::destroy/$1'); // add this life of code
+    $routes->get('/entries/(:num)/edit', 'EntryController::edit/$1'); // add this line of code
+    $routes->post('/entries/(:num)/update', 'EntryController::update/$1'); // add this line of code
+    $routes->post('/entries/(:num)/delete', 'EntryController::destroy/$1'); // add this line of code
 });
 
 // ONLY FOR DEVELOPMENT - delete after lesson 10
@@ -92,6 +92,65 @@ Reopen `EntryController`, then locate the `show()` method.
     }
 ```
 
+### Create a ForbiddenException for entries that are not yours {#create-a-forbiddenexception}
+
+In Lesson 7, `show()` returned a 403 with `$this->response->setStatusCode(403, 'Forbidden')`. That works when the check lives directly inside the action. But we are about to move the check into a shared helper, and a helper cannot stop the request by returning a response. It has to `throw`.
+
+For the "entry does not exist" case we already throw `PageNotFoundException`, which CodeIgniter turns into a 404. For the "entry exists but is not yours" case we want a **403 Forbidden** (the user is logged in, they are just not allowed to touch this entry). CodeIgniter only maps an exception to an HTTP status code when that exception implements `HTTPExceptionInterface`, and there is no built-in 403 exception. So we create a small one of our own, mirroring how `PageNotFoundException` produces a 404.
+
+Create `app/Exceptions/ForbiddenException.php`:
+
+```php
+<?php
+
+namespace App\Exceptions;
+
+use CodeIgniter\Exceptions\HTTPExceptionInterface;
+use RuntimeException;
+
+class ForbiddenException extends RuntimeException implements HTTPExceptionInterface
+{
+    public function __construct(string $message = 'You are not allowed to access this entry.')
+    {
+        parent::__construct($message, 403);
+    }
+}
+```
+
+The `403` passed to `parent::__construct()` is the exception code, and because the class implements `HTTPExceptionInterface`, CodeIgniter uses it as the HTTP status code.
+
+To show a clean page instead of the debug screen when this happens, add an error view at `app/Views/errors/html/error_403.php`:
+
+```php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>403 Forbidden</title>
+    <style>
+        body { height: 100%; background: #fafafa; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; color: #777; font-weight: 300; }
+        h1 { font-weight: lighter; font-size: 3rem; margin: 0; color: #222; }
+        .wrap { max-width: 1024px; margin: 5rem auto; padding: 2rem; background: #fff; text-align: center; border: 1px solid #efefef; border-radius: 0.5rem; }
+        p { margin-top: 1.5rem; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>403</h1>
+    <p>
+        <?php if (ENVIRONMENT !== 'production') : ?>
+            <?= nl2br(esc($message)) ?>
+        <?php else : ?>
+            You are not allowed to view this page.
+        <?php endif; ?>
+    </p>
+</div>
+</body>
+</html>
+```
+
+CodeIgniter automatically uses `error_403.php` for any exception whose status code is 403.
+
 Next, we'll extract the ownership check into a new method, `findOwnedEntry()`, and then modify the `show()` method.
 ```php
     public function show($id)
@@ -110,13 +169,13 @@ Next, we'll extract the ownership check into a new method, `findOwnedEntry()`, a
         }
 
         if ( (int) $entry->user_id !== (int) session()->get('user_id')) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException();
+            throw new \App\Exceptions\ForbiddenException();
         }
 
         return $entry;
     }
 ```
-We extracted the ownership check into a `findOwnedEntry()` private method to avoid repeating the same code in every method. `$entryModel->update($id, [...])` updates the record. `$entryModel->delete($id)` removes it permanently.
+We extracted the ownership check into a `findOwnedEntry()` private method to avoid repeating the same code in every method. It returns the entry when everything is fine, throws a **404** (`PageNotFoundException`) when the entry does not exist, and throws a **403** (`ForbiddenException`) when the entry belongs to someone else. This keeps the same 403 behavior we wrote in Lesson 7, now in one reusable place. `$entryModel->update($id, [...])` updates the record. `$entryModel->delete($id)` removes it permanently.
 
 Next we add `edit()`, `update()`, and `destroy()` to `EntryController`:
 
@@ -220,7 +279,7 @@ class EntryController extends BaseController
         }
 
         if ( (int) $entry->user_id !== (int) session()->get('user_id')) {
-            throw new \CodeIgniter\Exceptions\PageNotFoundException();
+            throw new \App\Exceptions\ForbiddenException();
         }
 
         return $entry;
@@ -317,7 +376,7 @@ After clicking the button, the entry is successfully updated, and the entry deta
 
 ![data updated](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-codeigniter-4-course-assets@main/13-entry-updated.webp)
 
-Selanjutnya kita kembali ke halaman daftar entry, lalu tekan link delete pada salah satu entry. Setelah kita klik akan tampil pop up konfirmasi untuk proses delete.
+Next, go back to the entries list page and click the delete link on one of the entries. A confirmation popup will appear before the entry is deleted.
 
 ![test delete data](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-codeigniter-4-course-assets@main/14-test-delete-data.webp)
 
@@ -335,7 +394,7 @@ The CRUD cycle is now complete. Here are the key takeaways:
 - `old('field', $default)` with a **second argument** is essential for edit forms.
 - `$model->update($id, $data)` modifies an existing record. `$model->delete($id)` removes it permanently.
 - Extract repeated logic into **private helper methods** like `findOwnedEntry()` to keep controller methods clean.
-- Every method that operates on a specific entry needs an **ownership check** to prevent unauthorized access.
+- Every method that operates on a specific entry needs an **ownership check** to prevent unauthorized access. `findOwnedEntry()` centralizes it: a missing entry returns **404**, and an entry that belongs to someone else returns **403** through the custom `ForbiddenException`.
 - The `index()` method will be updated in Lesson 11 to scope entries to the authenticated user.
 
 In the next two lessons, we will build the real authentication system and remove the `/dev-login` shortcut.

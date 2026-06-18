@@ -259,6 +259,6 @@ Here are the key takeaways:
 - `$model->find($id)` retrieves a single record by primary key. Check for `null` to handle 404 cases.
 - Ownership checks (`$entry->user_id !== session user_id`) prevent unauthorized access. This will improve with Filters in the next lesson.
 - `session()->getFlashdata('success')` displays one-time messages stored in the session.
-- `csrf_field()` generates a hidden CSRF token field for forms.
+- `csrf_field()` generates a hidden CSRF token field for forms. The token is rendered now, but CodeIgniter does not validate it yet. We will turn on real CSRF protection in Lesson 8 by enabling the `csrf` filter.
 
 In the next lesson, we will build the form for creating new entries with validation and secure saving.

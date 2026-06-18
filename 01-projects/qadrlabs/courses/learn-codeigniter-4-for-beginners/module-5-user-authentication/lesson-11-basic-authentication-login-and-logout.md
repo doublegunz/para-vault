@@ -262,7 +262,7 @@ Update `app/Views/home.php` with real navigation links:
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Catatku - Simple Journal App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-50 text-gray-900 font-sans antialiased selection:bg-blue-100">
     <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white">

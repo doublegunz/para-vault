@@ -60,6 +60,35 @@ public array $aliases = [
 ];
 ```
 
+### Enable CSRF Protection {#enable-csrf-protection}
+
+Our forms already include `csrf_field()` (you added it in Lesson 7, and the create form below uses it too). But generating the token is only half the job. By default, CodeIgniter does **not** validate that token, so it provides no real protection yet. We need to turn on the `csrf` filter.
+
+Still inside `app/Config/Filters.php`, find the `$globals` array. The `csrf` filter is there but commented out. Uncomment it so it runs before every request:
+
+```php
+public array $globals = [
+    'before' => [
+        // 'honeypot',
+        'csrf',
+        // 'invalidchars',
+    ],
+    'after' => [
+        // 'honeypot',
+        // 'secureheaders',
+    ],
+];
+```
+
+With this enabled, CodeIgniter checks the CSRF token on every request that changes data (POST, PUT, PATCH, DELETE). If the token is missing or wrong, the request is rejected (in `development` you will see a 403 error page). Read-only requests like GET are not affected, so links and pages such as `/dev-login` keep working.
+
+A few details worth knowing (configured in `app/Config/Security.php`):
+
+- The token field is named `csrf_test_name`, which is exactly what `csrf_field()` renders.
+- `$regenerate = true` means a fresh token is issued on every request, which is more secure. The browser handles this automatically because each page reload prints a new token.
+
+From now on, every form in Catatku is genuinely protected against CSRF, not just decorated with a hidden field.
+
 ---
 
 ## Step 2: Add the Routes {#step-2-add-the-routes}
@@ -226,7 +255,7 @@ Create `app/Views/entries/create.php`:
 <?= $this->endSection() ?>
 ```
 
-`csrf_field()` generates a hidden CSRF token. `old('title')` retrieves the previously submitted value after a validation failure. The error display pattern checks `$errors['field']` from the flashed session data.
+`csrf_field()` generates a hidden CSRF token, and because we enabled the `csrf` filter in Step 1, that token is now actually validated on the server when the form is submitted, not just printed into the HTML. `old('title')` retrieves the previously submitted value after a validation failure. The error display pattern checks `$errors['field']` from the flashed session data.
 
 ---
 
@@ -257,7 +286,7 @@ Here are the key takeaways:
 - `$routes->group('', ['filter' => 'auth'], ...)` applies a filter to all routes in the group.
 - `$this->validate($rules)` checks input against rules like `required` and `max_length[255]`.
 - `redirect()->back()->withInput()` preserves form input after validation failure.
-- `csrf_field()` generates a CSRF token for form security.
+- `csrf_field()` generates a CSRF token, but real protection only kicks in once you enable the `csrf` filter in `app/Config/Filters.php` (`$globals['before']`). With it on, CodeIgniter rejects any POST that lacks a valid token.
 - `old('field')` retrieves preserved input from the session.
 - `session()->get('user_id')` provides the authenticated user's ID for secure data insertion.
 

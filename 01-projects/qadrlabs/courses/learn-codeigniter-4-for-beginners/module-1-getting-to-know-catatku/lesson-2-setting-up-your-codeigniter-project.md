@@ -2,31 +2,65 @@ You have just decided to learn CodeIgniter, one of the most lightweight and begi
 
 ## Overview {#overview}
 
+In this lesson, we will focus on the tools and the first CodeIgniter project. The goal is not to memorize every configuration option yet, but to make sure you can create, open, run, and inspect a fresh CodeIgniter application.
+
 ### What You'll Build
 
-You will set up a complete local development environment and create a fresh CodeIgniter 4 project called **Catatku**, which we will build upon throughout this course. By the end of this lesson, you will see the CodeIgniter welcome page running in your browser.
+You will set up a complete local development environment and create a fresh CodeIgniter 4 project called **Catatku** (Indonesian for "My Notes"), which we will build upon throughout this course. By the end of this lesson, you will see the CodeIgniter welcome page running in your browser.
 
 ### What You'll Learn
 
 - How to install and configure Visual Studio Code as your code editor
-- How to install Laragon as your local server environment
-- How to upgrade PHP to version 8.3
+- How to install Laragon as your local server environment (Windows example)
+- How to upgrade PHP to version 8.3 in Laragon (Windows example)
 - How to create a new CodeIgniter 4 project using Composer
 - How to navigate the CodeIgniter folder structure
 - How to run the development server using Spark
 
+### Tools You'll Need {#tools-youll-need}
+
+This course works on any operating system. Whatever platform you use, you only need four things in place before creating the project:
+
+- **PHP 8.2 or higher:** required by CodeIgniter 4. This is what powers the `php spark` commands you will run throughout the course. (The course has also been tested working on PHP 8.3 and newer.)
+- **Composer:** the PHP dependency manager, used to create the project with `composer create-project`.
+- **MySQL (or MariaDB):** the database server that stores your data. You will not configure it until Lesson 5, but install it now so it is ready. It comes bundled with Laragon; on other setups you install it separately (see the note below).
+- **A code editor:** Visual Studio Code is recommended, but any editor works.
+
+You can confirm these tools are ready by running these commands in your terminal:
+
+```bash
+php -v            # must report version 8.2 or higher
+composer -V       # should print the Composer version
+mysql --version   # should print the MySQL or MariaDB version
+```
+
+> **Note:** Node.js is **not** required for this beginner course.
+
+> **Database:** A database server is also part of this course. You do not need it yet (you will configure it in Lesson 5), but plan for it now, because **it is only bundled with Laragon**. This course uses **MySQL**, and **MariaDB works as a drop-in replacement** since CodeIgniter connects to both through the same `MySQLi` driver, so the common default on many Linux distributions is perfectly fine.
+>
+> - **Laragon (Windows):** MySQL is already included in both the free and paid versions. Nothing extra to install.
+> - **Linux:** there is no bundled database, so install **MySQL or MariaDB** yourself before you reach Lesson 5.
+> - **macOS:** install **MySQL or MariaDB** separately (for example via Homebrew) before Lesson 5.
+
 ### What You'll Need
 
-- A computer running Windows (this guide uses Windows as the primary OS)
+- A computer running Windows, Linux, or macOS (**this lesson uses Windows + Laragon as the worked example**)
 - An internet connection for downloading tools and packages
 - About 30 to 45 minutes of your time
 
 ---
 
+## Choose Your Operating System {#choose-your-operating-system}
 
+The rest of this lesson demonstrates the setup on **Windows using Laragon (free version)**, because that is what most learners in this course use. The goal for every platform is the same: get **PHP 8.2 or higher** and **Composer** working in your terminal. Pick the path that matches your machine:
 
+- **Windows** → follow **Steps 1 to 5** below to install VS Code and Laragon. Laragon already includes MySQL, so you are fully covered.
+- **Linux** → install PHP 8.2+ and Composer using your distribution's package manager and the [Composer download guide](https://getcomposer.org/download/), then **skip to Step 6**. You will also need to install **MySQL or MariaDB** separately before Lesson 5, since nothing is bundled on Linux.
+- **macOS** → install PHP 8.2+ and Composer (for example with [Homebrew](https://brew.sh): `brew install php composer`), then **skip to Step 6**. Install **MySQL or MariaDB** separately before Lesson 5.
 
+> **Tip:** No matter which OS you use, you are ready to continue once `php -v` reports version 8.2 or higher and `composer -V` prints a version. At that point, every platform rejoins the lesson at **Step 6: Create the Catatku Project**.
 
+---
 
 ## Step 1: Install Visual Studio Code {#step-1-install-visual-studio-code}
 
@@ -82,7 +116,7 @@ You can download Laragon from the [official Laragon website](https://laragon.org
 
 **Important Note:**
 - Since Laragon version 7 was released, the download page now serves Laragon version 7. Based on a [discussion in the Laragon repository](https://github.com/leokhoa/laragon/discussions/960), Laragon version 7 **is no longer free** and uses a **Paid Licensing model**.
-- If you want to use the **free version of Laragon**, you can download it directly from GitHub: 
+- This course uses the **free version of Laragon**, which you can download directly from GitHub:
  
 ```
 https://github.com/leokhoa/laragon/releases/download/6.0.0/laragon-wamp.exe
@@ -118,7 +152,7 @@ After Laragon opens, you will see its intuitive and user-friendly interface.
 
 ![laragon main screen](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/08-tampilan-laragon.png)
 
-To start services like Apache and MySQL, simply click **Start All**. Laragon will launch all the services needed for web application development, including Apache, MySQL, and PHP.
+To start services like MySQL, simply click **Start All**. Laragon will launch the bundled services, including MySQL and PHP.
 
 ### Opening a Project Folder in Visual Studio Code {#opening-a-project-folder-in-visual-studio-code}
 
@@ -157,16 +191,6 @@ You should see output showing the PHP version installed in Laragon:
 
 As shown in the image above, the installed PHP version is PHP 8.1.
 
-Next, check the Node.js version by running:
-
-```bash
-node -v
-```
-
-![check nodejs version](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/13%20check%20node%20js.png)
-
-The output shows that the Node.js version installed in Laragon is 18.8.0.
-
 Finally, verify that Composer is working by running:
 
 ```bash
@@ -181,7 +205,9 @@ You should see the Composer help output, confirming that Composer is ready to us
 
 ## Step 4: Upgrade PHP to 8.3 {#step-4-upgrade-php-to-83}
 
-Laravel 13 requires PHP 8.3 or higher. The default Laragon installation comes with PHP 8.1, so we need to upgrade. This process involves downloading a newer PHP build and telling Laragon to use it.
+CodeIgniter 4 requires PHP 8.2 or higher. The free Laragon 6 build ships with PHP 8.1, so we need to upgrade. This process involves downloading a newer PHP build and telling Laragon to use it.
+
+> **Important Note:** These manual download and extraction steps are only needed if you are on the **free Laragon 6** build, which ships an older PHP (such as 8.1). The current **Laragon Full** already bundles PHP 8.3, 8.4, and 8.5, so if you have it, you can simply select PHP 8.3 or newer via **Menu > PHP > Version** and skip straight to the "Select PHP 8.3 in Laragon" section below.
 
 ### Download PHP 8.3 {#download-php-83}
 
@@ -192,7 +218,7 @@ Laravel 13 requires PHP 8.3 or higher. The default Laragon installation comes wi
 
 The exact patch version may be different by the time you read this lesson. That is fine. As long as the file starts with `php-8.3` and uses the x64 NTS build, it is suitable for this course.
 
-We are downloading the NTS (Non Thread Safe) version because Laragon uses it by default. The NTS build is optimized for single-threaded environments like Nginx with PHP-FPM, which is the setup we will configure next.
+We are downloading the NTS (Non Thread Safe) version because Laragon uses it by default.
 
 ### Extract the PHP Files to Laragon {#extract-the-php-files-to-laragon}
 
@@ -215,45 +241,13 @@ Once the download is complete, follow these steps:
 
    ![switch php version](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/5%20switch%20php%20version.png)
 
-This tells Laragon to use the new PHP 8.3 build for both the web server and the CLI. No restart is needed; Laragon picks up the change immediately.
-
-### Configure Nginx as the Web Server {#configure-nginx-as-the-web-server}
-
-For better performance and compatibility with modern PHP applications, we will switch from Apache to Nginx:
-
-1. In Laragon, open the **Preferences** menu.
-
-   ![click preferences menu](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/6%20klik%20menu%20preferences.png)
-
-2. Go to the **Services & Ports** tab. Uncheck **Apache** and enable **Nginx** by checking its checkbox. Set the Nginx port to **80**.
-
-   ![enable nginx](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/7%20enable%20nginx.png)
-
-3. Go back to the main Laragon interface and click **Start All** to launch Nginx and the other services.
-
-   ![start all services](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/8%20start%20all%20services.png)
+This tells Laragon to use the new PHP 8.3 build for the command line. No restart is needed; Laragon picks up the change immediately.
 
 
 
-## Step 5: Verify the PHP 8.3 Installation {#step-5-verify-the-php-83-installation}
+## Step 5: Verify the PHP Version {#step-5-verify-the-php-version}
 
-After configuring everything, we need to confirm that PHP 8.3 is properly set up and recognized by both the web server and the command line.
-
-### Verify PHP in the Browser {#verify-php-in-the-browser}
-
-1. In Laragon, click the **Web** button to open `localhost` in your browser.
-
-   ![open localhost in browser](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/9%20buka%20localhost%20di%20browser.png)
-
-2. The localhost page should display a PHP 8.3 version, such as `PHP version: 8.3.x`, confirming that the web server is using the correct PHP version.
-
-   ![localhost page](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/10%20halaman%20localhost.png)
-
-3. Click the **info** link on the localhost page to view the full PHP configuration through `phpinfo()`.
-
-   ![phpinfo page](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/12%20halaman%20info%20menampilkan%20php%20versi%208.3.png)
-
-### Verify PHP in the CLI {#verify-php-in-the-cli}
+After switching the PHP version, confirm that the command line now uses PHP 8.3. Since we will run the application with CodeIgniter's built-in server (Spark) later, the command line is the only place we need to check.
 
 1. Go back to Laragon and click **Terminal** to open Cmder or the built-in terminal.
 
@@ -273,7 +267,7 @@ After configuring everything, we need to confirm that PHP 8.3 is properly set up
 
    ![check php version in cmder](https://cdn.jsdelivr.net/gh/gungunpriatna/tes-repositori@master/how-to/install-tools/laragon/update-php-version/14%20cek%20versi%20php%20di%20cmder%20-%202.png)
 
-Both the browser and the CLI now confirm that PHP 8.3 is active. We are ready to create our Laravel project.
+The CLI now confirms that PHP 8.3 is active. We are ready to create our CodeIgniter project.
 
 
 
@@ -320,7 +314,7 @@ This enables detailed error messages during development. In production, you woul
 
 ## Step 8: Run the Development Server {#step-8-run-the-development-server}
 
-CodeIgniter provides a built-in development server through Spark, its command-line tool. From inside the `catatku` folder, run:
+CodeIgniter provides a built-in development server through Spark, its command-line tool. Because we use this server, you do not need to configure Laragon's Apache or Nginx for this course. From inside the `catatku` folder, run:
 
 ```bash
 php spark serve
@@ -400,12 +394,12 @@ You do not need to memorize these now. Each command will be reintroduced when we
 
 In this lesson, you built a complete local development environment from scratch and created your first CodeIgniter 4 project. Here are the key takeaways:
 
+- **PHP 8.2 or higher and Composer** are the only hard requirements for this course, on any operating system. Once `php -v` reports 8.2+ and `composer -V` works, you are ready, whether you got there with Laragon on Windows or a manual Linux/macOS install.
 - **Visual Studio Code** is your code editor with an integrated terminal and a rich extension ecosystem for PHP development.
-- **Laragon** bundles everything you need for local PHP development: a web server, MySQL, PHP, and Composer.
-- **PHP 8.3** is recommended for CodeIgniter 4. You can upgrade PHP in Laragon by downloading a new build and selecting it in the menu.
+- On Windows, **Laragon** bundles everything you need for local PHP development: MySQL, PHP, and Composer. You switch PHP versions through **Menu > PHP > Version**.
 - The `composer create-project codeigniter4/appstarter catatku` command scaffolds a complete CodeIgniter project.
 - Rename the `env` file to `.env` and set `CI_ENVIRONMENT = development` to enable detailed error messages.
 - The **CodeIgniter folder structure** follows clear conventions: `Controllers/` for logic, `Models/` for data, `Migrations/` for database schemas, `Views/` for templates, and `Routes.php` for URL mapping.
-- **Spark** is CodeIgniter's CLI tool for generating files, running migrations, starting the dev server, and more.
+- **Spark** is CodeIgniter's CLI tool for generating files, running migrations, starting the dev server, and more. We run the app with `php spark serve`, so no separate web server setup is needed.
 
 In the next lesson, we will create our first routes and views, and you will see your own content appear in the browser for the first time.
