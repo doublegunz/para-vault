@@ -38,20 +38,47 @@ You will build a tiny blog where the write path and the read path never touch ea
 - Comfort with Eloquent, controllers, and validation
 - Ideally, the two prior articles in this series linked above
 
-## Step 1: Create the Project and the Post Model {#step-1-create-the-project-and-the-post-model}
+## Step 1: Create the Project {#step-1-create-the-project}
 
-Every step in this build depends on the previous one, so the work is genuinely sequential. We start by creating a fresh project and the domain it will operate on: a `Post` that belongs to an author and can have many comments.
+Every step in this build depends on the previous one, so the work is genuinely sequential. We start with a fresh project that already has SQLite and Pest wired up.
 
-Create the project with SQLite and Pest already wired up:
+Create the project and move into it:
 
 ```bash
 laravel new cqrs-demo --no-interaction --database=sqlite --pest --no-boost
 cd cqrs-demo
 ```
 
-The `--pest` flag installs Pest as the test runner, and `--database=sqlite` gives you a zero-config database file that Laravel migrates automatically on creation. There is nothing else to configure before you start writing code.
+The `--pest` flag installs Pest as the test runner, and `--database=sqlite` gives you a zero-config database file that Laravel migrates automatically on creation. There is nothing else to configure before you start writing code. With the project in place, we can model the domain it will operate on.
 
-Define the `posts` table. Open the generated migration and describe the columns the write side needs: an author, a title, a body, and a nullable `published_at` timestamp that distinguishes a draft from a published post.
+## Step 2: Create the Models and Migrations {#step-2-create-the-models-and-migrations}
+
+The domain for this build is small: a `Post` that belongs to an author and can have many comments. We generate each model together with its migration and factory in one command, then fill in the details. The factories matter because the tests later lean on them to fabricate posts and comments.
+
+Generate the `Post` and `Comment` models with their migrations and factories attached:
+
+```bash
+php artisan make:model Post -mf
+php artisan make:model Comment -mf
+```
+
+Expected output:
+
+```
+   INFO  Model [app/Models/Post.php] created successfully.
+
+   INFO  Factory [database/factories/PostFactory.php] created successfully.
+
+   INFO  Migration [database/migrations/xxxx_xx_xx_xxxxxx_create_posts_table.php] created successfully.
+
+   INFO  Model [app/Models/Comment.php] created successfully.
+
+   INFO  Factory [database/factories/CommentFactory.php] created successfully.
+
+   INFO  Migration [database/migrations/xxxx_xx_xx_xxxxxx_create_comments_table.php] created successfully.
+```
+
+The `-m` flag generates the matching migration and `-f` generates the factory, so a single command per model gives you the model class, an empty migration, and a stub factory ready to edit. Start with the `posts` migration. Open the generated file and describe the columns the write side needs: an author, a title, a body, and a nullable `published_at` timestamp that distinguishes a draft from a published post.
 
 ```php
 <?php
@@ -85,7 +112,7 @@ return new class extends Migration
 };
 ```
 
-Create a second migration for comments so the read side has something to aggregate. Run `php artisan make:migration create_comments_table` and fill it in:
+Now open the `comments` migration so the read side has something to aggregate, and fill it in:
 
 ```php
 <?php
@@ -115,7 +142,7 @@ return new class extends Migration
 };
 ```
 
-Now create the models. The `Post` model uses the Laravel 13 `#[Fillable]` attribute instead of the old `protected $fillable` property, and the `casts()` method to turn `published_at` into a `Carbon` instance:
+Now fill in the generated models. The `Post` model uses the Laravel 13 `#[Fillable]` attribute instead of the old `protected $fillable` property, and the `casts()` method to turn `published_at` into a `Carbon` instance:
 
 ```php
 <?php
@@ -182,7 +209,68 @@ class Comment extends Model
 }
 ```
 
-Run the migration to create both tables:
+Fill in the generated factories next, because the tests in the final step build their data through them. The `PostFactory` produces a draft by default and exposes a `published()` state so a test can ask for a published post explicitly. Open `database/factories/PostFactory.php`:
+
+```php
+<?php
+
+// database/factories/PostFactory.php
+
+namespace Database\Factories;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class PostFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            // A fresh post belongs to a generated author and starts as a
+            // draft. published_at stays null until the publish state is used.
+            'user_id'      => User::factory(),
+            'title'        => fake()->sentence(),
+            'body'         => fake()->paragraphs(3, true),
+            'published_at' => null,
+        ];
+    }
+
+    // A named state for published posts. Calling Post::factory()->published()
+    // stamps published_at, which is exactly what the read side filters on.
+    public function published(): static
+    {
+        return $this->state(fn () => ['published_at' => now()]);
+    }
+}
+```
+
+The `definition()` method describes a sensible default row, and `published()` overrides only `published_at` when a test needs a live post. Now the `CommentFactory`, which just needs a body and a post to attach to. Open `database/factories/CommentFactory.php`:
+
+```php
+<?php
+
+// database/factories/CommentFactory.php
+
+namespace Database\Factories;
+
+use App\Models\Post;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class CommentFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            // post_id defaults to a generated post, but tests usually pass an
+            // explicit post_id to attach comments to a post they already made.
+            'post_id' => Post::factory(),
+            'body'    => fake()->sentence(),
+        ];
+    }
+}
+```
+
+With the models, migrations, and factories in place, run the migration to create both tables:
 
 ```bash
 php artisan migrate
@@ -199,7 +287,7 @@ Expected output:
 
 The domain now exists. Next we build the machinery that will carry commands and queries to their handlers.
 
-## Step 2: Define the Command Bus and Query Bus {#step-2-define-the-command-bus-and-query-bus}
+## Step 3: Define the Command Bus and Query Bus {#step-3-define-the-command-bus-and-query-bus}
 
 Before writing any commands, we need something to dispatch them. A bus is just a small object that takes a message (a command or a query), finds the right handler for it, and runs it. We will build both buses by hand so there is no magic to explain away later. The whole idea fits in a naming convention and one line of container resolution.
 
@@ -323,7 +411,7 @@ class QueryBus
 
 Both buses depend only on `Illuminate\Contracts\Container\Container`, which Laravel can resolve automatically, so there is no service provider binding to write. If you prefer not to maintain your own buses, Laravel ships a native command bus through the `Illuminate\Contracts\Bus\Dispatcher` contract and `Bus::dispatch()`, the same one queued jobs use. The hand-rolled version here keeps the mechanism in plain sight, which is the point of this article.
 
-## Step 3: Build the Write Side with Commands and Handlers {#step-3-build-the-write-side}
+## Step 4: Build the Write Side with Commands and Handlers {#step-4-build-the-write-side}
 
 With the bus in place, we can model the write path. A command is an immutable description of an intent to change state, and a handler is the one place that knows how to carry that intent out. Create the directory `app/Commands` and start with `CreatePostCommand`:
 
@@ -431,7 +519,7 @@ class PublishPostHandler
 
 If publishing later grows to dispatch a notification or clear a cache, that logic lives here, in the one handler responsible for the publish intent. Nothing on the read side has to know or change.
 
-## Step 4: Build the Read Side with Queries and Read Models {#step-4-build-the-read-side}
+## Step 5: Build the Read Side with Queries and Read Models {#step-5-build-the-read-side}
 
 The read side has a completely different job. It does not change anything; it produces data shaped for a screen. The most important idea in this step is that the read model is allowed to look nothing like the write model. The `posts` table stores a `user_id` and a full `body`; the listing page wants an author name and a short excerpt. CQRS lets you build exactly the shape the view needs without bending the `Post` model to serve it.
 
@@ -528,7 +616,7 @@ class GetPublishedPostsHandler
 
 The handler still uses Eloquent under the hood, which is exactly the pragmatic point: CQRS is about separating the read path from the write path, not about banning your ORM. The query returns a collection of `PostListItem` objects, so everything downstream works with a stable, display-ready shape instead of raw models.
 
-## Step 5: Wire the Controller, Routes, and View {#step-5-wire-the-controller-routes-and-view}
+## Step 6: Wire the Controller, Routes, and View {#step-6-wire-the-controller-routes-and-view}
 
 Now we connect the buses to HTTP. The controller's only job is to translate between the outside world and the domain: turn a request into a command, or call a query and hand the result to a view. It never talks to Eloquent directly.
 
@@ -550,6 +638,11 @@ Expected output:
 ```
 
 This creates `routes/api.php`. The Sanctum trait it mentions is only needed if you protect the endpoints with tokens; for this demo the write endpoints are open, so you can skip that note. Now create the controller:
+```
+php artisan make:controller PostController
+```
+
+Next, open the controller in the code editor and complete it so that it looks like the following lines of code.
 
 ```php
 <?php
@@ -682,7 +775,7 @@ Finally, the listing view. It iterates over `PostListItem` read models, reading 
 
 The pieces are connected. The read page asks a query, the write endpoints dispatch commands, and neither knows anything about the other.
 
-## Step 6: Try It Out {#step-6-try-it-out}
+## Step 7: Try It Out {#step-7-try-it-out}
 
 The cleanest way to see the two paths in action is to exercise the buses directly with Artisan Tinker. The same commands and queries run when you POST to the API endpoints or visit the page; Tinker just lets us watch the result without HTTP noise. Start a Tinker session for each snippet below with `php artisan tinker`.
 
@@ -765,7 +858,7 @@ App\ReadModels\PostListItem {#7134
 
 This is the whole point in one screen of output. The write side accepted intents (`CreatePostCommand`, `PublishPostCommand`) and returned `Post` models. The read side returned a `PostListItem` with an excerpt, the author's name, a formatted date, and a comment count, none of which exist as columns on the `posts` table. Visit `/` in the browser and the listing page renders these same read models.
 
-## Step 7: Test the Read and Write Paths {#step-7-test-the-read-and-write-paths}
+## Step 8: Test the Read and Write Paths {#step-8-test-the-read-and-write-paths}
 
 Because both sides are plain PHP objects with no dependency on the HTTP layer, you can test them by instantiating handlers directly. That makes the tests fast and the failure messages precise. Create the test file `tests/Feature/CqrsTest.php`:
 
@@ -863,16 +956,15 @@ it('lists only published posts on the home page', function () {
 });
 ```
 
-These seven tests cover the full surface: the write handlers persist and publish correctly, the read handler returns read models and filters out drafts, both buses resolve the right handler by convention, and the home page renders only published posts. The factories rely on a `published()` state, so add it to `database/factories/PostFactory.php`:
+These seven tests cover the full surface: the write handlers persist and publish correctly, the read handler returns read models and filters out drafts, both buses resolve the right handler by convention, and the home page renders only published posts. They rely on the `published()` state you already added to `PostFactory` back in Step 2, so there is nothing else to wire up.
 
-```php
-public function published(): static
-{
-    return $this->state(fn () => ['published_at' => now()]);
-}
+Before running the suite, remove the two placeholder tests Laravel ships with a new project. The default `tests/Feature/ExampleTest.php` asserts that `/` returns `200`, but it does not refresh the database, so once the home page renders the listing it queries a `posts` table that does not exist in the test run and returns `500`. Deleting both example tests leaves only the suite you actually wrote:
+
+```bash
+rm tests/Feature/ExampleTest.php tests/Unit/ExampleTest.php
 ```
 
-Run the suite:
+Now run the suite:
 
 ```bash
 php artisan test
