@@ -451,7 +451,7 @@ class BadRepo implements RepositoryInterface {
 
 **Exercise 2:** Create an interface `Renderable` in `src/Contracts/Renderable.php` with one method: `toArray(): array`. Make both `Entry` and `User` implement this interface. Verify that both classes have the `toArray()` method.
 
-**Exercise 3:** Add a method `count(): int` to `BaseRepository` that returns the number of rows using `SELECT COUNT(*) FROM {$this->getTable()}`. Test it by calling `$entryRepo->count()` and `$userRepo->count()` in `public/index.php`.
+**Exercise 3:** Add a method `count(): int` to `BaseRepository` that returns the number of rows using `SELECT COUNT(*) FROM {$this->getTable()}`. Test it in a scratch file `public/test-count.php` that calls `$entryRepo->count()` and `$userRepo->count()` (the same pattern as `public/test-db.php` from Lesson 6). Note that `public/index.php` is now the front controller, so it is no longer the place for quick experiments.
 
 ---
 
@@ -510,6 +510,25 @@ Add to `BaseRepository`:
 ```
 
 Implementing generic SQL logic inside the base class automatically grants a `count()` method to every repository within the application without writing additional methods.
+
+Create `public/test-count.php` to try it:
+
+```php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\Repositories\EntryRepository;
+use App\Repositories\UserRepository;
+
+$entryRepo = new EntryRepository();
+$userRepo  = new UserRepository();
+
+echo 'Entries: ' . $entryRepo->count() . '<br>';
+echo 'Users: ' . $userRepo->count();
+```
+
+Run at: `http://localhost:8080/test-count.php`. Both repositories expose `count()` even though it is defined only once in `BaseRepository`.
 
 ---
 

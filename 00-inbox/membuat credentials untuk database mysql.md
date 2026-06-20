@@ -34,3 +34,21 @@ GRANT REFERENCES ON db_ci3.* TO 'ci3_user'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
+
+
+
+untuk course php oop
+
+```
+CREATE DATABASE db_php_oop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'oop_user'@'localhost' IDENTIFIED BY 'password_yang_kuat';
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON db_php_oop.* TO 'oop_user'@'localhost';
+
+GRANT CREATE, ALTER, DROP, INDEX ON db_php_oop.* TO 'oop_user'@'localhost';
+
+GRANT REFERENCES ON db_php_oop.* TO 'oop_user'@'localhost';
+
+FLUSH PRIVILEGES;
+```

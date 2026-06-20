@@ -229,7 +229,22 @@ Update `dispatch()` to check auth before calling the action:
 
 The `dispatch` method now checks an options array containing `auth` or `guest` keys before calling the target controller. `checkAuth` verifies the session status and redirects users automatically. This provides a centralized and robust way to secure the application.
 
-### Step 4: Save the File
+### Step 4: Create the 404 Template
+
+The updated `dispatch()` now renders a `errors/404` view instead of echoing plain HTML, so that file must exist. If you already created it in Lesson 9 Exercise 1, you can skip this step.
+
+Create the folder `templates/errors/`, then create `templates/errors/404.php`:
+
+```php
+<?php $title = '404 - Not Found'; ?>
+<h1>404 - Page Not Found</h1>
+<p>The page you are looking for does not exist.</p>
+<p><a href="/entries">Go to entries</a></p>
+```
+
+This template only provides a title and the page content. The layout wraps it, so it works with `layouts/main` (used here) just as well as `layouts/blank`.
+
+### Step 5: Save the Files
 
 Press **Ctrl+S**.
 

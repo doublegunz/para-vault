@@ -402,7 +402,7 @@ $msg = View::getFlash('success');
 
 **Exercise 2:** Add an `error` flash message type. Test it by setting `View::setFlash('error', 'Something went wrong')` in a controller method and verifying the red message appears in the layout.
 
-**Exercise 3:** Create a helper function `e(string $value): string` at the top of the layout that wraps `htmlspecialchars()`. Replace all `htmlspecialchars()` calls in the templates with the shorter `e()`. This is the same pattern as Laravel's `e()` helper.
+**Exercise 3:** Create a helper function `e(string $value): string` that wraps `htmlspecialchars()`. Define it in `public/index.php` (the front controller), after `session_start()` and before `$router->dispatch(...)`, so it is loaded before any template renders. Then replace all `htmlspecialchars()` calls in the templates with the shorter `e()`. This is the same pattern as Laravel's `e()` helper. (Why not in the layout? `View::render()` buffers the child template before it requires the layout, so a function declared inside the layout does not exist yet when the child template runs.)
 
 ---
 
@@ -458,15 +458,18 @@ Because `header('Location: ...')` issues a redirect, the current request ends, a
 
 **Solution for Exercise 3:**
 
-At the top of `templates/layouts/main.php`, add:
+In `public/index.php`, add the function after `session_start()` and before `$router->dispatch(...)`:
 
 ```php
-<?php
-function e(string $value): string { return htmlspecialchars($value, ENT_QUOTES, 'UTF-8'); }
-?>
+function e(string $value): string
+{
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+}
 ```
 
 The `ENT_QUOTES` flag ensures both single and double quotes are encoded. The `UTF-8` flag sets the encoding explicitly.
+
+It is important to define `e()` here rather than at the top of `templates/layouts/main.php`. The `View::render()` method captures the child template's output with `ob_start()` and `ob_get_clean()` *before* it requires the layout. A function declared inside the layout would not exist yet when the child template runs, so calling `e()` there would throw `Call to undefined function e()`. Defining it in the front controller guarantees it is available to every template.
 
 Then replace `htmlspecialchars($entry->getTitle())` with `e($entry->getTitle())` throughout templates.
 

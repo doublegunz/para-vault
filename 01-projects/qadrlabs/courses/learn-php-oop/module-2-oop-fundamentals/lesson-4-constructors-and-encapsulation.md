@@ -111,6 +111,8 @@ Properties that should never change after creation (`id`, `userId`, `createdAt`)
 
 Properties that should be changeable (`title`, `content`, `updatedAt`) have both getters and setters. Setters give you a place to add validation later if needed.
 
+> **Heads up:** Standalone scripts from earlier lessons that set properties directly (for example `public/test-objects.php` from Lesson 3, which used `$entry->id = 1;`) will now error. The properties are `private` and the constructor requires arguments, so the old public-property API no longer works. That is expected after this refactor. You can safely delete those throwaway test files.
+
 ---
 
 ## 3. Use the Refactored Class

@@ -249,8 +249,16 @@ Open `config/seed.php` and type the following code:
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use App\Database;
 use App\Repositories\UserRepository;
 use App\Repositories\EntryRepository;
+
+// Make the seed safe to re-run: clear existing data first.
+// Deleting users cascades to entries (ON DELETE CASCADE), but we clear both
+// explicitly for clarity.
+$pdo = Database::getConnection();
+$pdo->exec("DELETE FROM entries");
+$pdo->exec("DELETE FROM users");
 
 $userRepo  = new UserRepository();
 $entryRepo = new EntryRepository();
@@ -280,7 +288,7 @@ Save the file (**Ctrl+S**). Run in the terminal:
 php config/seed.php
 ```
 
-> **Note:** Only run this once. Running it again will fail because the email `budi@example.com` already exists (UNIQUE constraint).
+> **Note:** This seed is safe to re-run. It clears the existing users and entries first, so you will not hit a duplicate email error on the `UNIQUE` constraint. This version also replaces any seed you wrote in Lesson 6 Exercise 2.
 
 ---
 

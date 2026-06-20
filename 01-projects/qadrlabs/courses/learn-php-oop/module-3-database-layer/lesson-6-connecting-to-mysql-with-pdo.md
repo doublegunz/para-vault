@@ -360,6 +360,8 @@ echo "2 entries created.\n";
 
 Run: `php config/seed.php`
 
+> **Note:** Run this seed only once. Running it again fails because the email `budi@example.com` already exists (`UNIQUE` constraint). In Lesson 7 you will replace this file with a repository-based seed that clears the tables first, so it becomes safe to re-run.
+
 **Solution for Exercise 3:**
 
 Create `public/test-db.php`:
