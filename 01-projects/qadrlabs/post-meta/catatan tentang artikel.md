@@ -206,9 +206,7 @@ Article Title
 
   Short Description
 
-  ▎ Build a working HTTP router in plain PHP with exact routes, dynamic 
-  ▎ parameters, groups, and middleware, then see exactly how Laravel routing 
-  ▎ works.
+Build a working HTTP router in plain PHP with exact routes, dynamic parameters, groups, and middleware, then see exactly how Laravel routing works.
 
   Character count: 143 (within the 160 limit).
 
