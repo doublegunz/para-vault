@@ -224,46 +224,6 @@ Article Title
 
 
 ---
-Deliverables
-
-  1. File created (new draft, published 2016 file left untouched):
-  01-projects/qadrlabs/post/01-draft/Secure Password Hashing in PHP with 
-  password_hash and password_verify.md
-
-  2. Article title (publication-ready):
-
-  ▎ Secure Password Hashing in PHP with password_hash() and password_verify()
-
-  3. Short description (157 characters):
-
-  ▎ Store passwords safely in PHP with password_hash() and password_verify(). 
-  ▎ Build a reusable PasswordManager with auto-rehashing, plus bcrypt vs 
-  ▎ Argon2id tips.
-
-  4. Category and tags:
-  - Category: php
-  - Tags: php, security, password-hashing, bcrypt, argon2id, password_hash,
-  password_verify, authentication
-
-  What changed from the 2016 original
-
-  - English + current qadrlabs structure (PAS opening, Overview block,
-  sequential Steps for the build, reference sections after, bulleted
-  Conclusion).
-  - Modern accuracy: PHP 8.4+ default bcrypt cost is 12 (all captured hashes
-  show $2y$12$), PASSWORD_DEFAULT is still bcrypt, and Argon2id is covered as
-  OWASP's first recommendation with real $argon2id$ output.
-  - New practical content the old one lacked: a reusable PasswordManager, an
-  auto-rehash login flow with password_needs_rehash(), and a pitfalls section
-  demonstrating the 72-byte bcrypt truncation with reproduced output.
-  - Every terminal block is real output from sandbox/password-hash-demo/, pasted
-  verbatim.
-
-  A note on one technical detail: the article states password_hash($password, 
-  PASSWORD_DEFAULT) lets PHP pick the current default cost. In a code comment I
-  wrote "Passing null as the options array" as shorthand for omitting options;
-  the call itself omits the options argument, which is correct. Say the word if
-  you'd like me to tighten that comment.
 
 
 
