@@ -593,7 +593,13 @@ Add the `spring-security-test` dependency to `pom.xml` so we can use `@WithMockU
 </dependency>
 ```
 
-Start with the service test, which only needs a small change because `createPost` now takes an author. In `PostServiceTest.java`, the old test created a post with one argument:
+Start with the service test, which only needs a small change because `createPost` now takes an author. Be sure to add the `User` import at the top of `PostServiceTest.java`:
+
+```java
+import com.qadrlabs.blog.model.User;
+```
+
+In `PostServiceTest.java`, the old test created a post with one argument:
 
 ```java
 @Test
@@ -636,7 +642,13 @@ void shouldGenerateSlugAndStampAuthorWhenCreatingPost() {
 }
 ```
 
-The repository test needs a similar adjustment because a post now requires a non-null author. In `PostRepositoryTest.java`, the old helper built a post with no owner:
+The repository test needs a similar adjustment because a post now requires a non-null author. Add the `User` import at the top of the file as well:
+
+```java
+import com.qadrlabs.blog.model.User;
+```
+
+In `PostRepositoryTest.java`, the old helper built a post with no owner:
 
 ```java
 private Post newPost(String title, String slug) {
@@ -676,6 +688,12 @@ private Post newPost(String title, String slug) {
 The biggest change is to `PostControllerTest`. We import `SecurityConfig` to activate the real filter chain and method security, include `HomeController` so the `/403` forward resolves, build MockMvc with the `springSecurity()` configurer, and use `@WithMockUser` plus the CSRF post-processor on every request. Here is the new setup, with the key pieces highlighted:
 
 ```java
+// add new import statements
+import com.qadrlabs.blog.model.User;
+import java.util.Optional;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+
 @WebMvcTest({PostController.class, HomeController.class})
 @Import(SecurityConfig.class)
 class PostControllerTest {
@@ -777,7 +795,11 @@ void adminCanUpdateAnyPost() throws Exception {
 }
 ```
 
-Each case stubs `postSecurity.isOwner(...)` to return whatever the scenario needs, then asserts the outcome. The owner case redirects, the non-owner case returns `403`, and the admin case redirects even though `isOwner` is false, because the role short-circuits the expression. Apply the same owner-versus-forbidden pattern to the edit and delete handlers.
+Each case stubs `postSecurity.isOwner(...)` to return whatever the scenario needs, then asserts the outcome. The owner case redirects, the non-owner case returns `403`, and the admin case redirects even though `isOwner` is false, because the role short-circuits the expression.
+
+Make sure to also update all your existing tests (`indexShouldDisplayAllPosts`, `createShouldReturnFormView`, `showShouldReturnPostDetail`, etc.) by adding `@WithMockUser` to each of them. Without it, they will fail because Spring Security will redirect unauthenticated requests to the login page. Furthermore, remember to append `.with(csrf())` to all `POST` requests in the existing tests, and pass `any(User.class)` alongside `any(Post.class)` when verifying `postService.createPost` since its signature has changed.
+
+Finally, apply the same owner-versus-forbidden pattern to the edit and delete handlers.
 
 Finally, add a focused unit test for the ownership bean itself. Create `src/test/java/com/qadrlabs/blog/security/PostSecurityTest.java`:
 
