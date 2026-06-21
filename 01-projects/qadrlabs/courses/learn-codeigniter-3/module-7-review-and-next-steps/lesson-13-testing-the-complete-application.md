@@ -51,7 +51,7 @@ ci3-blog/
 
 Here is a summary of what each part does and which lesson it came from:
 
-- **`config/autoload.php`**: Loads `database`, `session` libraries and `url`, `form` helpers on every request (Lesson 2).
+- **`config/autoload.php`**: Loads the `session` library and `url`, `form` helpers from Lesson 2, then adds the `database` library in Lesson 5.
 - **`config/config.php`**: Sets `base_url` and empties `index_page` to remove `index.php` from URLs (Lesson 2).
 - **`config/database.php`**: Holds MySQL connection credentials (`hostname`, `database`, `username`, `password`) (Lesson 5).
 - **`config/routes.php`**: Defines custom routes and sets `default_controller = 'posts'` (Lesson 4).

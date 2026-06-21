@@ -146,16 +146,17 @@ Visit `http://localhost/ci3-blog/` - the welcome page should load without `index
 CodeIgniter lets you specify libraries and helpers that should be loaded automatically on every single request, so you do not have to load them manually inside each controller. Open `application/config/autoload.php` and update it as follows.
 
 ```php
-$autoload['libraries'] = array('database', 'session');
+$autoload['libraries'] = array('session');
 $autoload['helper'] = array('url', 'form');
 ```
 
 Here is what each entry provides:
 
-- **`'database'`**: Loads CI3's database library, making `$this->db` available in all controllers for running queries.
 - **`'session'`**: Loads CI3's session library, making `$this->session` available for storing and reading session data (used for flash messages and authentication).
 - **`'url'`**: Loads the URL helper, which provides the `base_url()` and `site_url()` functions for generating links.
 - **`'form'`**: Loads the form helper, which provides `form_open()`, `form_close()`, and other HTML form generation functions.
+
+We will add the database library later in Lesson 5, after the database itself and `database.php` are configured. Loading it before that point can make every page show a database connection error.
 
 ---
 
@@ -175,8 +176,14 @@ If the trailing slash is missing, CI3's `site_url()` helper will generate broken
 **Error 2: mod_rewrite.**
 Ensure Apache has `mod_rewrite` enabled and `AllowOverride All` is set. In Laragon, Apache `mod_rewrite` is enabled by default. In XAMPP, enable it in `httpd.conf` by uncommenting `LoadModule rewrite_module modules/mod_rewrite.so`.
 
-**Error 3: Database not configured.**
-If you auto-loaded the database library but have not configured `database.php` yet, CI3 will throw a connection error on every page load. Either configure `database.php` first (covered in Lesson 5) or temporarily remove `'database'` from the autoload array until you are ready.
+**Error 3: Session save path.**
+On some PHP installations, especially custom local runtimes, the default session save path may be empty. If CI3 shows a warning such as `mkdir(): Invalid path` when the session library starts, create a writable session folder and point CI3 to it.
+
+```php
+$config['sess_save_path'] = APPPATH.'cache/sessions';
+```
+
+Then create the `application/cache/sessions/` folder. Laragon usually has a working PHP session path already, so only apply this fix if you see the warning.
 
 ---
 

@@ -37,7 +37,7 @@ CREATE TABLE users (
 ) ENGINE=InnoDB;
 
 INSERT INTO users (name, email, password) VALUES
-('Admin', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+('Admin', 'admin@example.com', '$2y$10$bD0v3dD4gJ5dT47J4XfEn.HiP2rsZ5Ym57d/Xsilm5iFx3nLu6e1C');
 ```
 
 The long string starting with `$2y$10$` is the result of calling `password_hash('password123', PASSWORD_DEFAULT)` in PHP. We insert the hash directly so the test user immediately has a valid, securely stored password. The `email` column is marked `UNIQUE`, which means the database will reject any attempt to insert a second row with the same email address.
