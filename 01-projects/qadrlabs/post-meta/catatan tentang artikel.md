@@ -115,8 +115,44 @@ Implemented the full draft here:
   - Tags: laravel, laravel-13, security, file-upload, mime-validation,
   path-traversal, image-bomb, signed-url, intervention-image, pest
 
+---
+
+1. File path (Obsidian)
+
+  01-projects/qadrlabs/post/01-draft/introduction-to-artificial-intelligence.md
+
+  Artikel konseptual pembuka untuk series machine learning / deep learning. Tanpa praktik/kode, tanpa label "Step N", tanpa em/en dash, tanpa ---. Overview memakai What You'll Take Away / Learn / Need (mengikuti pola SOLID intro). ~3.307 kata.
+
+2. Title
+
+  Introduction to Artificial Intelligence: A Plain-Language Foundation Before You Build
+
+3. Short description (157 karakter)
+
+  Confused by AI, machine learning, and deep learning? Build a clear, honest mental model of what AI is and how its pieces fit before you write any code.
+
+4. Category & Tags
+
+  - Category: Artificial Intelligence
+  - Tags: artificial-intelligence, machine-learning, deep-learning, generative-ai, large-language-models, ai-agents, ai-for-beginners, ai-concepts
+
+5. Referensi riset
+
+  - IBM, AI vs ML vs Deep Learning vs Neural Networks: https://www.ibm.com/think/topics/ai-vs-machine-learning-vs-deep-learning-vs-neural-networks
+  - IBM, What Are Large Language Models (LLMs): https://www.ibm.com/think/topics/large-language-models
+  - Archielabs, The 3 Types of AI: Narrow, General & Superintelligence: https://www.archielabs.com/blog/3-types-of-ai/
+  - Media and the Machine, The Top 20 Milestones in AI (1943 to Present): https://mediaandthemachine.substack.com/p/the-top-20-milestones-in-ai-1943
+  - NovelVista, Real-World Applications of Agentic AI: 2026 Guide: https://www.novelvista.com/blogs/ai-and-ml/real-world-applications-agentic-ai
+
+```
+claude --resume 5d15eff2-4616-4d16-8a21-f10d258942df
+
+```
+
+
 resume claude
 ```
 claude --resume 5345377f-4b60-4214-bb1c-915ad8989a38
 
 ```
+
