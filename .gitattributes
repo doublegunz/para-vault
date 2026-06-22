@@ -2,6 +2,25 @@
 # Prevents spurious "modified" diffs from line-ending (CRLF vs LF) flips.
 * text=auto eol=lf
 
+*.md text eol=lf
+*.txt text eol=lf
+*.php text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+
 # Treat common binary assets as binary so git never touches their bytes.
 *.png  binary
 *.jpg  binary
