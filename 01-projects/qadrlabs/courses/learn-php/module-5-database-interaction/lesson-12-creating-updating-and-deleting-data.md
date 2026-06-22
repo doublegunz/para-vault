@@ -8,11 +8,12 @@ Every dynamic web application, from social media to e-commerce to content manage
 
 ### What You'll Build
 
-You will build a `create.php` form for writing new entries, an `edit.php` form that pre-fills with existing data, a `delete.php` handler that removes entries, and an updated `list.php` with navigation links to all three operations.
+You will build a `create.php` form for writing new entries, a `detail.php` page for reading one entry, an `edit.php` form that pre-fills with existing data, a `delete.php` handler that removes entries, and an updated `list.php` with navigation links to every CRUD operation.
 
 ### What You'll Learn
 
 - ✅ Saving form data to the database with INSERT
+- ✅ Keeping the read detail page available inside the completed CRUD folder
 - ✅ Updating existing records with UPDATE
 - ✅ Deleting records safely with DELETE
 - ✅ The Post/Redirect/Get (PRG) pattern and why it exists
@@ -174,13 +175,79 @@ $entries = $stmt->fetchAll();
 </html>
 ```
 
-### Step 5: Run in the Browser
+### Step 5: Create the Detail Page
+
+The updated list page links to `detail.php`, so this lesson also needs a detail page inside the same `lesson-12` folder. Create `detail.php` in `lesson-12` and add:
+
+```php
+<?php
+require_once __DIR__ . '/../config.php';
+
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+if ($id <= 0) {
+    echo "<h1>Error</h1><p>Invalid entry ID.</p>";
+    echo '<p><a href="list.php">Back to list</a></p>';
+    exit;
+}
+
+$stmt = $pdo->prepare("
+    SELECT entries.*, users.name AS author_name
+    FROM entries
+    INNER JOIN users ON entries.user_id = users.id
+    WHERE entries.id = :id
+");
+$stmt->execute(['id' => $id]);
+$entry = $stmt->fetch();
+
+if (!$entry) {
+    echo "<h1>Entry Not Found</h1>";
+    echo "<p>Entry with ID $id does not exist.</p>";
+    echo '<p><a href="list.php">Back to list</a></p>';
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><?= htmlspecialchars($entry['title']) ?> - Catatku</title>
+</head>
+<body>
+
+    <p><a href="list.php">&larr; Back to list</a></p>
+    <h1><?= htmlspecialchars($entry['title']) ?></h1>
+
+    <p><small>
+        Written by: <?= htmlspecialchars($entry['author_name']) ?> |
+        Date: <?= htmlspecialchars($entry['created_at']) ?>
+        <?php if ($entry['updated_at'] && $entry['updated_at'] !== $entry['created_at']): ?>
+            | Updated: <?= htmlspecialchars($entry['updated_at']) ?>
+        <?php endif; ?>
+    </small></p>
+
+    <hr>
+
+    <div style="white-space: pre-line;">
+        <?= htmlspecialchars($entry['content']) ?>
+    </div>
+
+    <hr>
+    <p><a href="list.php">Back to list</a></p>
+
+</body>
+</html>
+```
+
+This page is the same read pattern from Lesson 11, placed in the Lesson 12 folder so the Read link works alongside create, edit, and delete. It still validates the ID, uses a prepared statement, joins the author name from `users`, handles missing records, and escapes database content before display.
+
+### Step 6: Run in the Browser
 
 ```
 http://localhost/learn-php/lesson-12/list.php
 ```
 
-Click **+ Write New Entry**, fill in the form, and click Save Entry. You should be redirected back to the list with a green "Entry saved!" message.
+Click **+ Write New Entry**, fill in the form, and click Save Entry. You should be redirected back to the list with a green "Entry saved!" message. Click the **Read** link on any entry and confirm that `detail.php` opens the full entry instead of a missing page.
 
 Now let us trace through the create logic step by step. At the top, `$old_title` and `$old_content` start as empty strings so the form renders blank on the first visit. The `$_SERVER['REQUEST_METHOD'] === 'POST'` check gates the entire processing block, so it only runs after a form submission. The `trim()` call removes accidental leading and trailing spaces from user input. Validation runs before any database operation: if `$old_title` is empty, `$errors['title']` gets the error message. The `strlen() > 255` check ensures the title will not exceed the VARCHAR(255) column size in the database, which would cause a truncation error. Only when `empty($errors)` is true does the INSERT happen. The `header('Location: list.php?message=created')` redirect is followed immediately by `exit` — without `exit`, PHP would continue executing code below the redirect header, which could cause unexpected behavior.
 

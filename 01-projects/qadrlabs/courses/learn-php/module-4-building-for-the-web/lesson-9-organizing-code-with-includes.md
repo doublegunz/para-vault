@@ -166,6 +166,20 @@ require_once __DIR__ . '/../includes/header.php';
 
 The `/../` in the path means "go up one directory level." Since `about.php` lives inside `pages/`, it needs to go up to `lesson-09/` before going down into `includes/`. Save it and visit via the navigation link on the home page. All pages share the same header and footer — change `header.php` once and every page updates.
 
+Now create `pages/contact.php` so the Contact link in the shared navigation also points to a real page:
+
+```php
+<?php
+$page_title = "Contact - Catatku";
+require_once __DIR__ . '/../includes/header.php';
+?>
+    <h1>Contact</h1>
+    <p>You can reach the Catatku team at hello@example.com.</p>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+```
+
+Save the file and visit `http://localhost/learn-php/lesson-09/pages/contact.php`. You should see the same shared navigation and footer around the contact page content. This confirms that every link in the navigation now points to a page that exists.
+
 ---
 
 ## 6. Separating Configuration

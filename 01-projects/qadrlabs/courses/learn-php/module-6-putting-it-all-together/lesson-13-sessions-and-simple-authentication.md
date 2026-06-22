@@ -4,11 +4,11 @@ Every page in Catatku so far uses `user_id = 1` hardcoded into the queries. Anyo
 
 ### Introduction
 
-HTTP is stateless — every request to the server arrives with no memory of previous requests. The server cannot tell from a request alone who sent it or whether that person has logged in. Sessions solve this: when a user logs in, the server stores their identity on the server side and sends a cookie to the browser. On every subsequent request, the browser sends the cookie back, and the server uses it to look up the stored session data. By the end of this lesson, Catatku will have registration, login, logout, and per-user data isolation.
+HTTP is stateless — every request to the server arrives with no memory of previous requests. The server cannot tell from a request alone who sent it or whether that person has logged in. Sessions solve this: when a user logs in, the server stores their identity on the server side and sends a cookie to the browser. On every subsequent request, the browser sends the cookie back, and the server uses it to look up the stored session data. By the end of this lesson, Catatku will have registration, login, logout, protected CRUD pages, and per-user data isolation.
 
 ### What You'll Build
 
-You will create a session demonstration page, a registration form with password hashing, a login page with password verification, a logout handler, and a protected entry list that shows only the current user's entries.
+You will create a session demonstration page, a registration form with password hashing, a login page with password verification, a logout handler, a protected entry list, and protected create, edit, and delete pages that only work on the current user's entries.
 
 ### What You'll Learn
 
@@ -17,6 +17,7 @@ You will create a session demonstration page, a registration form with password 
 - ✅ Verifying passwords with `password_verify()`
 - ✅ Protecting pages so only logged-in users can access them
 - ✅ Scoping database queries to the current user with `$_SESSION['user_id']`
+- ✅ Applying ownership filters to create, update, and delete operations
 - ✅ Security: session regeneration, vague error messages, password protection
 
 ### What You'll Need
@@ -418,15 +419,255 @@ $entries = $stmt->fetchAll();
 </html>
 ```
 
-### Step 3: Save and Run
+### Step 3: Save the File
+
+Press **Ctrl+S**.
+
+### Step 4: Create the Protected Create Page
+
+Create `create.php` in `lesson-13`. The list page links to this file, so now create the protected version of the create form. This file is based on the Lesson 12 create page, but it uses the logged-in user's ID instead of the hardcoded `user_id = 1`.
+
+```php
+<?php
+session_start();
+require_once __DIR__ . '/../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$errors      = [];
+$old_title   = '';
+$old_content = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $old_title   = trim($_POST['title'] ?? '');
+    $old_content = trim($_POST['content'] ?? '');
+
+    if (empty($old_title)) {
+        $errors['title'] = 'Title is required.';
+    } elseif (strlen($old_title) > 255) {
+        $errors['title'] = 'Title must be 255 characters or less.';
+    }
+
+    if (empty($old_content)) {
+        $errors['content'] = 'Content is required.';
+    }
+
+    if (empty($errors)) {
+        $stmt = $pdo->prepare(
+            "INSERT INTO entries (user_id, title, content) VALUES (:user_id, :title, :content)"
+        );
+        $stmt->execute([
+            'user_id' => $_SESSION['user_id'],
+            'title'   => $old_title,
+            'content' => $old_content,
+        ]);
+
+        header('Location: list.php?message=created');
+        exit;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Write New Entry - Catatku</title></head>
+<body>
+
+    <p><a href="list.php">&larr; Back to list</a></p>
+    <h1>Write New Entry</h1>
+
+    <form method="POST" action="">
+        <div style="margin-bottom: 15px;">
+            <label><strong>Title:</strong></label><br>
+            <input type="text" name="title"
+                   value="<?= htmlspecialchars($old_title) ?>"
+                   style="width: 100%; max-width: 500px; padding: 8px;">
+            <?php if (isset($errors['title'])): ?>
+                <br><span style="color: red;"><?= htmlspecialchars($errors['title']) ?></span>
+            <?php endif; ?>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label><strong>Content:</strong></label><br>
+            <textarea name="content" rows="10"
+                      style="width: 100%; max-width: 500px; padding: 8px;"
+            ><?= htmlspecialchars($old_content) ?></textarea>
+            <?php if (isset($errors['content'])): ?>
+                <br><span style="color: red;"><?= htmlspecialchars($errors['content']) ?></span>
+            <?php endif; ?>
+        </div>
+
+        <button type="submit" style="padding: 8px 20px;">Save Entry</button>
+    </form>
+
+</body>
+</html>
+```
+
+The important change is the `user_id` value. The insert uses `$_SESSION['user_id']`, so a new entry is automatically assigned to the current user.
+
+### Step 5: Create the Protected Edit Page
+
+Create `edit.php` in `lesson-13`. This file only fetches and updates an entry when both the entry ID and the logged-in user ID match.
+
+```php
+<?php
+session_start();
+require_once __DIR__ . '/../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+$stmt = $pdo->prepare(
+    "SELECT * FROM entries WHERE id = :id AND user_id = :user_id"
+);
+$stmt->execute([
+    'id'      => $id,
+    'user_id' => $_SESSION['user_id'],
+]);
+$entry = $stmt->fetch();
+
+if (!$entry) {
+    echo "<h1>Entry not found</h1><p><a href='list.php'>Back</a></p>";
+    exit;
+}
+
+$errors      = [];
+$old_title   = $entry['title'];
+$old_content = $entry['content'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $old_title   = trim($_POST['title'] ?? '');
+    $old_content = trim($_POST['content'] ?? '');
+
+    if (empty($old_title)) {
+        $errors['title'] = 'Title is required.';
+    }
+
+    if (empty($old_content)) {
+        $errors['content'] = 'Content is required.';
+    }
+
+    if (empty($errors)) {
+        $stmt = $pdo->prepare(
+            "UPDATE entries
+             SET title = :title, content = :content, updated_at = NOW()
+             WHERE id = :id AND user_id = :user_id"
+        );
+        $stmt->execute([
+            'id'      => $id,
+            'user_id' => $_SESSION['user_id'],
+            'title'   => $old_title,
+            'content' => $old_content,
+        ]);
+
+        header('Location: list.php?message=updated');
+        exit;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Edit Entry - Catatku</title></head>
+<body>
+
+    <p><a href="list.php">&larr; Back to list</a></p>
+    <h1>Edit Entry</h1>
+
+    <form method="POST" action="">
+        <div style="margin-bottom: 15px;">
+            <label><strong>Title:</strong></label><br>
+            <input type="text" name="title"
+                   value="<?= htmlspecialchars($old_title) ?>"
+                   style="width: 100%; max-width: 500px; padding: 8px;">
+            <?php if (isset($errors['title'])): ?>
+                <br><span style="color: red;"><?= htmlspecialchars($errors['title']) ?></span>
+            <?php endif; ?>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label><strong>Content:</strong></label><br>
+            <textarea name="content" rows="10"
+                      style="width: 100%; max-width: 500px; padding: 8px;"
+            ><?= htmlspecialchars($old_content) ?></textarea>
+            <?php if (isset($errors['content'])): ?>
+                <br><span style="color: red;"><?= htmlspecialchars($errors['content']) ?></span>
+            <?php endif; ?>
+        </div>
+
+        <button type="submit" style="padding: 8px 20px;">Save Changes</button>
+    </form>
+
+</body>
+</html>
+```
+
+The `WHERE id = :id AND user_id = :user_id` filter appears in both the SELECT and UPDATE queries. This prevents one user from editing another user's entry by changing the ID in the URL.
+
+### Step 6: Create the Protected Delete Page
+
+Create `delete.php` in `lesson-13`:
+
+```php
+<?php
+session_start();
+require_once __DIR__ . '/../config.php';
+
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php');
+    exit;
+}
+
+$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+
+if ($id <= 0) {
+    echo "<p>Invalid ID.</p>";
+    exit;
+}
+
+$stmt = $pdo->prepare(
+    "SELECT id FROM entries WHERE id = :id AND user_id = :user_id"
+);
+$stmt->execute([
+    'id'      => $id,
+    'user_id' => $_SESSION['user_id'],
+]);
+
+if (!$stmt->fetch()) {
+    echo "<h1>Entry not found</h1><p><a href='list.php'>Back</a></p>";
+    exit;
+}
+
+$stmt = $pdo->prepare(
+    "DELETE FROM entries WHERE id = :id AND user_id = :user_id"
+);
+$stmt->execute([
+    'id'      => $id,
+    'user_id' => $_SESSION['user_id'],
+]);
+
+header('Location: list.php?message=deleted');
+exit;
+?>
+```
+
+This delete handler uses the same ownership filter as the edit page. If the entry belongs to someone else, the SELECT finds nothing and the DELETE never runs.
+
+### Step 7: Save and Run
 
 ```
 http://localhost/learn-php/lesson-13/list.php
 ```
 
-If you are not logged in, you will be redirected to the login page immediately. After logging in, you will only see entries that belong to the current user.
+If you are not logged in, you will be redirected to the login page immediately. After logging in, you will only see entries that belong to the current user. You can now create, edit, and delete entries from the protected list page without leaving broken links behind.
 
-The two-line protection pattern is worth memorizing because it appears at the top of every protected page in PHP applications: check `isset($_SESSION['user_id'])`, and if it is missing, redirect and exit. The `WHERE user_id = :user_id` in the query is equally important — without it, a logged-in user could potentially see or edit another user's entries by manipulating the `id` URL parameter. Filtering at the database level ensures each query returns only the current user's data regardless of what IDs are provided in the URL.
+The two-line protection pattern is worth memorizing because it appears at the top of every protected page in PHP applications: check `isset($_SESSION['user_id'])`, and if it is missing, redirect and exit. The `WHERE user_id = :user_id` filter is equally important. Without it, a logged-in user could potentially see, edit, or delete another user's entries by manipulating the `id` URL parameter. Filtering at the database level ensures each query only affects the current user's data.
 
 ---
 
@@ -438,7 +679,9 @@ Now register a new account. Go to `http://localhost/learn-php/lesson-13/register
 
 Try the access control test: log out, then manually type `http://localhost/learn-php/lesson-13/list.php` in the address bar. The page should redirect you to the login page rather than showing the content. This confirms the page protection works for direct URL access, not just for users who click the logout button.
 
-Open a second browser (if you have Chrome and Firefox), register a second user there, and create a few entries. Switch back to the first browser and confirm that user one's list only shows their own entries. This proves the `WHERE user_id = :user_id` filter is working correctly at the data isolation level.
+Create a new entry while logged in as Budi and confirm it appears in Budi's list. Then register a second user in another browser or after logging out, and confirm that the new user starts with an empty list. Create one entry as the second user, switch back to Budi, and confirm Budi cannot see that entry. This proves the `WHERE user_id = :user_id` filter is working correctly at the data isolation level.
+
+Finally, test ownership protection by copying the edit URL for one user's entry and opening it while logged in as another user. You should see "Entry not found" instead of an edit form. The same rule applies to delete URLs, because `delete.php` also filters by both `id` and `user_id`.
 
 ---
 
@@ -473,7 +716,7 @@ The first mistake is the most common session error: `session_start()` is missing
 
 ## 10. Exercises
 
-**Exercise 1:** Create `create.php` in `lesson-13` — a protected version that adds `session_start()` and page protection at the top and replaces `'user_id' => 1` with `'user_id' => $_SESSION['user_id']`.
+**Exercise 1:** Create `detail.php` in `lesson-13`. Protect it with `session_start()` and the login guard, then fetch entries using both `id` and `user_id` so users can only read their own entry details.
 
 **Exercise 2:** Create `profile.php` in `lesson-13`. Display the logged-in user's name, email, registration date, and total entry count. Protect the page.
 
