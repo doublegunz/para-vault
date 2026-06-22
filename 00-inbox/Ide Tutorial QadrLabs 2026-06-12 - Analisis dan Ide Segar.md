@@ -136,7 +136,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 - **Outline singkat**: Demo `file()` meledak di file 2GB → konsep `yield` & lazy evaluation → pipeline baca-transform-tulis streaming → ukur memory_get_peak_usage → bonus: `LazyCollection` Laravel.
 - **Level**: Pemula–menengah
 
-### 13. Build a Mini HTTP Router from Scratch in PHP: Understand How Laravel Routes Work
+### 13. Build a Mini HTTP Router from Scratch in PHP: Understand How Laravel Routes Work (PUBLISHED)
 - **Kategori**: PHP
 - **Kenapa**: Melanjutkan seri "build from scratch" yang terbukti (rate limiter, mini service container) — format khas situs. Router belum ada di post maupun backlog.
 - **Target keyword**: `php router from scratch`, `build http router php`
@@ -159,7 +159,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 - **Outline singkat**: Aktifkan `net/http/pprof` di API Gin → rekam CPU & heap profile → baca flame graph → temukan & perbaiki hotspot nyata (N+1 query / alokasi berlebih) → benchmark sebelum-sesudah.
 - **Level**: Lanjutan
 
-### 16. Spring Boot 4 File Upload and Download: Multipart, Validation, and Storage (DRAFT)
+### 16. Spring Boot 4 File Upload and Download: Multipart, Validation, and Storage (PUBLISHED)
 - **Kategori**: Java / Spring Boot
 - **Kenapa**: Mengikuti pola topik yang terbukti di empat ekosistem lain (Laravel, CI4, Gin semua punya tutorial upload). Backlog Spring lama (Flyway, Redis, RabbitMQ, HATEOAS) belum punya upload.
 - **Target keyword**: `spring boot file upload tutorial`, `spring boot download file`

@@ -48,3 +48,75 @@ The sequel article is written and verified, saved to 01-projects/qadrlabs/post
   Want me to proceed with the Indonesian translation, generate social media
   captions, or adjust anything in the draft?
 
+
+
+---
+Implemented the full draft here:
+
+  01-projects/qadrlabs/post/01-draft/processing-huge-csv-files-in-php-with-
+  generators.md:1
+
+  I also validated the sample PHP scripts in sandbox/huge-csv-generators,
+  checked the article for forbidden em dash/en dash/---, and confirmed the draft
+  is 2,689 words. The sandbox files are ignored by Git, so the committed source
+  change is only the new draft file.
+
+  Title: Processing Huge CSV Files in PHP with Generators: Millions of Rows
+  Without Running Out of Memory
+
+  Short description: Learn how to process huge CSV files in native PHP with
+  generators, fgetcsv(), and streaming exports without exhausting memory.
+  Character count: 126
+
+  Category: PHP
+
+  Tags: PHP, Generators, CSV, Performance, Memory Optimization
+
+
+---
+
+1. File markdown
+
+  01-projects/qadrlabs/post/01-draft/secure-file-uploads-in-laravel-mime-validat
+  ion-path-traversal-and-image-bombs.md
+
+  Struktur: PAS opening (link ke artikel image-upload) → Overview
+  (Build/Learn/Need) → Step 1-10 berurutan → section konseptual Understanding 
+  the Three Attacks (tanpa label Step, setelah testing) → Conclusion. Tanpa
+  em/en dash, tanpa ---, semua H2 ada anchor {#slug} dan narasi sebelum H3.
+
+  Sesuai catatanmu yang sudah diterapkan:
+  - Setiap make:model / make:controller / make:request dibuat sebelum file-nya
+  diedit. Tidak ada edit file yang belum di-generate.
+  - Setiap edit menyebut nama file + alasannya. Step 7 menampilkan kode lama 
+  (Step 6) → kode baru secara eksplisit saat re-encode diperkenalkan.
+
+  Yang diverifikasi nyata di sandbox (Laravel 13.16.1, PHP 8.5, Intervention
+  Image 4.1.4): output php artisan migrate, make:*, route:list, pesan validasi
+  disguised-PHP, dan output php artisan test (8 passed, 24 assertions) semuanya
+  diambil apa adanya. Catatan: paket intervention/image v4 memakai decode() +
+  WebpEncoder (bukan read()/toWebp() gaya v3); kode di artikel sudah pakai API
+  yang benar dan terbukti jalan.
+
+  2. Title
+
+  Secure File Uploads in Laravel: MIME Validation, Path Traversal, and Image 
+  Bombs
+
+  3. Short description (158 karakter)
+
+  ▎ Harden Laravel 13 image uploads: validate real MIME and dimensions, store 
+  ▎ privately with random names, re-encode to strip payloads, and serve via 
+  ▎ signed URLs.
+
+  4. Category & Tags
+
+  - Category: Security / Laravel
+  - Tags: laravel, laravel-13, security, file-upload, mime-validation,
+  path-traversal, image-bomb, signed-url, intervention-image, pest
+
+resume claude
+```
+claude --resume 5345377f-4b60-4214-bb1c-915ad8989a38
+
+```
