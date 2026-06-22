@@ -52,3 +52,21 @@ GRANT REFERENCES ON db_php_oop.* TO 'oop_user'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
+
+
+
+untuk course learn php for beginner
+
+```
+CREATE DATABASE db_learn_php CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'learn_php_user'@'localhost' IDENTIFIED BY 'password_yang_kuat';
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON db_learn_php.* TO 'learn_php_user'@'localhost';
+
+GRANT CREATE, ALTER, DROP, INDEX ON db_learn_php.* TO 'learn_php_user'@'localhost';
+
+GRANT REFERENCES ON db_learn_php.* TO 'learn_php_user'@'localhost';
+
+FLUSH PRIVILEGES;
+```
