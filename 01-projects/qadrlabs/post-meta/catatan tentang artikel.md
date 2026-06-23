@@ -50,27 +50,6 @@ The sequel article is written and verified, saved to 01-projects/qadrlabs/post
 
 
 
----
-Implemented the full draft here:
-
-  01-projects/qadrlabs/post/01-draft/processing-huge-csv-files-in-php-with-
-  generators.md:1
-
-  I also validated the sample PHP scripts in sandbox/huge-csv-generators,
-  checked the article for forbidden em dash/en dash/---, and confirmed the draft
-  is 2,689 words. The sandbox files are ignored by Git, so the committed source
-  change is only the new draft file.
-
-  Title: Processing Huge CSV Files in PHP with Generators: Millions of Rows
-  Without Running Out of Memory
-
-  Short description: Learn how to process huge CSV files in native PHP with
-  generators, fgetcsv(), and streaming exports without exhausting memory.
-  Character count: 126
-
-  Category: PHP
-
-  Tags: PHP, Generators, CSV, Performance, Memory Optimization
 
 
 ---
@@ -134,7 +113,7 @@ Implemented the full draft here:
 4. Category & Tags
 
   - Category: Artificial Intelligence
-  - Tags: artificial-intelligence, machine-learning, deep-learning, generative-ai, large-language-models, ai-agents, ai-for-beginners, ai-concepts
+  - Tags: artificial-intelligence, machine-learning, deep-learning, generative-ai, large-language-models, ai-agents, ai-for-beginners, AI Concepts
 
 5. Referensi riset
 
