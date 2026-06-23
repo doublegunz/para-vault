@@ -18,6 +18,28 @@ FLUSH PRIVILEGES;
 
 
 
+untuk course learn sql
+
+```
+CREATE DATABASE IF NOT EXISTS bookstore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS 'learn_sql_user'@'localhost' IDENTIFIED BY 'password_yang_kuat';
+
+ALTER USER 'learn_sql_user'@'localhost' IDENTIFIED BY 'password_yang_kuat';
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON bookstore.* TO 'learn_sql_user'@'localhost';
+
+GRANT CREATE, ALTER, DROP, INDEX ON bookstore.* TO 'learn_sql_user'@'localhost';
+
+GRANT REFERENCES ON bookstore.* TO 'learn_sql_user'@'localhost';
+
+GRANT CREATE VIEW, SHOW VIEW ON bookstore.* TO 'learn_sql_user'@'localhost';
+
+FLUSH PRIVILEGES;
+```
+
+
+
 
 untuk course ci3
 
