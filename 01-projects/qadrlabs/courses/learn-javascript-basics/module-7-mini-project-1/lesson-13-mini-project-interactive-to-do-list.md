@@ -130,25 +130,35 @@ function render() {
         const li = document.createElement("li");
         if (task.completed) li.classList.add("completed");
 
-        li.innerHTML = `
-            <input type="checkbox" ${task.completed ? "checked" : ""}>
-            <span class="task-text">${task.text}</span>
-            <button class="delete-btn">&times;</button>
-        `;
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = task.completed;
 
-        li.querySelector("input").addEventListener("change", () => {
+        const span = document.createElement("span");
+        span.className = "task-text";
+        span.textContent = task.text;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "delete-btn";
+        deleteBtn.textContent = "x";
+
+        li.appendChild(checkbox);
+        li.appendChild(span);
+        li.appendChild(deleteBtn);
+
+        checkbox.addEventListener("change", () => {
             task.completed = !task.completed;
             saveTasks();
             render();
         });
 
-        li.querySelector(".task-text").addEventListener("click", () => {
+        span.addEventListener("click", () => {
             task.completed = !task.completed;
             saveTasks();
             render();
         });
 
-        li.querySelector(".delete-btn").addEventListener("click", () => {
+        deleteBtn.addEventListener("click", () => {
             tasks = tasks.filter(t => t !== task);
             saveTasks();
             render();
@@ -196,7 +206,7 @@ render();
 
 `render()` is the central function that rebuilds the visible task list from the `tasks` array every time the state changes. It first filters the array based on `currentFilter`, then clears the `<ul>` by setting `taskList.innerHTML = ""`, and then loops through the filtered tasks to create and append a `<li>` element for each one. Rebuilding the entire list on each change is intentional: it keeps the UI in sync with the data without tracking which specific elements need updating.
 
-Each `<li>` is built using `innerHTML` with a template literal. The checkbox, task text, and delete button are assembled as a string. Immediately after setting `innerHTML`, event listeners are attached to each interactive element inside the card using `querySelector`. The listeners use closures to reference the `task` object directly, which makes the delete handler simple: `tasks = tasks.filter(t => t !== task)` removes the specific object by reference from the array.
+Each `<li>` is built from DOM elements created with `document.createElement()`. The checkbox, task text, and delete button are separate nodes, then `appendChild()` inserts them into the list item. The task text is assigned with `textContent`, not `innerHTML`, so anything the user types is treated as plain text instead of HTML. Event listeners are attached directly to the element variables. The listeners use closures to reference the `task` object directly, which makes the delete handler simple: `tasks = tasks.filter(t => t !== task)` removes the specific object by reference from the array.
 
 `addTask` reads the input, trims whitespace, and returns early if the result is empty. Otherwise it pushes a new task object with a `text` property, a `completed` property set to `false`, and an `id` generated from `Date.now()` (the current timestamp in milliseconds). After pushing, it clears the input, saves, and calls `render()`.
 
@@ -212,7 +222,7 @@ Every feature of this application maps directly to specific lessons in this cour
 |---------|---------------|--------|
 | Task data | Objects in an array | Lessons 7 and 8 |
 | Add and delete tasks | `push`, `filter`, arrow functions | Lessons 5 and 7 |
-| Rendering UI | `createElement`, `innerHTML`, `appendChild` | Lessons 9 and 10 |
+| Rendering UI | `createElement`, `textContent`, `appendChild` | Lessons 9 and 10 |
 | User interactions | `addEventListener`, event object | Lesson 11 |
 | Form input | `.value`, `keydown`, `trim()` | Lesson 12 |
 | Persistence | `JSON.stringify`, `JSON.parse`, `localStorage` | Lesson 8 |
@@ -288,15 +298,18 @@ function addTask() {
 }
 ```
 
-In the `render` function, after setting the `li.innerHTML`, add:
+In the `render` function, after creating the task text span, create and append a due date span:
 
 ```javascript
 if (task.dueDate) {
-    const dateSpan = li.querySelector(".due-date");
+    const dateSpan = document.createElement("span");
+    dateSpan.className = "due-date";
+    dateSpan.textContent = task.dueDate;
+
     const isOverdue = new Date(task.dueDate) < new Date() && !task.completed;
-    if (dateSpan) {
-        dateSpan.style.color = isOverdue ? "#dc2626" : "#6b7280";
-    }
+    dateSpan.style.color = isOverdue ? "#dc2626" : "#6b7280";
+
+    li.appendChild(dateSpan);
 }
 ```
 
