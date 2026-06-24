@@ -207,7 +207,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 
 ### Security (3 ide)
 
-### 22. Secure File Uploads in Laravel: MIME Validation, Path Traversal, and Image Bombs
+### 22. Secure File Uploads in Laravel: MIME Validation, Path Traversal, and Image Bombs (PUBLISHED)
 - **Kategori**: Security / Laravel
 - **Kenapa**: Situs punya 6+ tutorial upload lintas framework tapi belum ada satu pun yang fokus keamanannya. Backlog secure-coding lama membahas mass assignment/IDOR, bukan upload. Internal-link magnet.
 - **Target keyword**: `laravel secure file upload`, `file upload vulnerability php`
