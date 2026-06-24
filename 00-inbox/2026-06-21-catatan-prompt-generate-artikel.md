@@ -2,8 +2,7 @@
 ```
 /generate-artikel sekarang kita susun ide artikel dari file
     `/home/gun-gun-priatna/obsidian-vault/00-inbox/Ide Tutorial QadrLabs
-    2026-06-12 - Analisis dan Ide Segar.md` nomor 22 Secure File Uploads in
-    Laravel: MIME Validation, Path Traversal, and Image Bombs.
+    2026-06-12 - Analisis dan Ide Segar.md` nomor 1 Strategy Pattern in Laravel: Swappable Shipping Cost Calculators Without if/else Chains.
   boleh search dulu untuk riset. setelah itu susun outline artikel.
 
   catatan:

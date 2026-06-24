@@ -68,3 +68,25 @@ claude --resume 5345377f-4b60-4214-bb1c-915ad8989a38
 
 ```
 
+# Strategy Pattern in Laravel: Swappable Shipping Cost Calculators
+
+title
+```
+Strategy Pattern in Laravel: Swappable Shipping Cost Calculators Without if/else Chains
+```
+
+short description (145 characters)
+```
+Refactor a tangled if/else shipping cost service in Laravel 13 into swappable courier strategies with a contract, container tags, and Pest tests.
+```
+
+category
+```
+Laravel / Software Engineering
+```
+
+tags
+```
+laravel, design-patterns, strategy-pattern, refactoring, solid, open-closed-principle, service-container, pest, php
+```
+
