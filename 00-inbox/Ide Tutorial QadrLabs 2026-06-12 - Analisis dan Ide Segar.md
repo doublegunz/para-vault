@@ -50,7 +50,7 @@ Dari folder `03-published/`: **Laravel 118 post** (pilar utama), PHP/OOP 33, Cod
 
 ### Laravel (10 ide)
 
-### 1. Strategy Pattern in Laravel: Swappable Shipping Cost Calculators Without if/else Chains
+### 1. Strategy Pattern in Laravel: Swappable Shipping Cost Calculators Without if/else Chains (PUBLISHED)
 - **Kategori**: Laravel / Software Engineering
 - **Kenapa**: Lanjutan natural seri SOLID yang baru selesai (OCP & DIP sudah menyiapkan konsepnya). Membuka "seri design patterns" baru sebagai pilar konten.
 - **Target keyword**: `strategy pattern laravel`, `laravel design patterns`
