@@ -133,11 +133,22 @@ Sebelum menyusun artikel, selalu ikuti urutan berikut:
 ## Deliverables
 
 Produce these in order:
-1. Full markdown tutorial file
-2. Article title (exact, publication-ready)
-3. Short description (maximum 160 characters)
-4. Category and tags article
+1. Full markdown tutorial file (the article).
+2. Append a metadata entry to the article metadata log file:
+   `01-projects/qadrlabs/post-meta/artikel-meta.md`
+   - If the file does not exist yet, create it with the header line `# Article Metadata Log`, then add the entry.
+   - If it exists, append the new entry at the bottom. Do NOT overwrite or modify existing entries.
+   - Entry format (separate each entry with a blank line):
+     ```markdown
+     ## YYYY-MM-DD - <short topic>
+     **File:** <relative path to the article file>
+     **Title:** <exact, publication-ready title>
+     **Short description:** <short description> (<N> chars)
+     **Category:** <category>
+     **Tags:** <comma-separated tags>
+     ```
+   - Use today's date (`YYYY-MM-DD`) and the relative path of the article file just written.
 
-After the file is presented, provide the title, short description with character count, and category/tags.
+After both files are written, also print the title, short description (with character count), and category/tags in the chat for quick reference.
 
 Do NOT produce social media captions until asked separately.

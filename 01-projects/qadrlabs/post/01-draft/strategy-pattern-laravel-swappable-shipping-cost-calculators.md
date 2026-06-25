@@ -1,6 +1,6 @@
 # Strategy Pattern in Laravel: Swappable Shipping Cost Calculators Without if/else Chains
 
-Your checkout supports two couriers, JNE and SiCepat, so you write a `ShippingService` with an `if/elseif` that branches on the courier name. A month later the business adds GoSend for same-day delivery inside Jakarta, and you add another branch. Then AnterAja. Then a flat-rate option for a promo. Six months in, one method carries five branches, each with its own weight rules, zone tables, and edge cases, all sharing the same file. A change to the GoSend distance formula forces you to scroll past JNE and SiCepat to reach it, and a careless refactor of the shared rounding logic quietly breaks SiCepat.
+Your checkout supports two couriers, SwiftPost and BudgetShip, so you write a `ShippingService` with an `if/elseif` that branches on the courier name. A month later the business adds CityRider for same-day delivery inside Jakarta, and you add another branch. Then MetroExpress. Then a flat-rate option for a promo. Six months in, one method carries five branches, each with its own weight rules, zone tables, and edge cases, all sharing the same file. A change to the CityRider distance formula forces you to scroll past SwiftPost and BudgetShip to reach it, and a careless refactor of the shared rounding logic quietly breaks BudgetShip.
 
 The problem is not the new courier. The problem is that adding a courier means reopening a method that was already tested and shipped, and every reopen is a chance to break a courier that had nothing to do with your change. Over time the team stops trusting the file. Each shipping change turns into a full regression of every courier, because nobody can promise that touching one branch left the others alone.
 
@@ -13,7 +13,7 @@ The work happens in two phases. First we build the version with the `if/elseif` 
 ### What You'll Build
 - A Laravel 13 JSON endpoint that returns a shipping cost for a chosen courier
 - A `ShippingService` that starts as an `if/elseif` chain and ends as a strategy registry
-- A `ShippingCalculator` contract with four concrete strategies: JNE, SiCepat, GoSend, and AnterAja, each with a genuinely different pricing formula
+- A `ShippingCalculator` contract with four concrete strategies: SwiftPost, BudgetShip, CityRider, and MetroExpress, each with a genuinely different pricing formula
 - A readonly `Shipment` data object that carries the request into each strategy
 - Pest tests that lock the behavior down across the refactor and across the new courier
 
@@ -77,7 +77,7 @@ public function up(): void
 {
     Schema::create('shipping_quotes', function (Blueprint $table) {
         $table->id();
-        $table->string('courier');                 // jne, sicepat, gosend, ...
+        $table->string('courier');                 // swiftpost, budgetship, cityrider, ...
         $table->unsignedInteger('weight');         // actual weight in grams
         $table->string('zone');                    // jabodetabek, java, outside_java
         $table->unsignedInteger('cost');           // final shipping cost in rupiah
@@ -164,23 +164,23 @@ class ShippingService
         string $zone,
         int $distanceKm,
     ): int {
-        if ($courier === 'jne') {
-            return $this->quoteJne($weight, $length, $width, $height, $zone);
-        } elseif ($courier === 'sicepat') {
-            return $this->quoteSiCepat($weight, $zone);
-        } elseif ($courier === 'gosend') {
-            return $this->quoteGoSend($zone, $distanceKm);
+        if ($courier === 'swiftpost') {
+            return $this->quoteSwiftPost($weight, $length, $width, $height, $zone);
+        } elseif ($courier === 'budgetship') {
+            return $this->quoteBudgetShip($weight, $zone);
+        } elseif ($courier === 'cityrider') {
+            return $this->quoteCityRider($zone, $distanceKm);
         } else {
             throw new InvalidArgumentException("Unsupported courier: {$courier}");
         }
     }
 
     /**
-     * JNE Reguler. Charges on the chargeable weight, which is the larger of the
+     * SwiftPost Regular. Charges on the chargeable weight, which is the larger of the
      * actual weight and the volumetric weight (length x width x height / 5000).
      * Weight is rounded up to the next whole kilogram before applying the rate.
      */
-    private function quoteJne(int $weight, int $length, int $width, int $height, string $zone): int
+    private function quoteSwiftPost(int $weight, int $length, int $width, int $height, string $zone): int
     {
         $rates = [
             'jabodetabek'  => 9000,
@@ -196,10 +196,10 @@ class ShippingService
     }
 
     /**
-     * SiCepat Regular. Cheaper than JNE and simpler: it bills on the actual
+     * BudgetShip Regular. Cheaper than SwiftPost and simpler: it bills on the actual
      * weight only and ignores volumetric weight entirely.
      */
-    private function quoteSiCepat(int $weight, string $zone): int
+    private function quoteBudgetShip(int $weight, string $zone): int
     {
         $rates = [
             'jabodetabek'  => 8000,
@@ -213,14 +213,14 @@ class ShippingService
     }
 
     /**
-     * GoSend Instant. A same-city motorbike courier, so it only serves the
+     * CityRider Instant. A same-city motorbike courier, so it only serves the
      * jabodetabek zone and prices by distance, not by weight: a flat base fare
      * covers the first 5 km, then a per-kilometer rate applies beyond that.
      */
-    private function quoteGoSend(string $zone, int $distanceKm): int
+    private function quoteCityRider(string $zone, int $distanceKm): int
     {
         if ($zone !== 'jabodetabek') {
-            throw new InvalidArgumentException('GoSend only serves same-city (jabodetabek) deliveries.');
+            throw new InvalidArgumentException('CityRider only serves same-city (jabodetabek) deliveries.');
         }
 
         $baseFare       = 10000;   // covers the first 5 km
@@ -234,7 +234,7 @@ class ShippingService
 }
 ```
 
-Two smells are worth naming before we touch anything. The first is the dispatcher itself: every new courier means another `elseif`, another private method, and another reason to read the whole file. The second is the parameter list. The public `quote` method takes seven positional arguments because it has to satisfy every courier at once, even though JNE never looks at distance and GoSend never looks at dimensions. That long signature is a hint that the data wants to travel together as one object, which we will fix during the refactor.
+Two smells are worth naming before we touch anything. The first is the dispatcher itself: every new courier means another `elseif`, another private method, and another reason to read the whole file. The second is the parameter list. The public `quote` method takes seven positional arguments because it has to satisfy every courier at once, even though SwiftPost never looks at distance and CityRider never looks at dimensions. That long signature is a hint that the data wants to travel together as one object, which we will fix during the refactor.
 
 ## Step 4: Expose It Over HTTP {#step-4-expose-it-over-http}
 
@@ -359,11 +359,11 @@ it('rejects requests without required fields', function () {
          ->assertJsonValidationErrors(['courier', 'weight', 'length', 'width', 'height', 'zone']);
 });
 
-it('quotes jne using actual weight when it beats volumetric', function () {
+it('quotes swiftpost using actual weight when it beats volumetric', function () {
     // 1500 g in a compact 10x10x10 box (volumetric ~200 g), java zone @ 14000/kg.
     // chargeable = ceil(1500/1000) = 2 kg, so 2 * 14000 = 28000.
     $this->postJson('/api/shipping/quote', [
-            'courier' => 'jne',
+            'courier' => 'swiftpost',
             'weight'  => 1500,
             'length'  => 10,
             'width'   => 10,
@@ -371,17 +371,17 @@ it('quotes jne using actual weight when it beats volumetric', function () {
             'zone'    => 'java',
         ])
          ->assertStatus(201)
-         ->assertJsonPath('courier', 'jne')
+         ->assertJsonPath('courier', 'swiftpost')
          ->assertJsonPath('cost', 28000);
 
     expect(ShippingQuote::first()->cost)->toBe(28000);
 });
 
-it('quotes jne using volumetric weight when the box is bulky', function () {
+it('quotes swiftpost using volumetric weight when the box is bulky', function () {
     // 1000 g but a bulky 40x40x40 box: volumetric = 40*40*40/5000 = 12.8 kg.
     // chargeable = ceil(12800/1000) = 13 kg, jabodetabek @ 9000/kg = 117000.
     $this->postJson('/api/shipping/quote', [
-            'courier' => 'jne',
+            'courier' => 'swiftpost',
             'weight'  => 1000,
             'length'  => 40,
             'width'   => 40,
@@ -392,11 +392,11 @@ it('quotes jne using volumetric weight when the box is bulky', function () {
          ->assertJsonPath('cost', 117000);
 });
 
-it('quotes sicepat on actual weight only, ignoring volumetric', function () {
-    // Same bulky 40x40x40 box, but SiCepat bills the 2300 g actual weight only.
+it('quotes budgetship on actual weight only, ignoring volumetric', function () {
+    // Same bulky 40x40x40 box, but BudgetShip bills the 2300 g actual weight only.
     // chargeable = ceil(2300/1000) = 3 kg, outside_java @ 25000/kg = 75000.
     $this->postJson('/api/shipping/quote', [
-            'courier' => 'sicepat',
+            'courier' => 'budgetship',
             'weight'  => 2300,
             'length'  => 40,
             'width'   => 40,
@@ -404,14 +404,14 @@ it('quotes sicepat on actual weight only, ignoring volumetric', function () {
             'zone'    => 'outside_java',
         ])
          ->assertStatus(201)
-         ->assertJsonPath('courier', 'sicepat')
+         ->assertJsonPath('courier', 'budgetship')
          ->assertJsonPath('cost', 75000);
 });
 
-it('quotes gosend by distance within the city', function () {
+it('quotes cityrider by distance within the city', function () {
     // jabodetabek, 8 km: base 10000 covers 5 km, then 3 km * 2500 = 7500, so 17500.
     $this->postJson('/api/shipping/quote', [
-            'courier'     => 'gosend',
+            'courier'     => 'cityrider',
             'weight'      => 500,
             'length'      => 10,
             'width'       => 10,
@@ -420,14 +420,14 @@ it('quotes gosend by distance within the city', function () {
             'distance_km' => 8,
         ])
          ->assertStatus(201)
-         ->assertJsonPath('courier', 'gosend')
+         ->assertJsonPath('courier', 'cityrider')
          ->assertJsonPath('cost', 17500);
 });
 
-it('rejects gosend outside the city zone', function () {
+it('rejects cityrider outside the city zone', function () {
     $service = app(ShippingService::class);
 
-    expect(fn () => $service->quote('gosend', 500, 10, 10, 10, 'java', 8))
+    expect(fn () => $service->quote('cityrider', 500, 10, 10, 10, 'java', 8))
         ->toThrow(InvalidArgumentException::class);
 });
 
@@ -439,7 +439,7 @@ it('throws when an unsupported courier is requested', function () {
 });
 ```
 
-The third test is the interesting one. SiCepat receives the exact same bulky `40x40x40` box as the JNE volumetric test, but charges far less because it ignores volumetric weight and bills the actual `2300 g` only. That contrast is the whole reason these calculators are separate algorithms rather than one shared formula. The last two tests reach into the service directly rather than going through HTTP, because an unsupported courier and a cross-zone GoSend both throw exceptions, and asserting on a thrown exception is cleaner than asserting on a `500` response.
+The third test is the interesting one. BudgetShip receives the exact same bulky `40x40x40` box as the SwiftPost volumetric test, but charges far less because it ignores volumetric weight and bills the actual `2300 g` only. That contrast is the whole reason these calculators are separate algorithms rather than one shared formula. The last two tests reach into the service directly rather than going through HTTP, because an unsupported courier and a cross-zone CityRider both throw exceptions, and asserting on a thrown exception is cleaner than asserting on a `500` response.
 
 ## Step 6: Run the Baseline Tests {#step-6-run-the-baseline-tests}
 
@@ -461,11 +461,11 @@ Nine tests pass: the seven we wrote plus the two Laravel examples.
 
    PASS  Tests\Feature\ShippingQuoteTest
   ✓ it rejects requests without required fields                         0.09s  
-  ✓ it quotes jne using actual weight when it beats volumetric          0.03s  
-  ✓ it quotes jne using volumetric weight when the box is bulky         0.02s  
-  ✓ it quotes sicepat on actual weight only, ignoring volumetric        0.02s  
-  ✓ it quotes gosend by distance within the city                        0.02s  
-  ✓ it rejects gosend outside the city zone                             0.02s  
+  ✓ it quotes swiftpost using actual weight when it beats volumetric    0.03s  
+  ✓ it quotes swiftpost using volumetric weight when the box is bulky   0.02s  
+  ✓ it quotes budgetship on actual weight only, ignoring volumetric     0.02s  
+  ✓ it quotes cityrider by distance within the city                     0.02s  
+  ✓ it rejects cityrider outside the city zone                          0.02s  
   ✓ it throws when an unsupported courier is requested                  0.02s  
 
   Tests:    9 passed (24 assertions)
@@ -551,7 +551,7 @@ interface ShippingCalculator
 {
     /**
      * The lowercase courier identifier used to route a request to this
-     * calculator. Examples: 'jne', 'sicepat', 'gosend'.
+     * calculator. Examples: 'swiftpost', 'budgetship', 'cityrider'.
      */
     public function courier(): string;
 
@@ -564,7 +564,7 @@ interface ShippingCalculator
 
 The interface declares only `courier` and `calculate`. We resist the urge to add `estimatedDays`, `trackingUrl`, or `supportsCod` now, because none of those are needed yet, and a contract that promises methods nobody calls is a contract that every implementation has to fake. We can extend it honestly when a real requirement arrives.
 
-## Step 9: Extract the JneCalculator {#step-9-extract-the-jnecalculator}
+## Step 9: Extract the SwiftPostCalculator {#step-9-extract-the-swiftpostcalculator}
 
 Now we move each courier out of the service and into its own class implementing the contract. Create the directory that will hold the strategies, then the first calculator.
 
@@ -572,7 +572,7 @@ Now we move each courier out of the service and into its own class implementing 
 mkdir -p app/Services/Shipping/Calculators
 ```
 
-Create `app/Services/Shipping/Calculators/JneCalculator.php` with the following content. The pricing logic is the same as the old private `quoteJne` method, but now it reads its inputs from the `Shipment` object and reuses the `chargeableKg` helper.
+Create `app/Services/Shipping/Calculators/SwiftPostCalculator.php` with the following content. The pricing logic is the same as the old private `quoteSwiftPost` method, but now it reads its inputs from the `Shipment` object and reuses the `chargeableKg` helper.
 
 ```php
 <?php
@@ -582,15 +582,15 @@ namespace App\Services\Shipping\Calculators;
 use App\Contracts\ShippingCalculator;
 use App\DataObjects\Shipment;
 
-class JneCalculator implements ShippingCalculator
+class SwiftPostCalculator implements ShippingCalculator
 {
     public function courier(): string
     {
-        return 'jne';
+        return 'swiftpost';
     }
 
     /**
-     * JNE Reguler bills on chargeable weight, the larger of actual and
+     * SwiftPost Regular bills on chargeable weight, the larger of actual and
      * volumetric weight (divisor 5000), rounded up to the next kilogram.
      */
     public function calculate(Shipment $shipment): int
@@ -608,11 +608,11 @@ class JneCalculator implements ShippingCalculator
 }
 ```
 
-The `courier` method returns the same `'jne'` string that the old dispatcher matched against. That string is how the service will find this calculator at runtime, so it becomes the calculator's stable identity rather than a value buried inside an `if`.
+The `courier` method returns the same `'swiftpost'` string that the old dispatcher matched against. That string is how the service will find this calculator at runtime, so it becomes the calculator's stable identity rather than a value buried inside an `if`.
 
-## Step 10: Extract the SiCepatCalculator {#step-10-extract-the-sicepatcalculator}
+## Step 10: Extract the BudgetShipCalculator {#step-10-extract-the-budgetshipcalculator}
 
-Mirror the same extraction for SiCepat. Create `app/Services/Shipping/Calculators/SiCepatCalculator.php` with the following content.
+Mirror the same extraction for BudgetShip. Create `app/Services/Shipping/Calculators/BudgetShipCalculator.php` with the following content.
 
 ```php
 <?php
@@ -622,15 +622,15 @@ namespace App\Services\Shipping\Calculators;
 use App\Contracts\ShippingCalculator;
 use App\DataObjects\Shipment;
 
-class SiCepatCalculator implements ShippingCalculator
+class BudgetShipCalculator implements ShippingCalculator
 {
     public function courier(): string
     {
-        return 'sicepat';
+        return 'budgetship';
     }
 
     /**
-     * SiCepat Regular is cheaper and simpler: it bills on the actual weight
+     * BudgetShip Regular is cheaper and simpler: it bills on the actual weight
      * only and ignores volumetric weight, so chargeableKg() gets no divisor.
      */
     public function calculate(Shipment $shipment): int
@@ -648,11 +648,11 @@ class SiCepatCalculator implements ShippingCalculator
 }
 ```
 
-Notice how the difference between JNE and SiCepat is now a single, readable line. JNE calls `chargeableKg(volumetricDivisor: 5000)` and SiCepat calls `chargeableKg()` with no divisor. The two pricing policies sit in two separate files, so changing the SiCepat rate card cannot touch a single character of JNE.
+Notice how the difference between SwiftPost and BudgetShip is now a single, readable line. SwiftPost calls `chargeableKg(volumetricDivisor: 5000)` and BudgetShip calls `chargeableKg()` with no divisor. The two pricing policies sit in two separate files, so changing the BudgetShip rate card cannot touch a single character of SwiftPost.
 
-## Step 11: Extract the GoSendCalculator {#step-11-extract-the-gosendcalculator}
+## Step 11: Extract the CityRiderCalculator {#step-11-extract-the-cityridercalculator}
 
-GoSend is the strategy that proves the contract is flexible enough for couriers that work nothing like the others. It ignores weight entirely, prices by distance, and refuses any zone except same-city Jakarta. Create `app/Services/Shipping/Calculators/GoSendCalculator.php` with the following content.
+CityRider is the strategy that proves the contract is flexible enough for couriers that work nothing like the others. It ignores weight entirely, prices by distance, and refuses any zone except same-city Jakarta. Create `app/Services/Shipping/Calculators/CityRiderCalculator.php` with the following content.
 
 ```php
 <?php
@@ -663,22 +663,22 @@ use App\Contracts\ShippingCalculator;
 use App\DataObjects\Shipment;
 use InvalidArgumentException;
 
-class GoSendCalculator implements ShippingCalculator
+class CityRiderCalculator implements ShippingCalculator
 {
     public function courier(): string
     {
-        return 'gosend';
+        return 'cityrider';
     }
 
     /**
-     * GoSend Instant is a same-city motorbike courier: it only serves the
+     * CityRider Instant is a same-city motorbike courier: it only serves the
      * jabodetabek zone and prices by distance, not weight. A flat base fare
      * covers the first 5 km, then a per-kilometer rate applies beyond that.
      */
     public function calculate(Shipment $shipment): int
     {
         if ($shipment->zone !== 'jabodetabek') {
-            throw new InvalidArgumentException('GoSend only serves same-city (jabodetabek) deliveries.');
+            throw new InvalidArgumentException('CityRider only serves same-city (jabodetabek) deliveries.');
         }
 
         $baseFare       = 10000;   // covers the first 5 km
@@ -710,18 +710,18 @@ public function quote(
     string $zone,
     int $distanceKm,
 ): int {
-    if ($courier === 'jne') {
-        return $this->quoteJne($weight, $length, $width, $height, $zone);
-    } elseif ($courier === 'sicepat') {
-        return $this->quoteSiCepat($weight, $zone);
-    } elseif ($courier === 'gosend') {
-        return $this->quoteGoSend($zone, $distanceKm);
+    if ($courier === 'swiftpost') {
+        return $this->quoteSwiftPost($weight, $length, $width, $height, $zone);
+    } elseif ($courier === 'budgetship') {
+        return $this->quoteBudgetShip($weight, $zone);
+    } elseif ($courier === 'cityrider') {
+        return $this->quoteCityRider($zone, $distanceKm);
     } else {
         throw new InvalidArgumentException("Unsupported courier: {$courier}");
     }
 }
 
-// ... plus the three private quoteJne/quoteSiCepat/quoteGoSend methods
+// ... plus the three private quoteSwiftPost/quoteBudgetShip/quoteCityRider methods
 ```
 
 Replace the entire contents of `app/Services/ShippingService.php` with the registry version below. The private courier methods are gone, because that logic now lives in the calculator classes.
@@ -788,11 +788,12 @@ public function register(): void
 Replace that empty method, and add the imports it needs at the top of the class, so the provider tags the calculators and wires up the service.
 
 ```php
+<?php
 namespace App\Providers;
 
-use App\Services\Shipping\Calculators\GoSendCalculator;
-use App\Services\Shipping\Calculators\JneCalculator;
-use App\Services\Shipping\Calculators\SiCepatCalculator;
+use App\Services\Shipping\Calculators\CityRiderCalculator;
+use App\Services\Shipping\Calculators\SwiftPostCalculator;
+use App\Services\Shipping\Calculators\BudgetShipCalculator;
 use App\Services\ShippingService;
 use Illuminate\Support\ServiceProvider;
 
@@ -805,9 +806,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register every calculator implementation under a shared tag.
         $this->app->tag([
-            JneCalculator::class,
-            SiCepatCalculator::class,
-            GoSendCalculator::class,
+            SwiftPostCalculator::class,
+            BudgetShipCalculator::class,
+            CityRiderCalculator::class,
         ], 'shipping.calculators');
 
         // Resolve the service with all tagged calculators injected as an iterable.
@@ -815,6 +816,7 @@ class AppServiceProvider extends ServiceProvider
             return new ShippingService($app->tagged('shipping.calculators'));
         });
     }
+}
 ```
 
 Tagging is Laravel's idiomatic answer to "I have a family of strategies and I want all of them injected somewhere". The service never imports a single calculator class; it only knows the contract. The provider is the one place where the list of available couriers is configured, which makes the provider the place we extend and the service the thing that stays closed.
@@ -863,10 +865,10 @@ use App\DataObjects\Shipment;
 The two service-level tests currently look like this.
 
 ```php
-it('rejects gosend outside the city zone', function () {
+it('rejects cityrider outside the city zone', function () {
     $service = app(ShippingService::class);
 
-    expect(fn () => $service->quote('gosend', 500, 10, 10, 10, 'java', 8))
+    expect(fn () => $service->quote('cityrider', 500, 10, 10, 10, 'java', 8))
         ->toThrow(InvalidArgumentException::class);
 });
 
@@ -881,11 +883,11 @@ it('throws when an unsupported courier is requested', function () {
 Replace them with versions that build a `Shipment` and pass it to the two-argument `quote`.
 
 ```php
-it('rejects gosend outside the city zone', function () {
+it('rejects cityrider outside the city zone', function () {
     $service = app(ShippingService::class);
     $shipment = new Shipment(weight: 500, length: 10, width: 10, height: 10, zone: 'java', distanceKm: 8);
 
-    expect(fn () => $service->quote('gosend', $shipment))
+    expect(fn () => $service->quote('cityrider', $shipment))
         ->toThrow(InvalidArgumentException::class);
 });
 
@@ -916,11 +918,11 @@ The same nine tests pass, with the same assertion count.
 
    PASS  Tests\Feature\ShippingQuoteTest
   ✓ it rejects requests without required fields                         0.10s  
-  ✓ it quotes jne using actual weight when it beats volumetric          0.03s  
-  ✓ it quotes jne using volumetric weight when the box is bulky         0.02s  
-  ✓ it quotes sicepat on actual weight only, ignoring volumetric        0.02s  
-  ✓ it quotes gosend by distance within the city                        0.02s  
-  ✓ it rejects gosend outside the city zone                             0.02s  
+  ✓ it quotes swiftpost using actual weight when it beats volumetric    0.03s  
+  ✓ it quotes swiftpost using volumetric weight when the box is bulky   0.02s  
+  ✓ it quotes budgetship on actual weight only, ignoring volumetric     0.02s  
+  ✓ it quotes cityrider by distance within the city                     0.02s  
+  ✓ it rejects cityrider outside the city zone                          0.02s  
   ✓ it throws when an unsupported courier is requested                  0.02s  
 
   Tests:    9 passed (24 assertions)
@@ -931,9 +933,9 @@ Nine passing, twenty-four assertions, exactly as before. The buyer-facing behavi
 
 ## Step 13: Add a New Courier Without Touching Existing Code {#step-13-add-a-new-courier-without-touching-existing-code}
 
-The business signs a contract with AnterAja. The point of this step is everything we do not have to touch: not `ShippingService`, not the contract, not the three existing calculators, not the controller, and not the seven tests that already pass. We write one new class and add one line to a list.
+The business signs a contract with MetroExpress. The point of this step is everything we do not have to touch: not `ShippingService`, not the contract, not the three existing calculators, not the controller, and not the seven tests that already pass. We write one new class and add one line to a list.
 
-Create `app/Services/Shipping/Calculators/AnterAjaCalculator.php` with the following content. AnterAja prices like JNE but uses the `6000` volumetric divisor and its own rate card, which is exactly the kind of variation the contract was built to absorb.
+Create `app/Services/Shipping/Calculators/MetroExpressCalculator.php` with the following content. MetroExpress prices like SwiftPost but uses the `6000` volumetric divisor and its own rate card, which is exactly the kind of variation the contract was built to absorb.
 
 ```php
 <?php
@@ -943,15 +945,15 @@ namespace App\Services\Shipping\Calculators;
 use App\Contracts\ShippingCalculator;
 use App\DataObjects\Shipment;
 
-class AnterAjaCalculator implements ShippingCalculator
+class MetroExpressCalculator implements ShippingCalculator
 {
     public function courier(): string
     {
-        return 'anteraja';
+        return 'metroexpress';
     }
 
     /**
-     * AnterAja Regular bills on chargeable weight like JNE, but uses the
+     * MetroExpress Regular bills on chargeable weight like SwiftPost, but uses the
      * 6000 volumetric divisor and its own rate card.
      */
     public function calculate(Shipment $shipment): int
@@ -973,9 +975,9 @@ Now register it. This is the single line of modification we allow, because the s
 
 ```php
 $this->app->tag([
-    JneCalculator::class,
-    SiCepatCalculator::class,
-    GoSendCalculator::class,
+    SwiftPostCalculator::class,
+    BudgetShipCalculator::class,
+    CityRiderCalculator::class,
 ], 'shipping.calculators');
 ```
 
@@ -983,27 +985,27 @@ Add the new calculator to the list.
 
 ```php
 $this->app->tag([
-    JneCalculator::class,
-    SiCepatCalculator::class,
-    GoSendCalculator::class,
-    AnterAjaCalculator::class,              // newly added line
+    SwiftPostCalculator::class,
+    BudgetShipCalculator::class,
+    CityRiderCalculator::class,
+    MetroExpressCalculator::class,              // newly added line
 ], 'shipping.calculators');
 ```
 
 Add the matching import alongside the other calculator imports at the top of the file.
 
 ```php
-use App\Services\Shipping\Calculators\AnterAjaCalculator;
+use App\Services\Shipping\Calculators\MetroExpressCalculator;
 ```
 
 To prove the new courier works and that registration took effect, append two tests to the bottom of `tests/Feature/ShippingQuoteTest.php`.
 
 ```php
-it('quotes the newly added anteraja courier', function () {
+it('quotes the newly added metroexpress courier', function () {
     // 3000 g in a small 10x10x10 box, jabodetabek @ 10000/kg.
     // chargeable = ceil(3000/1000) = 3 kg, so 3 * 10000 = 30000.
     $this->postJson('/api/shipping/quote', [
-            'courier' => 'anteraja',
+            'courier' => 'metroexpress',
             'weight'  => 3000,
             'length'  => 10,
             'width'   => 10,
@@ -1011,14 +1013,14 @@ it('quotes the newly added anteraja courier', function () {
             'zone'    => 'jabodetabek',
         ])
          ->assertStatus(201)
-         ->assertJsonPath('courier', 'anteraja')
+         ->assertJsonPath('courier', 'metroexpress')
          ->assertJsonPath('cost', 30000);
 });
 
-it('reports anteraja as a supported courier after registration', function () {
+it('reports metroexpress as a supported courier after registration', function () {
     $service = app(ShippingService::class);
 
-    expect($service->supported())->toContain('anteraja');
+    expect($service->supported())->toContain('metroexpress');
 });
 ```
 
@@ -1030,7 +1032,7 @@ Run the full suite one last time.
 php artisan test
 ```
 
-The seven original tests still pass, and the two new AnterAja tests pass too, for eleven in total.
+The seven original tests still pass, and the two new MetroExpress tests pass too, for eleven in total.
 
 ```
 
@@ -1042,14 +1044,14 @@ The seven original tests still pass, and the two new AnterAja tests pass too, fo
 
    PASS  Tests\Feature\ShippingQuoteTest
   ✓ it rejects requests without required fields                         0.09s  
-  ✓ it quotes jne using actual weight when it beats volumetric          0.03s  
-  ✓ it quotes jne using volumetric weight when the box is bulky         0.02s  
-  ✓ it quotes sicepat on actual weight only, ignoring volumetric        0.02s  
-  ✓ it quotes gosend by distance within the city                        0.02s  
-  ✓ it rejects gosend outside the city zone                             0.02s  
+  ✓ it quotes swiftpost using actual weight when it beats volumetric    0.03s  
+  ✓ it quotes swiftpost using volumetric weight when the box is bulky   0.02s  
+  ✓ it quotes budgetship on actual weight only, ignoring volumetric     0.02s  
+  ✓ it quotes cityrider by distance within the city                     0.02s  
+  ✓ it rejects cityrider outside the city zone                          0.02s  
   ✓ it throws when an unsupported courier is requested                  0.02s  
-  ✓ it quotes the newly added anteraja courier                          0.02s  
-  ✓ it reports anteraja as a supported courier after registration       0.02s  
+  ✓ it quotes the newly added metroexpress courier                      0.02s  
+  ✓ it reports metroexpress as a supported courier after registration   0.02s  
 
   Tests:    11 passed (28 assertions)
   Duration: 0.44s
@@ -1061,7 +1063,7 @@ That is the payoff. A new courier arrived as one new file plus one line in a lis
 
 The Strategy pattern defines a family of interchangeable algorithms, puts each one behind a common interface, and lets the calling code select which algorithm to run at runtime. The first time you read that definition it sounds abstract. After the refactor above, each part of it has a name in our code.
 
-The interface is the strategy role, and ours is `ShippingCalculator`. Each concrete algorithm is a concrete strategy, and ours are `JneCalculator`, `SiCepatCalculator`, `GoSendCalculator`, and `AnterAjaCalculator`. The object that holds the strategies and decides which one to run is the context, and ours is `ShippingService`. The data the algorithms operate on travels in the `Shipment` object, which keeps every strategy's `calculate` signature identical even though JNE reads dimensions and GoSend reads distance.
+The interface is the strategy role, and ours is `ShippingCalculator`. Each concrete algorithm is a concrete strategy, and ours are `SwiftPostCalculator`, `BudgetShipCalculator`, `CityRiderCalculator`, and `MetroExpressCalculator`. The object that holds the strategies and decides which one to run is the context, and ours is `ShippingService`. The data the algorithms operate on travels in the `Shipment` object, which keeps every strategy's `calculate` signature identical even though SwiftPost reads dimensions and CityRider reads distance.
 
 The defining trait, the one that separates Strategy from ordinary inheritance, is that the selection happens at runtime from data. Our context picks a calculator using the `courier` string that arrived in the HTTP request, which is a value the buyer chose at checkout. Nothing is decided at compile time. If tomorrow you load the courier from a database column or a feature flag, the context does not change at all, because it already treats the choice as runtime data.
 
@@ -1069,7 +1071,7 @@ The defining trait, the one that separates Strategy from ordinary inheritance, i
 
 Readers who followed the [Open/Closed Principle article](https://qadrlabs.com/post/openclosed-principle-in-laravel-build-an-extensible-payment-gateway-system) will notice that this refactor looks familiar, and that is the point worth making explicit. The two ideas operate at different levels.
 
-The Open/Closed Principle is a goal: software entities should be open for extension but closed for modification. It tells you what good extensible code feels like, but it does not tell you how to build it. The Strategy pattern is one concrete technique for reaching that goal. By moving each algorithm behind a shared interface and selecting among them at runtime, Strategy makes the context class closed to modification, since new algorithms arrive as new classes, while keeping the system open to extension. When we added AnterAja without editing `ShippingService`, that was OCP satisfied, and the Strategy pattern is the mechanism that satisfied it.
+The Open/Closed Principle is a goal: software entities should be open for extension but closed for modification. It tells you what good extensible code feels like, but it does not tell you how to build it. The Strategy pattern is one concrete technique for reaching that goal. By moving each algorithm behind a shared interface and selecting among them at runtime, Strategy makes the context class closed to modification, since new algorithms arrive as new classes, while keeping the system open to extension. When we added MetroExpress without editing `ShippingService`, that was OCP satisfied, and the Strategy pattern is the mechanism that satisfied it.
 
 The two are not the same thing, though. OCP can also be achieved with other patterns, such as Decorator for layering behavior or a Chain of Responsibility for sequential handlers. And Strategy is useful even when OCP is not your main concern, for example when you simply want to swap a sorting algorithm or a pricing experiment at runtime. Think of OCP as the why and Strategy as one well-worn how.
 

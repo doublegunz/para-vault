@@ -83,8 +83,21 @@ Bumbu khas yang ditaburkan (format `ID | EN`):
 
 Produce these in order:
 1. File markdown artikel lengkap.
-2. Judul artikel (siap publikasi).
-3. Short description (maksimal 160 karakter, sertakan hitungan karakter).
-4. Kategori dan tags artikel.
+2. Tambahkan (append) entri metadata ke file log metadata artikel:
+   `01-projects/qadrlabs/post-meta/artikel-meta.md`
+   - Jika file belum ada, buat dulu dengan baris header `# Article Metadata Log`, lalu tambahkan entrinya.
+   - Jika sudah ada, append entri baru di bagian bawah. JANGAN menimpa atau mengubah entri lama.
+   - Format entri (pisahkan tiap entri dengan satu baris kosong), label field tetap bahasa Inggris agar log seragam:
+     ```markdown
+     ## YYYY-MM-DD - <topik singkat>
+     **File:** <path relatif file artikel>
+     **Title:** <judul siap publikasi>
+     **Short description:** <short description> (<N> chars)
+     **Category:** <kategori>
+     **Tags:** <tags dipisah koma>
+     ```
+   - Pakai tanggal hari ini (`YYYY-MM-DD`) dan path relatif file artikel yang baru ditulis.
+
+Setelah kedua file ditulis, tampilkan juga judul, short description (dengan hitungan karakter), serta kategori/tags di chat untuk referensi cepat.
 
 Caption media sosial **hanya** dibuat jika diminta secara terpisah.
