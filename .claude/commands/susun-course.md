@@ -7,7 +7,7 @@ Struktur qadrlabs: **course -> module -> lesson**. Skill ini selalu memakai **ga
 Output file memetakan langsung ke tabel di app qadrlabs (`courses` -> `modules` -> `module_lessons`):
 
 - `tentang-course.md` -> row `courses`: frontmatter `title`/`slug`/`status`; `## Deskripsi` = kolom `description` (maks 255 karakter); `## Konten` = kolom `content` (overview lengkap); `## Daftar Modul` = outline modul + lesson.
-- Folder `module-N-<slug>/` -> row `modules` (punya `title`, `description`, `slug`).
+- Folder `module-N-<slug>/` -> row `modules` (punya `title`, `description`, `slug`). Kolom `description` bertipe **varchar**, jadi tiap modul wajib punya short description **maks 255 karakter** (idealnya 1 kalimat singkat). Ditulis di `## Daftar Modul` (lihat format Fase 2).
 - File `lesson-N-<slug>.md` -> row `module_lessons` (kontennya jadi kolom `content`).
 
 ## Lokasi Output
@@ -65,19 +65,23 @@ Paragraf intro yang menjelaskan course dan pendekatannya.
 
 ### Fase 2: Susun Silabus
 
-Usulkan pembagian modul beserta lesson di tiap modul. Setelah disetujui, tuliskan ke section `## Daftar Modul` di `tentang-course.md` dengan format berikut:
+Usulkan pembagian modul beserta lesson di tiap modul. Tiap modul juga butuh **short description** (1 kalimat, **maks 255 karakter**, karena kolom `description` di tabel `modules` bertipe varchar). Setelah disetujui, tuliskan ke section `## Daftar Modul` di `tentang-course.md` dengan format berikut:
 
 ```markdown
 ### 1. Module 1 — <Title>
+<Short description modul, maks 255 karakter, idealnya 1 kalimat>
+
 - Lesson 1 — <Title>
 - Lesson 2 — <Title>
 
 ### 2. Module 2 — <Title>
+<Short description modul, maks 255 karakter, idealnya 1 kalimat>
+
 - Lesson 3 — <Title>
 - Lesson 4 — <Title>
 ```
 
-Nomor lesson berlanjut menerus lintas modul. Buat folder modul kosong `module-N-<kebab-title>/` untuk tiap modul. **Berhenti dan minta konfirmasi user** atas keseluruhan silabus sebelum menyusun lesson apa pun.
+Short description ditaruh tepat di bawah judul modul, sebelum daftar lesson, dan jadi kolom `description` modul di database. Jaga benar batas 255 karakter dan jangan pakai em dash. Nomor lesson berlanjut menerus lintas modul. Buat folder modul kosong `module-N-<kebab-title>/` untuk tiap modul. **Berhenti dan minta konfirmasi user** atas keseluruhan silabus sebelum menyusun lesson apa pun.
 
 Jika silabus sudah ada (user langsung minta menyusun lesson), lewati Fase 1 dan 2 dan langsung ke Fase 3.
 
@@ -214,5 +218,5 @@ Catatan struktur:
 Sesuai fase yang dijalankan:
 
 **Fase 1:** File `tentang-course.md` + path lengkapnya.
-**Fase 2:** `## Daftar Modul` terisi di `tentang-course.md` + daftar folder modul yang dibuat.
+**Fase 2:** `## Daftar Modul` terisi di `tentang-course.md` (tiap modul punya short description maks 255 karakter + daftar lesson) + daftar folder modul yang dibuat.
 **Fase 3:** Untuk tiap lesson: file markdown lengkap (tanpa frontmatter) + path lengkap output yang disarankan.
