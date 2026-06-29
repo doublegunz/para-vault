@@ -186,6 +186,7 @@ Catatan struktur:
 - **Jangan menulis `---` sebagai pemisah** di luar pemisah antar section H2 di file lesson.
 - Heading H2 di file lesson **tidak memakai anchor slug** (`{#...}`); cukup judul bernomor seperti `## 2. Create the Comments Migration`.
 - **Jangan ubah, edit, atau hapus output terminal** hasil uji coba nyata. Tampilkan apa adanya termasuk whitespace dan formatting. Jangan mengarang output.
+- **Saat uji coba kode lesson, jika perlu mengunduh sesuatu (dataset, bobot model pretrained, dependency/paket, atau file contoh), KONFIRMASI dulu ke user sebelum mengunduh. Jangan langsung download.** Sebutkan apa yang akan diunduh beserta perkiraan ukurannya, lalu tunggu persetujuan user. Untuk unduhan yang besar atau lambat, sarankan agar uji coba dilakukan langsung di lingkungan target (mis. Google Colab) daripada mengunduh ke lokal.
 - File lesson **tanpa frontmatter**. Hanya `tentang-course.md` yang punya frontmatter.
 
 ### Khusus Course Laravel (Laravel 13 / PHP 8.3)
@@ -211,6 +212,7 @@ Catatan struktur:
 - Memakai label "Step N" untuk section yang tidak sekuensial / konseptual.
 - Langsung masuk ke `### Step` setelah H2 tanpa narasi pembuka.
 - Mengubah atau mengarang output terminal.
+- Mengunduh dataset, bobot model, dependency, atau file apa pun saat uji coba tanpa konfirmasi user lebih dulu.
 - Generate seluruh course sekaligus tanpa konfirmasi silabus lebih dulu.
 
 ## Deliverables
