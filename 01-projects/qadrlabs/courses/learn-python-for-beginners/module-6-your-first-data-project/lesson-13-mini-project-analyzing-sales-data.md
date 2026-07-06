@@ -60,7 +60,7 @@ def load_data(filepath):
                         "unit_price": int(row["unit_price"]),
                     })
                 except (ValueError, KeyError) as e:
-                    print(f"Warning: skipping row {i} — {e}")
+                    print(f"Warning: skipping row {i}: {e}")
             return rows
     except FileNotFoundError:
         print(f"Error: '{filepath}' not found.")
@@ -183,7 +183,7 @@ print(f"Total Transactions: {len(df)}")
 print(f"Average Revenue:    Rp {df['revenue'].mean():,.0f}")
 print(f"\nTop Product:")
 top_row = df.loc[df['revenue'].idxmax()]
-print(f"  {top_row['product']} — Rp {top_row['revenue']:,.0f}")
+print(f"  {top_row['product']}: Rp {top_row['revenue']:,.0f}")
 ```
 
 `df["revenue"].sum()` adds all values in the `revenue` column. `df["revenue"].mean()` calculates the average. `df["revenue"].idxmax()` returns the index (row number) of the row with the highest revenue. `df.loc[...]` retrieves that row as a Series, which you then access by column name.
@@ -310,7 +310,14 @@ for row in rows:
 top_month, top_month_revenue = max(month_revenue.items(), key=lambda x: x[1])
 ```
 
-Then add to `display_report()`:
+Then include both values in the dictionary returned by `analyze()`:
+
+```python
+"top_month": top_month,
+"top_month_revenue": top_month_revenue,
+```
+
+Finally, add this to `display_report()`:
 
 ```python
 print(f"\nTop Month:           {results['top_month']}")

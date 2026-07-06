@@ -31,29 +31,28 @@ If you already know SQL from the MySQL course, Python is the natural next step. 
 
 ## Daftar Modul
 
-### 1. Module 1 — Getting Started
-- Lesson 1 — Why Python?
-- Lesson 2 — Setting Up Python
+### 1. Module 1: Getting Started
+- Lesson 1: Why Python?
+- Lesson 2: Setting Up Python
 
-### 2. Module 2 — Python Basics
-- Lesson 3 — Variables and Data Types
-- Lesson 4 — Conditionals and Logic
-- Lesson 5 — Loops
+### 2. Module 2: Python Basics
+- Lesson 3: Variables and Data Types
+- Lesson 4: Conditionals and Logic
+- Lesson 5: Loops
 
-### 3. Module 3 — Data Structures
-- Lesson 6 — Lists and Tuples
-- Lesson 7 — Dictionaries and Sets
+### 3. Module 3: Data Structures
+- Lesson 6: Lists and Tuples
+- Lesson 7: Dictionaries and Sets
 
-### 4. Module 4 — Functions and Modules
-- Lesson 8 — Functions
-- Lesson 9 — Modules and Imports
+### 4. Module 4: Functions and Modules
+- Lesson 8: Functions
+- Lesson 9: Modules and Imports
 
-### 5. Module 5 — Working with Data
-- Lesson 10 — String Methods and Formatting
-- Lesson 11 — File Handling and CSV
-- Lesson 12 — Error Handling
+### 5. Module 5: Working with Data
+- Lesson 10: String Methods and Formatting
+- Lesson 11: File Handling and CSV
+- Lesson 12: Error Handling
 
-### 6. Module 6 — Your First Data Project
-- Lesson 13 — Mini Project: Analyzing Sales Data
-- Lesson 14 — What's Next
-
+### 6. Module 6: Your First Data Project
+- Lesson 13: Mini Project: Analyzing Sales Data
+- Lesson 14: What's Next

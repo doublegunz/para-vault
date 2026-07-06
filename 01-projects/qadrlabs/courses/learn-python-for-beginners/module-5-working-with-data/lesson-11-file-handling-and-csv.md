@@ -146,7 +146,7 @@ print(f"Total Transactions: {len(rows)}")
 Output:
 
 ```
-Total Revenue: Rp 26,255,000
+Total Revenue: Rp 25,255,000
 Total Transactions: 10
 ```
 
@@ -170,9 +170,9 @@ for category, revenue in sorted(category_revenue.items(), key=lambda x: -x[1]):
 Output:
 
 ```
-  Electronics     Rp   19,050,000
-  Food            Rp    1,310,000
+  Electronics     Rp   22,350,000
   Fashion         Rp    1,340,000
+  Food            Rp    1,310,000
   Books           Rp      255,000
 ```
 
@@ -190,14 +190,14 @@ After processing data, you often need to save the results to a new file for repo
 import csv
 
 summary = [
-    {"category": "Electronics", "revenue": 19050000, "transactions": 6},
-    {"category": "Food", "revenue": 1310000, "transactions": 18},
-    {"category": "Fashion", "revenue": 1340000, "transactions": 6},
-    {"category": "Books", "revenue": 255000, "transactions": 3},
+    {"category": "Electronics", "revenue": 22350000, "units_sold": 12},
+    {"category": "Fashion", "revenue": 1340000, "units_sold": 6},
+    {"category": "Food", "revenue": 1310000, "units_sold": 18},
+    {"category": "Books", "revenue": 255000, "units_sold": 3},
 ]
 
 with open("data/summary.csv", "w", newline="") as f:
-    fieldnames = ["category", "revenue", "transactions"]
+    fieldnames = ["category", "revenue", "units_sold"]
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
     writer.writerows(summary)

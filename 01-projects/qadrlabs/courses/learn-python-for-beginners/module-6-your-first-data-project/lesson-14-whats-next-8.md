@@ -44,23 +44,23 @@ Here is how the tools stack:
 This course (complete)
     │
     ▼
-Pandas and NumPy — Data manipulation and numerical computing
+Pandas and NumPy: Data manipulation and numerical computing
     - DataFrames: filtering, merging, pivot tables, time series
     - NumPy: arrays, vectorized math, linear algebra
     │
     ▼
-Visualization — Communicating data visually
+Visualization: Communicating data visually
     - Matplotlib: fine-grained chart control
     - Seaborn: statistical graphics built on Matplotlib
     - Plotly: interactive charts for dashboards
     │
     ▼
-Statistics and Machine Learning — Finding patterns and making predictions
+Statistics and Machine Learning: Finding patterns and making predictions
     - Descriptive statistics, probability, hypothesis testing
     - Scikit-learn: regression, classification, clustering, model evaluation
     │
     ▼
-Advanced Specializations — Choose your direction
+Advanced Specializations: Choose your direction
     - Deep learning: TensorFlow, PyTorch
     - Natural language processing (NLP): text analysis, transformers
     - Big data and engineering: PySpark, Airflow, dbt

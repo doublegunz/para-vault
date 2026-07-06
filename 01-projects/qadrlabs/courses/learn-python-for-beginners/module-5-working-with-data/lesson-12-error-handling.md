@@ -191,7 +191,7 @@ def read_sales_data(filepath):
                         "unit_price": int(row["unit_price"]),
                     })
                 except (ValueError, KeyError) as e:
-                    print(f"Warning: skipping row {i} — {e}")
+                    print(f"Warning: skipping row {i}: {e}")
             return rows
     except FileNotFoundError:
         print(f"Error: file '{filepath}' not found.")
@@ -312,7 +312,7 @@ The `try`/`except ValueError` block catches non-numeric input. The explicit `if 
 Add a row like `2025-06-01,Broken Row,Electronics,2,` to `data/sales.csv` (note the empty last field). The expected output when running the `read_sales_data()` function is:
 
 ```
-Warning: skipping row 12 — invalid literal for int() with base 10: ''
+Warning: skipping row 12: invalid literal for int() with base 10: ''
 Loaded 10 valid rows.
 ```
 
