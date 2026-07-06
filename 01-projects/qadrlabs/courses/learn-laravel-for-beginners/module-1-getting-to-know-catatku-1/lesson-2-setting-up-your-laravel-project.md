@@ -321,7 +321,7 @@ This command tells Composer to download the latest version of Laravel and set up
 
 > **Note:** This command is intentionally **not pinned** to a specific version, so it always installs the latest Laravel release. At the time of writing, that is **Laravel 13, which requires PHP 8.3 or higher**, and that is the version all examples in this course target. If a newer major version has been released by the time you take this course, the steps remain the same; only minor details may differ.
 
-In current Laravel 13 projects, this command may also create a local SQLite database file and run Laravel's default migrations automatically. That is expected. In this course, we will still use MySQL for Catatku so you can practice working with a database server. We will switch the project from Laravel's default SQLite setup to MySQL in the next lesson.
+In current Laravel 13 projects, this command may also create a local SQLite database file and run Laravel's default migrations automatically. That is expected. In this course, we will still use MySQL for Catatku so you can practice working with a database server. We will switch the project from Laravel's default SQLite setup to MySQL in Lesson 5.
 
 Once the installation finishes, navigate into the project directory and open it in VS Code:
 
@@ -415,17 +415,8 @@ Think of Artisan as your project assistant. Instead of manually creating files a
 
 
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 3 {#next-up}
 
-In this lesson, you built a complete local development environment from scratch and created your first Laravel 13 project. Here are the key takeaways:
+In this lesson you built a complete local development environment from scratch and created your first Laravel 13 project. The only hard requirements for this course, on any operating system, are **PHP 8.3 or higher** and **Composer**: once `php -v` reports 8.3+ and `composer -V` works, you are ready, whether you got there with Laragon, Laravel Herd, or a manual Linux/macOS install. On Windows, **Laragon** bundles everything local PHP development needs (Nginx as the recommended web server, MySQL, PHP, Node.js, and Composer), and you upgrade or switch PHP versions through **Menu > PHP > Version**, while **Visual Studio Code** serves as your editor. With the tools in place, `composer create-project` scaffolded the complete Catatku project, and you toured the **Laravel folder structure** that follows the same conventions in every project: `Controllers/` for logic, `Models/` for data, `migrations/` for database schemas, `views/` for templates, and `web.php` for routes. You also met **Artisan**, Laravel's CLI tool that generates files, runs migrations, and starts the dev server, and learned that the **`.env`** file holds your environment configuration and should never be shared or committed to version control.
 
-- **PHP 8.3 or higher and Composer** are the only hard requirements for this course, on any operating system. Once `php -v` reports 8.3+ and `composer -V` works, you are ready, whether you got there with Laragon, Laravel Herd, or a manual Linux/macOS install.
-- **Visual Studio Code** is your code editor. It provides syntax highlighting, an integrated terminal, and a rich extension ecosystem for PHP development.
-- On Windows, **Laragon** bundles everything you need for local PHP development: a web server (Nginx), a database (MySQL), PHP, Node.js, and Composer. In the Laragon setup used in this lesson, you upgrade or switch PHP versions through **Menu > PHP > Version**.
-- **Nginx** is the recommended web server for modern PHP applications, offering better performance than Apache for most use cases.
-- The `composer create-project` command scaffolds a complete Laravel project with all dependencies installed and configured.
-- The **Laravel folder structure** follows consistent conventions: `Controllers/` for logic, `Models/` for data, `migrations/` for database schemas, `views/` for templates, and `web.php` for routes.
-- **Artisan** is Laravel's CLI tool that generates files, runs migrations, starts the dev server, and much more.
-- The **`.env`** file holds your environment configuration and should never be shared or committed to version control.
-
-In the next lesson, we will replace Laravel's default SQLite setup with MySQL, then create the first application-specific migration for Catatku. You will learn how Laravel manages database schemas through migrations and how to define your first Eloquent model.
+In Lesson 3, you will write your first Laravel code: defining routes in `routes/web.php` and rendering your first Blade views, so Catatku goes from a fresh install to real pages you can see and interact with in the browser.

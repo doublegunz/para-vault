@@ -429,19 +429,8 @@ This creates the entry through the authenticated user's `entries()` relationship
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 7 {#next-up}
 
-This lesson transformed the `Entry` model from an empty file into a fully functional, secure model connected to the database. Here are the key takeaways:
+This lesson transformed the `Entry` model from an empty file into a fully functional, secure model connected to the database. **Eloquent ORM** maps database tables to PHP classes, rows to objects, and columns to properties, so you interact with the database using expressive PHP code instead of raw SQL, read fields with **arrow notation** (`$entry->title` instead of `$entry['title']`), and get timestamp columns back as **Carbon** objects with formatting methods like `->format('d F Y')`. Laravel 13's **`#[Fillable]`** attribute (the cleaner replacement for the older `protected $fillable` property) declares which columns can be mass-assigned through `create()` or `update()`, and this **mass assignment protection** prevents malicious users from setting columns they should not have access to, like `user_id`. You defined the relationship pair **`belongsTo`** on `Entry` ("every entry belongs to one user") and **`hasMany`** on `User` ("every user can have many entries"), then queried with `Entry::with('user')->latest()->get()`, where **eager loading** prevents the N+1 query problem by fetching all related records in a single additional query (this query will be scoped by user once authentication is built). In the view, **`@forelse`** handled empty collections gracefully, and **Artisan Tinker** gave you a command line for testing models and inserting seed data during development.
 
-- **Eloquent ORM** maps database tables to PHP classes, rows to objects, and columns to properties. It lets you interact with the database using expressive PHP code instead of raw SQL.
-- Laravel 13 uses the **`#[Fillable]`** attribute to declare which columns can be mass-assigned. This replaces the older `protected $fillable` property with a cleaner, more declarative syntax.
-- **Mass assignment protection** prevents malicious users from setting columns they should not have access to (like `user_id`). Only columns listed in `#[Fillable]` can be filled through `create()` or `update()`.
-- The **`belongsTo`** relationship on `Entry` says "every entry belongs to one user." The **`hasMany`** relationship on `User` says "every user can have many entries."
-- `Entry::with('user')->latest()->get()` fetches all entries with their related users in an efficient query, ordered newest first. This query will be updated to scope by user once authentication is built.
-- **Eager loading** with `with('user')` prevents the N+1 query problem by fetching all related records in a single additional query.
-- Eloquent objects use **arrow notation** (`$entry->title`) instead of array bracket notation (`$entry['title']`).
-- Laravel automatically converts timestamp columns to **Carbon** objects, giving you powerful date formatting methods like `->format('d F Y')`.
-- **`@forelse`** is like `@foreach` but includes an `@empty` block for gracefully handling empty collections.
-- **Artisan Tinker** lets you interact with your models and database directly from the command line. It is invaluable for testing and inserting seed data during development.
-
-In the next lesson, we will clean up the views using **Blade components**, Laravel's way of breaking HTML templates into reusable pieces. Navigation bars, page layouts, and structural elements will only need to be written once and can be shared across every page. This is the first step toward making Catatku look and feel like a real application.
+In Lesson 7, we will clean up the views using **Blade components**, Laravel's way of breaking HTML templates into reusable pieces. Navigation bars, page layouts, and structural elements will only need to be written once and can be shared across every page. This is the first step toward making Catatku look and feel like a real application.

@@ -415,19 +415,8 @@ Notice that `create` and `store` are separate, and `edit` and `update` are separ
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 10 {#next-up}
 
-The CRUD cycle is now complete. All seven operations that make up entry management are working with proper routes, controller methods, and views. Here are the key takeaways:
+The CRUD cycle is now complete. All seven operations that make up entry management are working with proper routes, controller methods, and views, following **RESTful routing conventions**: a predictable, industry-standard structure you can verify with `php artisan route:list`. Because HTML forms only support GET and POST, **method spoofing** with `@method('PUT')` and `@method('DELETE')` generates a hidden field like `<input type="hidden" name="_method" value="PUT">` that Laravel reads to determine the actual intended HTTP method. The **edit form** is structurally similar to the create form, with two differences: it includes `@method('PUT')`, and it pre-fills fields with `old('field', $entry->field)`, whose **second argument** is essential because it shows the current database value on first load and what the user just typed after a failed validation. `$entry->update($validated)` modifies the existing record (Eloquent bumps `updated_at` automatically), `$entry->delete()` permanently removes it (followed by a redirect to the listing, since the entry no longer exists), and every method that operates on a specific entry includes an **`abort(403)` ownership check** so only the entry owner can read, edit, or delete it. The `index()` method currently shows all entries; this will be updated in Lesson 11 to show only the authenticated user's entries once the full authentication system is in place.
 
-- HTML forms only support GET and POST. **Method spoofing** with `@method('PUT')` and `@method('DELETE')` lets Laravel treat POST submissions as PUT or DELETE requests to match RESTful conventions.
-- `@method('PUT')` generates `<input type="hidden" name="_method" value="PUT">`. Laravel reads this field to determine the actual intended HTTP method.
-- The **edit form** is structurally similar to the create form, with two differences: it includes `@method('PUT')`, and it uses `old('field', $entry->field)` to pre-fill fields with existing data.
-- `old('field', $default)` with a **second argument** is essential for edit forms. On first load, it shows the current database value. After a failed validation, it shows what the user just typed.
-- `$entry->update($validated)` modifies an existing record in the database. Eloquent automatically updates the `updated_at` timestamp.
-- `$entry->delete()` permanently removes a record from the database. After deletion, redirect to the listing since the entry no longer exists.
-- Every method that operates on a specific entry includes an **`abort(403)` ownership check** to ensure only the entry owner can read, edit, or delete it.
-- **RESTful routing conventions** provide a predictable, industry-standard structure: seven routes, seven controller methods, each with a clear name and purpose.
-- `php artisan route:list` displays all registered routes and is useful for verifying that your route structure is complete and correct.
-- The `index()` method currently shows all entries. This will be updated in Lesson 11 to show only the authenticated user's entries once the full authentication system is in place.
-
-In the next two lessons, we will build the real authentication system: a registration page for creating new accounts and a login page that verifies user identity before granting access. The temporary `/dev-login` route has served its purpose and will finally be removed.
+In Lessons 10 and 11, we will build the real authentication system: a registration page for creating new accounts and a login page that verifies user identity before granting access. The temporary `/dev-login` route has served its purpose and will finally be removed.

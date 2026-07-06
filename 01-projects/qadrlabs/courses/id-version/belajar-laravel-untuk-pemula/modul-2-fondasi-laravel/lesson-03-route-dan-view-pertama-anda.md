@@ -286,18 +286,8 @@ Inilah salah satu hal terpenting yang perlu dipahami sejak awal: **mekanisme unt
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 4 {#next-up}
 
-Lesson ini membawa Catatku dari proyek kosong menjadi sesuatu yang dapat Anda lihat dan interaksikan di browser. Berikut adalah poin-poin penting yang perlu diingat:
+Lesson ini membawa Catatku dari proyek kosong menjadi sesuatu yang dapat Anda lihat dan interaksikan di browser. Sebuah **route** memetakan URL ke kode yang harus dijalankan ketika URL tersebut diminta; semua web route berada di `routes/web.php` dan didefinisikan dengan `Route::get('/path', function () { ... })`. Sebuah **view** adalah file template Blade di `resources/views/` (menggunakan ekstensi `.blade.php`) yang mengubah data menjadi HTML, ditemukan melalui **notasi titik** (`'entries.index'` memetakan ke `resources/views/entries/index.blade.php`) dan diberi data melalui `compact('entries')`, singkatan untuk `['entries' => $entries]`. Di dalam template, `{{ $variable }}` menampilkan nilai dengan perlindungan XSS otomatis (selalu gunakan ini daripada `echo` PHP mentah), `@foreach` melakukan loop pada koleksi untuk merender blok HTML berulang, dan `{{-- comment --}}` membuat komentar yang sepenuhnya dihapus dari output HTML. **Pola alur data** yang Anda lihat di sini (route menyiapkan data, meneruskannya ke view, Blade merendernya) tetap sama sepanjang course ini; hanya sumber datanya yang berubah.
 
-- Sebuah **route** memetakan URL ke kode yang harus dijalankan ketika URL tersebut diminta. Semua web route berada di `routes/web.php`.
-- `Route::get('/path', function () { ... })` mendefinisikan route yang merespons GET request pada path yang diberikan.
-- Sebuah **view** adalah file template Blade yang mengubah data menjadi HTML. View berada di `resources/views/` dan menggunakan ekstensi `.blade.php`.
-- Laravel menggunakan **notasi titik** untuk memetakan nama view ke path folder: `'entries.index'` memetakan ke `resources/views/entries/index.blade.php`.
-- `compact('entries')` adalah singkatan untuk `['entries' => $entries]` dan merupakan cara standar untuk meneruskan data dari route ke view.
-- `{{ $variable }}` menampilkan nilai dengan perlindungan XSS otomatis. Selalu gunakan ini daripada `echo` PHP mentah.
-- `@foreach` melakukan loop pada koleksi untuk merender blok HTML berulang tanpa duplikasi kode.
-- `{{-- comment --}}` membuat komentar yang sepenuhnya dihapus dari output HTML.
-- **Pola alur data** (route menyiapkan data, meneruskannya ke view, Blade merendernya) tetap sama sepanjang course ini. Hanya sumber datanya yang berubah.
-
-Pada lesson berikutnya, kita akan mempelajari **pola MVC** dan alasan mengapa Laravel mengorganisasikan kode dengan cara seperti itu. Saat ini, semua logika dan data kita berada bersama-sama di `routes/web.php`, dan itu akan mulai terasa tidak nyaman seiring berkembangnya aplikasi. Controller menyelesaikan masalah ini, dan memahami alasan keberadaannya akan membuat semua yang kita bangun selanjutnya terasa jauh lebih natural.
+Di Lesson 4, Anda akan mempelajari **pola MVC** dan alasan mengapa Laravel mengorganisasikan kode dengan cara seperti itu. Saat ini, semua logika dan data kita berada bersama-sama di `routes/web.php`, dan itu akan mulai terasa tidak nyaman seiring berkembangnya aplikasi. Controller menyelesaikan masalah ini, dan memahami alasan keberadaannya akan membuat semua yang kita bangun selanjutnya terasa jauh lebih natural.

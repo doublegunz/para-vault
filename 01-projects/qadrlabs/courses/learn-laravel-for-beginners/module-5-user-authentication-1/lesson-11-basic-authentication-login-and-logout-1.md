@@ -517,20 +517,10 @@ Every feature promised in Lesson 1 is now working. Users can register, log in, w
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 12 {#next-up}
 
-The authentication system for Catatku is now complete. Here are the key takeaways:
+The authentication system for Catatku is now complete. `Auth::attempt($credentials)` handles both user lookup and password verification in a single call, returning `true` on success and `false` on failure, and a successful login is followed by **session regeneration** (`$request->session()->regenerate()`) to prevent session fixation attacks by replacing the session ID. Login error messages stay **intentionally vague** ("The email or password you entered is incorrect") so attackers cannot discover which email addresses are registered, and `back()->withErrors([...])->onlyInput('email')` returns to the form while preserving only the email value, never sending the password back to the browser. Logout uses a **POST route** (not GET, to prevent cross-site logout attacks) and performs the essential **three-step logout**: `Auth::logout()` removes the user identity, `session()->invalidate()` destroys all session data, and `session()->regenerateToken()` creates a new CSRF token.
 
-- `Auth::attempt($credentials)` handles both user lookup and password verification in a single call. It returns `true` on success and `false` on failure.
-- **Session regeneration** (`$request->session()->regenerate()`) after login prevents session fixation attacks by replacing the session ID so any previously captured ID becomes invalid.
-- Login error messages should be **intentionally vague** ("The email or password you entered is incorrect") to prevent attackers from discovering which email addresses are registered in your system.
-- `back()->withErrors([...])->onlyInput('email')` redirects to the form with error messages while preserving only the email value. Passwords are never sent back to the browser.
-- The **three-step logout** is essential: `Auth::logout()` removes the user identity, `session()->invalidate()` destroys all session data, and `session()->regenerateToken()` creates a new CSRF token.
-- Logout must use a **POST route** (not GET) to prevent cross-site logout attacks where a malicious site could log out your users without their knowledge.
-- `->name('login')` on the login route is required because Laravel's `auth` middleware looks for a route with this name when redirecting unauthenticated users.
-- `/entries` is now inside the `middleware('auth')` group, making the entries listing fully private. Guests are redirected to the login page.
-- The `index()` method now uses **`auth()->user()->entries()->latest()->get()`** instead of `Entry::with('user')->latest()->get()`. In Lessons 6 through 9, we used `Entry::with('user')` because auth did not exist yet and calling `auth()->user()` would crash. Now that the route requires authentication, we can safely scope the query to the current user, ensuring each user only sees their own entries.
-- The `guest` middleware prevents logged-in users from accessing registration and login pages, since they have no reason to see those forms.
-- The `{{ url('/path') }}` helper generates full URLs in Blade templates, which we used to wire up the home page navigation buttons.
+On the routing side, `->name('login')` is required because Laravel's `auth` middleware looks for a route with that name when redirecting unauthenticated users, `/entries` now lives inside the `middleware('auth')` group so the listing is fully private, and the `guest` middleware keeps logged-in users away from the registration and login pages. With authentication in place, the `index()` method switched from `Entry::with('user')->latest()->get()` to **`auth()->user()->entries()->latest()->get()`**: in Lessons 6 through 9 calling `auth()->user()` would have crashed because auth did not exist yet, but now the query is safely scoped so each user only sees their own entries. Finally, the `{{ url('/path') }}` helper wired up the home page navigation buttons.
 
-In the final lesson, we will not add any new features. Instead, we will step back and look at the entire journey: what we built, what patterns emerged repeatedly, and where you can go from here to continue growing as a Laravel developer.
+In Lesson 12, the final lesson, we will not add any new features. Instead, we will step back and look at the entire journey: what we built, what patterns emerged repeatedly, and where you can go from here to continue growing as a Laravel developer.

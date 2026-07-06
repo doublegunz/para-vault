@@ -415,19 +415,8 @@ Perhatikan bahwa `create` dan `store` terpisah, begitu juga `edit` dan `update`.
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 10 {#next-up}
 
-Siklus CRUD kini sudah lengkap. Ketujuh operasi yang membentuk manajemen entri sudah berjalan dengan route, controller method, dan view yang tepat. Berikut adalah poin-poin pentingnya:
+Siklus CRUD kini sudah lengkap. Ketujuh operasi yang membentuk manajemen entri sudah berjalan dengan route, controller method, dan view yang tepat, mengikuti **konvensi routing RESTful**: struktur yang dapat diprediksi dan menjadi standar industri, yang dapat Anda verifikasi dengan `php artisan route:list`. Karena form HTML hanya mendukung GET dan POST, **method spoofing** dengan `@method('PUT')` dan `@method('DELETE')` menghasilkan field tersembunyi seperti `<input type="hidden" name="_method" value="PUT">` yang dibaca Laravel untuk menentukan HTTP method yang sebenarnya dimaksudkan. **Form edit** secara struktur mirip dengan form create, dengan dua perbedaan: form edit menyertakan `@method('PUT')`, dan mengisi field secara otomatis dengan `old('field', $entry->field)`, yang **argumen keduanya** sangat penting karena menampilkan nilai database saat ini pada pemuatan pertama dan apa yang baru saja diketik pengguna setelah validasi gagal. `$entry->update($validated)` memodifikasi record yang sudah ada (Eloquent memperbarui timestamp `updated_at` secara otomatis), `$entry->delete()` menghapusnya secara permanen (diikuti redirect ke listing karena entri tersebut sudah tidak ada lagi), dan setiap method yang beroperasi pada entri tertentu menyertakan pemeriksaan kepemilikan **`abort(403)`** agar hanya pemilik entri yang dapat membaca, mengedit, atau menghapusnya. Method `index()` saat ini menampilkan semua entri; ini akan diperbarui di Lesson 11 agar hanya menampilkan entri milik pengguna yang sedang login setelah sistem authentication lengkap diterapkan.
 
-- Form HTML hanya mendukung GET dan POST. **Method spoofing** dengan `@method('PUT')` dan `@method('DELETE')` memungkinkan Laravel memperlakukan pengiriman POST sebagai request PUT atau DELETE agar sesuai dengan konvensi RESTful.
-- `@method('PUT')` menghasilkan `<input type="hidden" name="_method" value="PUT">`. Laravel membaca field ini untuk menentukan HTTP method yang sebenarnya dimaksudkan.
-- **Form edit** secara struktur mirip dengan form create, dengan dua perbedaan: form edit menyertakan `@method('PUT')`, dan menggunakan `old('field', $entry->field)` untuk mengisi field secara otomatis dengan data yang sudah ada.
-- `old('field', $default)` dengan **argumen kedua** sangat penting untuk form edit. Pada saat dimuat pertama kali, ia menampilkan nilai database saat ini. Setelah validasi gagal, ia menampilkan apa yang baru saja diketik pengguna.
-- `$entry->update($validated)` memodifikasi record yang sudah ada di database. Eloquent secara otomatis memperbarui timestamp `updated_at`.
-- `$entry->delete()` menghapus record secara permanen dari database. Setelah penghapusan, lakukan redirect ke listing karena entri tersebut sudah tidak ada lagi.
-- Setiap method yang beroperasi pada entri tertentu menyertakan pemeriksaan kepemilikan **`abort(403)`** untuk memastikan hanya pemilik entri yang dapat membaca, mengedit, atau menghapusnya.
-- **Konvensi routing RESTful** menyediakan struktur yang dapat diprediksi dan menjadi standar industri: tujuh route, tujuh controller method, masing-masing dengan nama dan tujuan yang jelas.
-- `php artisan route:list` menampilkan semua route yang terdaftar dan berguna untuk memverifikasi bahwa struktur route Anda sudah lengkap dan benar.
-- Method `index()` saat ini menampilkan semua entri. Ini akan diperbarui di Lesson 11 agar hanya menampilkan entri milik pengguna yang sedang login setelah sistem authentication lengkap diterapkan.
-
-Pada dua lesson berikutnya, kita akan membangun sistem authentication yang sesungguhnya: halaman registrasi untuk membuat akun baru dan halaman login yang memverifikasi identitas pengguna sebelum memberikan akses. Route sementara `/dev-login` telah menyelesaikan tugasnya dan akhirnya akan dihapus.
+Di Lesson 10 dan 11, kita akan membangun sistem authentication yang sesungguhnya: halaman registrasi untuk membuat akun baru dan halaman login yang memverifikasi identitas pengguna sebelum memberikan akses. Route sementara `/dev-login` telah menyelesaikan tugasnya dan akhirnya akan dihapus.

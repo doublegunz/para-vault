@@ -72,10 +72,8 @@ You will add user registration, login, and logout. You will also lock down every
 **Lesson 12: Reflection and Next Steps.**
 The final lesson is not about writing new code. It is a chance to look back at everything you have built, explore features you could add to Catatku on your own, and map out which advanced Laravel topics are worth exploring next.
 
-## Before You Continue
+## Next Up - Lesson 2 {#next-up}
 
-Every concept in this course is introduced at the moment it is needed, not as abstract theory disconnected from context. You will always understand the *why* behind the code before you write it.
+Every concept in this course is introduced at the moment it is needed, not as abstract theory disconnected from context. You will always understand the *why* behind the code before you write it. Take your time. One lesson fully understood is worth more than three lessons rushed through.
 
-Take your time. One lesson fully understood is worth more than three lessons rushed through.
-
-Head over to **Lesson 2** to set up your development environment and get your first Laravel project running.
+In Lesson 2, you will set up your development environment and get your first Laravel project running: installing the tools, creating the Catatku project with Composer, and seeing the Laravel welcome page in your browser.

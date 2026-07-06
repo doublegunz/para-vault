@@ -339,19 +339,8 @@ The parameter name in the route (`{entry}`) must match the variable name in the 
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 8 {#next-up}
 
-This lesson changed how we build views in a significant way. Here are the key takeaways:
+This lesson changed how we build views in a significant way. **Blade components** let you extract reusable HTML into separate files, and any file in `resources/views/components/` becomes a component automatically. The **layout component** (`<x-layout>`) now provides the HTML skeleton, navigation, and flash message support for every page, inserting each page's content through the `{{ $slot }}` placeholder (everything between `<x-layout>` and `</x-layout>` becomes the slot), so changes to the layout propagate everywhere instantly. The **EntryCard component** (`<x-entry-card>`) encapsulates the display logic for a single entry, declaring its required data with `@props(['entry'])` and receiving it through `:entry="$entry"`, where the colon prefix means the value is a PHP expression. On the detail page, **route model binding** (`Entry $entry`) automatically converts URL parameters into Eloquent objects (returning a 404 when the record is not found), while `abort(403)` blocks unauthorized access with a "Forbidden" response; unauthenticated visitors currently see a 403, which will improve to a login redirect once we add the `auth` middleware. You also used `@method('DELETE')`, the hidden form field that tells Laravel to treat a POST submission as a DELETE request since HTML forms only support GET and POST, plus Carbon methods like `isoFormat()`, `diffForHumans()`, and `ne()` for dates, and the `whitespace-pre-line` CSS class to preserve line breaks in multi-paragraph entries.
 
-- **Blade components** let you extract reusable HTML into separate files. Any file in `resources/views/components/` becomes a component automatically.
-- The **layout component** (`<x-layout>`) provides the HTML skeleton, navigation, and flash message support. Every page uses it, so changes to the layout propagate everywhere instantly.
-- `{{ $slot }}` is the placeholder inside a component where the caller's content gets inserted. Everything between `<x-layout>` and `</x-layout>` becomes the slot.
-- `@props(['entry'])` declares required props for a component. Props are passed using attributes like `:entry="$entry"`, where the colon prefix means the value is a PHP expression.
-- The **EntryCard component** (`<x-entry-card>`) encapsulates the display logic for a single entry, keeping the listing view focused on page structure.
-- **Route Model Binding** (`Entry $entry`) automatically converts URL parameters into Eloquent objects. If the record is not found, Laravel returns a 404.
-- `abort(403)` stops execution and returns a "Forbidden" response, providing a simple way to block unauthorized access. Currently, unauthenticated visitors see a 403 error. This will improve to a login redirect once we add the `auth` middleware in the next lesson.
-- `@method('DELETE')` adds a hidden form field that tells Laravel to treat a POST submission as a DELETE request, since HTML forms only support GET and POST.
-- Carbon methods like `isoFormat()`, `diffForHumans()`, and `ne()` make date display and comparison straightforward without manual formatting logic.
-- The `whitespace-pre-line` CSS class preserves line breaks in text content, which is essential for displaying multi-paragraph entries correctly.
-
-In the next lesson, we will build the form for creating new entries. You will learn how to display a form, validate user input, save data to the database, and redirect with a success message. This is where Catatku truly starts to come alive.
+In Lesson 8, we will build the form for creating new entries. You will learn how to display a form, validate user input, save data to the database, and redirect with a success message. This is where Catatku truly starts to come alive.

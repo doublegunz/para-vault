@@ -305,19 +305,8 @@ Pemisahan ini adalah pola umum dalam aplikasi web: akses baca publik dengan akse
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 9 {#next-up}
 
-Sebuah alur lengkap kini berfungsi: pengguna membuka form, mengisi title dan content, mengirimkannya, dan entry tersebut tersimpan ke database. Berikut adalah poin-poin penting yang perlu diingat:
+Sebuah alur lengkap kini berfungsi: pengguna membuka form, mengisi title dan content, mengirimkannya, dan entry tersebut tersimpan ke database. Form Laravel mengikuti **pola dua route** (GET untuk menampilkan form, POST untuk memproses pengiriman), dan setiap form POST harus menyertakan **`@csrf`**, token tersembunyi yang membuktikan bahwa form dikirim dari aplikasi Anda dan melindungi dari serangan cross-site request forgery. `$request->validate([...])` memeriksa input terhadap rule seperti `required`, `string`, dan `max:255`; jika validasi **gagal**, Laravel secara otomatis mengarahkan kembali dengan pesan error dan input lama, yang ditampilkan form melalui **`old('field')`** (sehingga pengguna tidak kehilangan pekerjaan mereka) dan **`@error('field') ... @enderror`** (di mana `$message` berisi teks error validasi), dan jika **berhasil**, Anda mendapatkan array bersih berisi data yang sudah tervalidasi. Penyimpanan dilakukan melalui relasi Eloquent dengan `$request->user()->entries()->create($validated)`, yang mengatur `user_id` dari session sehingga tidak pernah berasal dari input pengguna, dan `redirect('/path')->with('success', '...')` mengirim pengguna ke halaman baru dengan pesan flash satu kali. Anda juga membungkus route dalam **`Route::middleware('auth')->group(...)`** sehingga pengunjung yang belum terautentikasi diarahkan ke halaman login, dan mempelajari bahwa **urutan route penting**: segmen statis seperti `/entries/create` harus dideklarasikan sebelum segmen dinamis seperti `/entries/{entry}`, atau Laravel akan mencoba mencocokkan "create" sebagai ID entry.
 
-- Form Laravel mengikuti **pola dua route**: GET untuk menampilkan form, POST untuk memproses pengiriman. Atribut `action` form mengarah ke route POST, dan atribut `method` diatur ke `POST`.
-- `$request->validate([...])` memeriksa input terhadap rule. Jika validasi **gagal**, Laravel secara otomatis mengarahkan kembali dengan pesan error dan input lama. Jika **berhasil**, Anda mendapatkan array bersih berisi data yang sudah tervalidasi.
-- Rule validasi umum meliputi `required` (harus ada), `string` (harus berupa teks), dan `max:255` (panjang karakter maksimum).
-- **`@csrf`** menghasilkan token tersembunyi yang membuktikan bahwa form dikirim dari aplikasi Anda, melindungi dari serangan cross-site request forgery. Setiap form POST harus menyertakannya.
-- **`old('field')`** mengambil nilai yang sebelumnya dimasukkan setelah kegagalan validasi, sehingga pengguna tidak kehilangan pekerjaan mereka. Tempatkan di atribut `value` untuk input dan di antara tag untuk textarea.
-- **`@error('field') ... @enderror`** merender pesan error untuk field tertentu. Variabel `$message` di dalamnya berisi teks error validasi.
-- `$request->user()->entries()->create($validated)` menyimpan data melalui relasi Eloquent, secara otomatis mengatur `user_id` dari session. Ini aman karena `user_id` tidak pernah berasal dari input pengguna.
-- `redirect('/path')->with('success', '...')` mengirim pengguna ke halaman baru dengan pesan flash satu kali yang disimpan di session.
-- **`Route::middleware('auth')->group(...)`** mewajibkan autentikasi untuk semua route di dalam group. Pengunjung yang belum terautentikasi otomatis diarahkan ke halaman login.
-- **Urutan route penting.** Segmen statis seperti `/entries/create` harus dideklarasikan sebelum segmen dinamis seperti `/entries/{entry}`, atau Laravel akan mencoba mencocokkan "create" sebagai ID entry.
-
-Di lesson berikutnya, kita akan mengimplementasikan dua operasi CRUD yang tersisa: mengedit entri yang sudah ada dan menghapusnya. Anda akan mempelajari mengapa browser hanya memahami GET dan POST, dan bagaimana Laravel menggunakan `@method('PUT')` dan `@method('DELETE')` untuk mengatasi keterbatasan tersebut.
+Di Lesson 9, kita akan mengimplementasikan dua operasi CRUD yang tersisa: mengedit entri yang sudah ada dan menghapusnya. Anda akan mempelajari mengapa browser hanya memahami GET dan POST, dan bagaimana Laravel menggunakan `@method('PUT')` dan `@method('DELETE')` untuk mengatasi keterbatasan tersebut.

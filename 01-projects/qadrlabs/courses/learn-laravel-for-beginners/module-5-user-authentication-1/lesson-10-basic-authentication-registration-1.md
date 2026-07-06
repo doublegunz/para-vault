@@ -360,19 +360,8 @@ In this lesson, we built the registration piece. Login and logout will be comple
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 11 {#next-up}
 
-The registration system is now fully working. Here are the key takeaways:
+The registration system is now fully working. **Authentication** is the process of verifying user identity, with registration, login, and logout as its three core operations, and its logic now lives in a dedicated `AuthController`, keeping concerns properly separated from entry management. The registration form validates with `unique:users,email` so no two users share the same email address, and the `confirmed` rule requires a companion field named `{field}_confirmation` with a matching value to prevent password typos. `Hash::make()` converts the plain text password into a bcrypt hash that cannot be reversed (**never store passwords as plain text**: if the database is compromised, hashed passwords protect your users because the original values cannot be recovered), and `Auth::login($user)` creates a session immediately after registration so users do not need to enter their credentials a second time. The routes sit behind `middleware('guest')`, the counterpart to `middleware('auth')` that redirects logged-in users away automatically. Two security habits came with the form: password fields **never** use `old()` to preserve values, because sending passwords back to the browser is a risk, and the temporary `/dev-login` route has been removed for good. You also saw that the default `User` model in Laravel 13 uses the `#[Fillable(['name', 'email', 'password'])]` and `#[Hidden(['password', 'remember_token'])]` attributes, matching the modern attribute-based approach we use for the `Entry` model.
 
-- **Authentication** is the process of verifying user identity. Registration, login, and logout are the three core operations.
-- The `AuthController` handles authentication logic separately from entry management, keeping concerns properly separated.
-- `unique:users,email` checks the database to ensure no two users share the same email address.
-- The `confirmed` validation rule requires a companion field named `{field}_confirmation` with a matching value. This prevents password typos during registration.
-- `Hash::make()` converts a plain text password into a bcrypt hash that cannot be reversed. **Never store passwords as plain text.** If the database is compromised, hashed passwords protect your users because the original values cannot be recovered.
-- `Auth::login($user)` creates a session for the user, logging them in immediately after registration so they do not need to enter their credentials a second time.
-- `middleware('guest')` restricts routes to unauthenticated visitors only. Logged-in users are redirected away automatically. This is the counterpart to `middleware('auth')`.
-- Password fields should **never** use `old()` to preserve values after validation failures. Sending passwords back to the browser, even in a form field, is a security risk.
-- The `/dev-login` route is no longer needed and has been removed. From this point forward, all authentication goes through the real system.
-- The default `User` model in Laravel 13 uses `#[Fillable(['name', 'email', 'password'])]` and `#[Hidden(['password', 'remember_token'])]` attributes, matching the modern attribute-based approach we use for the `Entry` model.
-
-In the next lesson, we will complete the authentication system with login and logout functionality. After that, Catatku will stand entirely on its own foundation, with no shortcuts or workarounds remaining.
+In Lesson 11, we will complete the authentication system with login and logout functionality. After that, Catatku will stand entirely on its own foundation, with no shortcuts or workarounds remaining.

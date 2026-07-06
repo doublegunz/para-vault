@@ -243,17 +243,8 @@ Right now, the `$entries` data is a hardcoded array inside the controller. In th
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 5 {#next-up}
 
-This lesson made a change that is invisible to the user but transformative for the developer. Here are the key takeaways:
+This lesson made a change that is invisible to the user but transformative for the developer. **MVC** (Model-View-Controller) is an architectural pattern that separates your application into three parts, each with **one responsibility**: Models talk to the database, Views render HTML, and Controllers coordinate between them. You generated a controller with `php artisan make:controller EntryController`, which created `app/Http/Controllers/EntryController.php`, then moved the logic that lived inside route closures into an `index()` method (the Laravel convention for listing resources). The route now points to the controller using the syntax `[EntryController::class, 'index']`, keeping `routes/web.php` clean and focused on URL mapping only, and `php artisan route:list` confirmed everything is wired up correctly. The full **request flow** reads: the browser sends a request, the route directs it to a controller, the controller prepares data and sends it to a view, and the view renders HTML back to the browser. The refactoring produces the **exact same output** in the browser; the benefit is entirely in code organization, readability, and maintainability.
 
-- **MVC** (Model-View-Controller) is an architectural pattern that separates your application into three parts: data (Model), presentation (View), and flow control (Controller).
-- Each part has **one responsibility**: Models talk to the database, Views render HTML, and Controllers coordinate between them.
-- `php artisan make:controller EntryController` generates a new controller file at `app/Http/Controllers/EntryController.php`.
-- Controller methods like `index()` contain the logic that was previously inside route closures. The method name `index` is a Laravel convention for listing resources.
-- Routes point to controllers using the syntax `[ControllerClass::class, 'methodName']`, keeping `routes/web.php` clean and focused on URL mapping only.
-- `php artisan route:list` displays all registered routes and is useful for verifying that routes are wired up correctly.
-- The **request flow** is: Browser sends a request, the route directs it to a controller, the controller prepares data and sends it to a view, the view renders HTML back to the browser.
-- The refactoring we did produces the **exact same output** in the browser. The benefit is entirely in code organization, readability, and maintainability.
-
-In the next lesson, we will replace the hardcoded array with real data. We will create a database table using a **migration** and meet **Eloquent**, Laravel's ORM that makes communicating with the database feel far more natural than you might expect.
+In Lesson 5, we will replace the hardcoded array with real data. You will create a database table using a **migration** and meet **Eloquent**, Laravel's ORM that makes communicating with the database feel far more natural than you might expect.

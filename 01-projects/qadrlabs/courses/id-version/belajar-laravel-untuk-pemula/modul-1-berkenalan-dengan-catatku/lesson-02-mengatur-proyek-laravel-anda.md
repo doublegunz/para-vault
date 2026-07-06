@@ -321,7 +321,7 @@ Perintah ini memberi tahu Composer untuk mengunduh versi Laravel terbaru dan men
 
 > **Note:** Perintah ini sengaja **tidak dikunci** ke versi tertentu, sehingga selalu menginstal rilis Laravel terbaru. Pada saat penulisan, itu adalah **Laravel 13, yang membutuhkan PHP 8.3 atau lebih tinggi**, dan itulah versi yang menjadi target semua contoh pada course ini. Jika versi major yang lebih baru telah dirilis pada saat Anda mengikuti course ini, langkah-langkahnya tetap sama; hanya detail kecil yang mungkin berbeda.
 
-Pada proyek Laravel 13 saat ini, perintah ini juga dapat membuat file database SQLite lokal dan menjalankan migration default Laravel secara otomatis. Itu adalah hal yang wajar. Pada course ini, kita tetap akan menggunakan MySQL untuk Catatku agar Anda dapat berlatih bekerja dengan database server. Kita akan beralih dari setup SQLite default Laravel ke MySQL pada lesson berikutnya.
+Pada proyek Laravel 13 saat ini, perintah ini juga dapat membuat file database SQLite lokal dan menjalankan migration default Laravel secara otomatis. Itu adalah hal yang wajar. Pada course ini, kita tetap akan menggunakan MySQL untuk Catatku agar Anda dapat berlatih bekerja dengan database server. Kita akan beralih dari setup SQLite default Laravel ke MySQL pada Lesson 5.
 
 Setelah instalasi selesai, navigasikan ke direktori proyek dan buka di VS Code:
 
@@ -415,17 +415,8 @@ Anggap Artisan sebagai asisten proyek Anda. Alih-alih membuat file secara manual
 
 
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 3 {#next-up}
 
-Pada lesson ini, Anda telah membangun lingkungan pengembangan lokal yang lengkap dari awal dan membuat proyek Laravel 13 pertama Anda. Berikut adalah poin-poin pentingnya:
+Di lesson ini Anda membangun lingkungan pengembangan lokal yang lengkap dari awal dan membuat proyek Laravel 13 pertama Anda. Satu-satunya persyaratan wajib untuk course ini, pada sistem operasi apa pun, adalah **PHP 8.3 atau lebih tinggi** dan **Composer**: begitu `php -v` menampilkan 8.3+ dan `composer -V` berfungsi, Anda sudah siap, baik Anda mencapainya dengan Laragon, Laravel Herd, maupun instalasi manual Linux/macOS. Pada Windows, **Laragon** menggabungkan semua yang dibutuhkan pengembangan PHP lokal (Nginx sebagai web server yang direkomendasikan, MySQL, PHP, Node.js, dan Composer), dan Anda meng-upgrade atau mengganti versi PHP melalui **Menu > PHP > Version**, sementara **Visual Studio Code** berperan sebagai editor Anda. Dengan tools yang sudah siap, `composer create-project` men-scaffold proyek Catatku yang lengkap, dan Anda menjelajahi **struktur folder Laravel** yang mengikuti konvensi yang sama di setiap proyek: `Controllers/` untuk logika, `Models/` untuk data, `migrations/` untuk skema database, `views/` untuk template, dan `web.php` untuk route. Anda juga berkenalan dengan **Artisan**, tool CLI Laravel yang menghasilkan file, menjalankan migration, dan memulai dev server, serta mempelajari bahwa file **`.env`** menyimpan konfigurasi environment Anda dan tidak boleh pernah dibagikan atau di-commit ke version control.
 
-- **PHP 8.3 atau lebih tinggi dan Composer** adalah satu-satunya persyaratan wajib untuk course ini, pada sistem operasi apa pun. Begitu `php -v` menampilkan 8.3+ dan `composer -V` berfungsi, Anda sudah siap, baik Anda mencapainya dengan Laragon, Laravel Herd, maupun instalasi manual Linux/macOS.
-- **Visual Studio Code** adalah code editor Anda. Editor ini menyediakan syntax highlighting, terminal terintegrasi, dan ekosistem ekstensi yang kaya untuk pengembangan PHP.
-- Pada Windows, **Laragon** menggabungkan semua yang Anda butuhkan untuk pengembangan PHP lokal: web server (Nginx), database (MySQL), PHP, Node.js, dan Composer. Pada setup Laragon yang digunakan pada lesson ini, Anda meng-upgrade atau mengganti versi PHP melalui **Menu > PHP > Version**.
-- **Nginx** adalah web server yang direkomendasikan untuk aplikasi PHP modern, menawarkan performa yang lebih baik dibandingkan Apache untuk sebagian besar use case.
-- Perintah `composer create-project` men-scaffold proyek Laravel lengkap dengan semua dependensi yang sudah diinstal dan dikonfigurasi.
-- **Struktur folder Laravel** mengikuti konvensi yang konsisten: `Controllers/` untuk logika, `Models/` untuk data, `migrations/` untuk skema database, `views/` untuk template, dan `web.php` untuk route.
-- **Artisan** adalah tool CLI Laravel yang menghasilkan file, menjalankan migration, memulai dev server, dan masih banyak lagi.
-- File **`.env`** menyimpan konfigurasi environment Anda dan tidak boleh pernah dibagikan atau di-commit ke version control.
-
-Pada lesson selanjutnya, kita akan mengganti setup SQLite default Laravel dengan MySQL, kemudian membuat migration spesifik aplikasi pertama untuk Catatku. Anda akan mempelajari bagaimana Laravel mengelola skema database melalui migration dan cara mendefinisikan model Eloquent pertama Anda.
+Di Lesson 3, Anda akan menulis kode Laravel pertama Anda: mendefinisikan route di `routes/web.php` dan merender view Blade pertama Anda, sehingga Catatku berubah dari instalasi baru menjadi halaman nyata yang dapat Anda lihat dan interaksikan di browser.

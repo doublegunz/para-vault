@@ -429,19 +429,8 @@ Ini membuat entry melalui relationship `entries()` milik user yang sedang login,
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 7 {#next-up}
 
-Lesson ini mengubah model `Entry` dari file kosong menjadi model yang berfungsi penuh, aman, dan terhubung ke database. Berikut adalah poin-poin pentingnya:
+Lesson ini mengubah model `Entry` dari file kosong menjadi model yang berfungsi penuh, aman, dan terhubung ke database. **Eloquent ORM** memetakan tabel database ke class PHP, baris ke objek, dan kolom ke property, sehingga Anda berinteraksi dengan database menggunakan kode PHP yang ekspresif alih-alih SQL mentah, membaca field dengan **notasi arrow** (`$entry->title`, bukan `$entry['title']`), dan menerima kolom timestamp sebagai objek **Carbon** dengan method format tanggal seperti `->format('d F Y')`. Attribute **`#[Fillable]`** milik Laravel 13 (pengganti yang lebih bersih untuk property `protected $fillable` yang lebih lama) mendeklarasikan kolom mana saja yang dapat di-mass-assign melalui `create()` atau `update()`, dan **mass assignment protection** ini mencegah user yang berniat jahat mengisi kolom yang seharusnya tidak dapat mereka akses, seperti `user_id`. Anda mendefinisikan pasangan relationship **`belongsTo`** pada `Entry` ("setiap entry dimiliki oleh satu user") dan **`hasMany`** pada `User` ("setiap user dapat memiliki banyak entry"), lalu melakukan query dengan `Entry::with('user')->latest()->get()`, di mana **eager loading** mencegah N+1 query problem dengan mengambil semua record terkait dalam satu query tambahan (query ini akan dibatasi per user setelah authentication dibangun). Di view, **`@forelse`** menangani collection kosong dengan baik, dan **Artisan Tinker** memberikan Anda command line untuk menguji model dan memasukkan seed data selama pengembangan.
 
-- **Eloquent ORM** memetakan tabel database ke class PHP, baris ke objek, dan kolom ke property. Ini memungkinkan Anda berinteraksi dengan database menggunakan kode PHP yang ekspresif, bukan SQL mentah.
-- Laravel 13 menggunakan attribute **`#[Fillable]`** untuk mendeklarasikan kolom mana saja yang dapat di-mass-assign. Ini menggantikan property `protected $fillable` yang lebih lama dengan sintaks yang lebih bersih dan lebih deklaratif.
-- **Mass assignment protection** mencegah user yang berniat jahat untuk mengisi kolom yang seharusnya tidak dapat mereka akses (seperti `user_id`). Hanya kolom yang terdaftar di `#[Fillable]` yang dapat diisi melalui `create()` atau `update()`.
-- Relationship **`belongsTo`** pada `Entry` menyatakan "setiap entry dimiliki oleh satu user." Relationship **`hasMany`** pada `User` menyatakan "setiap user dapat memiliki banyak entry."
-- `Entry::with('user')->latest()->get()` mengambil semua entry beserta user terkaitnya dalam satu query yang efisien, diurutkan dari yang terbaru. Query ini akan diperbarui untuk dibatasi per user setelah authentication dibangun.
-- **Eager loading** dengan `with('user')` mencegah N+1 query problem dengan mengambil semua record terkait dalam satu query tambahan.
-- Objek Eloquent menggunakan **notasi arrow** (`$entry->title`) alih-alih notasi bracket array (`$entry['title']`).
-- Laravel secara otomatis mengonversi kolom timestamp menjadi objek **Carbon**, memberikan Anda method format tanggal yang powerful seperti `->format('d F Y')`.
-- **`@forelse`** seperti `@foreach` tetapi menyertakan blok `@empty` untuk menangani collection kosong dengan baik.
-- **Artisan Tinker** memungkinkan Anda berinteraksi dengan model dan database secara langsung dari command line. Ini sangat berharga untuk pengujian dan memasukkan seed data selama pengembangan.
-
-Pada lesson berikutnya, kita akan merapikan view menggunakan **Blade components**, cara Laravel untuk memecah template HTML menjadi bagian-bagian yang dapat digunakan kembali. Navigation bar, page layout, dan elemen struktural lainnya hanya perlu ditulis sekali dan dapat digunakan bersama di setiap halaman. Ini adalah langkah pertama menuju membuat Catatku terlihat dan terasa seperti aplikasi sungguhan.
+Di Lesson 7, kita akan merapikan view menggunakan **Blade components**, cara Laravel untuk memecah template HTML menjadi bagian-bagian yang dapat digunakan kembali. Navigation bar, page layout, dan elemen struktural lainnya hanya perlu ditulis sekali dan dapat digunakan bersama di setiap halaman. Ini adalah langkah pertama menuju membuat Catatku terlihat dan terasa seperti aplikasi sungguhan.

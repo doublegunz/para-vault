@@ -305,19 +305,8 @@ This separation is a common pattern in web applications: public read access with
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 9 {#next-up}
 
-A complete flow is now working: the user opens a form, fills in a title and content, submits it, and the entry gets saved to the database. Here are the key takeaways:
+A complete flow is now working: the user opens a form, fills in a title and content, submits it, and the entry gets saved to the database. Laravel forms follow a **two-route pattern** (GET to display the form, POST to process the submission), and every POST form must include **`@csrf`**, the hidden token that proves the form was submitted from your application and protects against cross-site request forgery attacks. `$request->validate([...])` checks input against rules like `required`, `string`, and `max:255`; if validation **fails**, Laravel automatically redirects back with error messages and old input, which the form surfaces through **`old('field')`** (so users do not lose their work) and **`@error('field') ... @enderror`** (where `$message` contains the validation error text), and if it **passes**, you get a clean array of validated data. Saving goes through the Eloquent relationship with `$request->user()->entries()->create($validated)`, which sets `user_id` from the session so it never comes from user input, and `redirect('/path')->with('success', '...')` sends the user onward with a one-time flash message. You also wrapped the routes in **`Route::middleware('auth')->group(...)`** so unauthenticated visitors are redirected to the login page, and learned that **route order matters**: static segments like `/entries/create` must be declared before dynamic segments like `/entries/{entry}`, or Laravel will try to match "create" as an entry ID.
 
-- Laravel forms follow a **two-route pattern**: GET to display the form, POST to process the submission. The form's `action` attribute points to the POST route, and the `method` attribute is set to `POST`.
-- `$request->validate([...])` checks input against rules. If validation **fails**, Laravel automatically redirects back with error messages and old input. If it **passes**, you get a clean array of validated data.
-- Common validation rules include `required` (must be present), `string` (must be text), and `max:255` (maximum character length).
-- **`@csrf`** generates a hidden token that proves the form was submitted from your application, protecting against cross-site request forgery attacks. Every POST form must include it.
-- **`old('field')`** retrieves the previously entered value after a validation failure, so users do not lose their work. Place it in the `value` attribute for inputs and between tags for textareas.
-- **`@error('field') ... @enderror`** renders error messages for specific fields. The `$message` variable inside contains the validation error text.
-- `$request->user()->entries()->create($validated)` saves data through the Eloquent relationship, automatically setting `user_id` from the session. This is secure because `user_id` never comes from user input.
-- `redirect('/path')->with('success', '...')` sends the user to a new page with a one-time flash message stored in the session.
-- **`Route::middleware('auth')->group(...)`** requires authentication for all routes inside the group. Unauthenticated visitors are redirected to the login page automatically.
-- **Route order matters.** Static segments like `/entries/create` must be declared before dynamic segments like `/entries/{entry}`, or Laravel will try to match "create" as an entry ID.
-
-In the next lesson, we will implement the remaining two CRUD operations: editing existing entries and deleting them. You will learn why browsers only understand GET and POST, and how Laravel uses `@method('PUT')` and `@method('DELETE')` to work around that limitation.
+In Lesson 9, we will implement the remaining two CRUD operations: editing existing entries and deleting them. You will learn why browsers only understand GET and POST, and how Laravel uses `@method('PUT')` and `@method('DELETE')` to work around that limitation.

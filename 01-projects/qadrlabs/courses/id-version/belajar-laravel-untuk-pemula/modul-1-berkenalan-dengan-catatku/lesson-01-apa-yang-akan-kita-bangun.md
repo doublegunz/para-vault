@@ -72,10 +72,8 @@ Anda akan menambahkan registrasi pengguna, login, dan logout. Anda juga akan men
 **Lesson 12: Refleksi dan Langkah Selanjutnya.**
 Lesson terakhir bukan tentang menulis kode baru. Ini adalah kesempatan untuk melihat kembali semua yang telah Anda bangun, menjelajahi fitur-fitur yang bisa Anda tambahkan sendiri ke Catatku, dan memetakan topik-topik Laravel lanjutan mana yang layak dijelajahi berikutnya.
 
-## Sebelum Anda Melanjutkan
+## Selanjutnya - Lesson 2 {#next-up}
 
-Setiap konsep dalam course ini diperkenalkan pada saat dibutuhkan, bukan sebagai teori abstrak yang terlepas dari konteks. Anda akan selalu memahami alasan *mengapa* di balik kode sebelum menulisnya.
+Setiap konsep dalam course ini diperkenalkan pada saat dibutuhkan, bukan sebagai teori abstrak yang terlepas dari konteks. Anda akan selalu memahami alasan *mengapa* di balik kode sebelum menulisnya. Ambil waktu Anda. Satu lesson yang dipahami sepenuhnya lebih berharga dari tiga lesson yang diselesaikan dengan terburu-buru.
 
-Ambil waktu Anda. Satu lesson yang dipahami sepenuhnya lebih berharga dari tiga lesson yang diselesaikan dengan terburu-buru.
-
-Lanjutkan ke **Lesson 2** untuk mengatur lingkungan pengembangan Anda dan menjalankan proyek Laravel pertama Anda.
+Di Lesson 2, Anda akan mengatur lingkungan pengembangan Anda dan menjalankan proyek Laravel pertama Anda: menginstal tools, membuat proyek Catatku dengan Composer, dan melihat halaman welcome Laravel di browser Anda.

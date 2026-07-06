@@ -339,19 +339,8 @@ Nama parameter di dalam route (`{entry}`) harus cocok dengan nama variabel di da
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 8 {#next-up}
 
-Lesson ini mengubah cara kita membangun view dengan cara yang signifikan. Berikut adalah poin-poin pentingnya:
+Lesson ini mengubah cara kita membangun view dengan cara yang signifikan. **Blade components** memungkinkan Anda mengekstrak HTML yang reusable ke dalam file terpisah, dan file mana pun di dalam `resources/views/components/` secara otomatis menjadi component. **Component layout** (`<x-layout>`) kini menyediakan kerangka HTML, navigasi, dan dukungan flash message untuk setiap halaman, memasukkan konten tiap halaman melalui placeholder `{{ $slot }}` (segala sesuatu di antara `<x-layout>` dan `</x-layout>` menjadi slot tersebut), sehingga perubahan pada layout langsung diterapkan ke mana-mana. **Component EntryCard** (`<x-entry-card>`) merangkum logika tampilan untuk satu entri, mendeklarasikan data yang dibutuhkannya dengan `@props(['entry'])` dan menerimanya melalui `:entry="$entry"`, di mana prefix titik dua berarti nilainya adalah ekspresi PHP. Di halaman detail, **route model binding** (`Entry $entry`) secara otomatis mengonversi parameter URL menjadi objek Eloquent (mengembalikan 404 jika record tidak ditemukan), sementara `abort(403)` memblokir akses yang tidak sah dengan response "Forbidden"; saat ini pengunjung yang belum login melihat error 403, yang akan ditingkatkan menjadi redirect ke login setelah kita menambahkan middleware `auth`. Anda juga menggunakan `@method('DELETE')`, field form tersembunyi yang memberi tahu Laravel untuk memperlakukan submission POST sebagai request DELETE karena form HTML hanya mendukung GET dan POST, ditambah method Carbon seperti `isoFormat()`, `diffForHumans()`, dan `ne()` untuk tanggal, serta class CSS `whitespace-pre-line` untuk mempertahankan line break pada entri multi-paragraf.
 
-- **Blade components** memungkinkan Anda mengekstrak HTML yang reusable ke dalam file terpisah. File mana pun di dalam `resources/views/components/` secara otomatis menjadi component.
-- **Component layout** (`<x-layout>`) menyediakan kerangka HTML, navigasi, dan dukungan flash message. Setiap halaman menggunakannya, sehingga perubahan pada layout langsung diterapkan ke mana-mana.
-- `{{ $slot }}` adalah placeholder di dalam sebuah component tempat konten dari pemanggil dimasukkan. Segala sesuatu di antara `<x-layout>` dan `</x-layout>` menjadi slot tersebut.
-- `@props(['entry'])` mendeklarasikan prop yang dibutuhkan untuk sebuah component. Prop dioper menggunakan atribut seperti `:entry="$entry"`, di mana prefix titik dua berarti nilainya adalah ekspresi PHP.
-- **Component EntryCard** (`<x-entry-card>`) merangkum logika tampilan untuk satu entri, sehingga view daftar tetap fokus pada struktur halaman.
-- **Route Model Binding** (`Entry $entry`) secara otomatis mengonversi parameter URL menjadi objek Eloquent. Jika record tidak ditemukan, Laravel mengembalikan 404.
-- `abort(403)` menghentikan eksekusi dan mengembalikan response "Forbidden", menyediakan cara sederhana untuk memblokir akses yang tidak sah. Saat ini, pengunjung yang belum login akan melihat error 403. Ini akan ditingkatkan menjadi redirect ke login setelah kita menambahkan middleware `auth` di lesson berikutnya.
-- `@method('DELETE')` menambahkan field form tersembunyi yang memberi tahu Laravel untuk memperlakukan submission POST sebagai request DELETE, karena form HTML secara native hanya mendukung GET dan POST.
-- Method Carbon seperti `isoFormat()`, `diffForHumans()`, dan `ne()` membuat tampilan dan perbandingan tanggal menjadi mudah tanpa logika formatting manual.
-- Class CSS `whitespace-pre-line` mempertahankan line break dalam konten teks, yang penting untuk menampilkan entri multi-paragraf dengan benar.
-
-Pada lesson berikutnya, kita akan membangun form untuk membuat entri baru. Anda akan mempelajari cara menampilkan form, memvalidasi input pengguna, menyimpan data ke database, dan melakukan redirect dengan pesan sukses. Di sinilah Catatku benar-benar mulai hidup.
+Di Lesson 8, kita akan membangun form untuk membuat entri baru. Anda akan mempelajari cara menampilkan form, memvalidasi input pengguna, menyimpan data ke database, dan melakukan redirect dengan pesan sukses. Di sinilah Catatku benar-benar mulai hidup.

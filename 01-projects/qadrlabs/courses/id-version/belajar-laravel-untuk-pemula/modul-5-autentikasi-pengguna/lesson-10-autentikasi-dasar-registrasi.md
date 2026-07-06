@@ -360,19 +360,8 @@ Pada lesson ini, kita membangun bagian registrasi. Login dan logout akan diseles
 
 ---
 
-## Conclusion {#conclusion}
+## Selanjutnya - Lesson 11 {#next-up}
 
-Sistem registrasi sekarang sudah berfungsi penuh. Berikut adalah poin-poin pentingnya:
+Sistem registrasi sekarang sudah berfungsi penuh. **Authentication** adalah proses memverifikasi identitas pengguna, dengan registration, login, dan logout sebagai tiga operasi intinya, dan logikanya kini berada di `AuthController` khusus, menjaga concern tetap terpisah dengan baik dari pengelolaan entries. Form registrasi memvalidasi dengan `unique:users,email` agar tidak ada dua pengguna yang memiliki alamat email yang sama, dan rule `confirmed` mengharuskan adanya field pendamping bernama `{field}_confirmation` dengan nilai yang cocok untuk mencegah typo password. `Hash::make()` mengubah password teks biasa menjadi hash bcrypt yang tidak dapat dikembalikan (**jangan pernah menyimpan password sebagai teks biasa**: jika database diretas, password yang sudah di-hash melindungi pengguna Anda karena nilai aslinya tidak dapat dipulihkan), dan `Auth::login($user)` membuat session langsung setelah registrasi sehingga pengguna tidak perlu memasukkan kredensial untuk kedua kalinya. Route-nya berada di balik `middleware('guest')`, pasangan dari `middleware('auth')` yang otomatis mengalihkan pengguna yang sudah login. Dua kebiasaan keamanan hadir bersama form ini: field password **tidak boleh** pernah menggunakan `old()` untuk mempertahankan nilai, karena mengirim kembali password ke browser adalah risiko keamanan, dan route sementara `/dev-login` telah dihapus untuk selamanya. Anda juga melihat bahwa `User` model default di Laravel 13 menggunakan attribute `#[Fillable(['name', 'email', 'password'])]` dan `#[Hidden(['password', 'remember_token'])]`, sesuai dengan pendekatan berbasis attribute modern yang kita gunakan untuk model `Entry`.
 
-- **Authentication** adalah proses memverifikasi identitas pengguna. Registration, login, dan logout adalah tiga operasi inti.
-- `AuthController` menangani logika authentication secara terpisah dari pengelolaan entries, menjaga concern tetap terpisah dengan baik.
-- `unique:users,email` memeriksa database untuk memastikan tidak ada dua pengguna yang memiliki alamat email yang sama.
-- Validation rule `confirmed` mengharuskan adanya field pendamping bernama `{field}_confirmation` dengan nilai yang cocok. Ini mencegah typo password saat registrasi.
-- `Hash::make()` mengubah password teks biasa menjadi hash bcrypt yang tidak dapat dikembalikan. **Jangan pernah menyimpan password sebagai teks biasa.** Jika database diretas, password yang sudah di-hash melindungi pengguna Anda karena nilai aslinya tidak dapat dipulihkan.
-- `Auth::login($user)` membuat session untuk pengguna, langsung login-kan mereka setelah registrasi sehingga mereka tidak perlu memasukkan kredensial untuk kedua kalinya.
-- `middleware('guest')` membatasi route hanya untuk pengunjung yang belum login. Pengguna yang sudah login akan otomatis dialihkan. Ini adalah pasangan dari `middleware('auth')`.
-- Field password **tidak boleh** pernah menggunakan `old()` untuk mempertahankan nilai setelah validasi gagal. Mengirim kembali password ke browser, bahkan dalam field form, adalah risiko keamanan.
-- Route `/dev-login` tidak lagi diperlukan dan telah dihapus. Mulai dari titik ini, semua authentication melewati sistem yang sesungguhnya.
-- `User` model default di Laravel 13 menggunakan attribute `#[Fillable(['name', 'email', 'password'])]` dan `#[Hidden(['password', 'remember_token'])]`, sesuai dengan pendekatan berbasis attribute modern yang kita gunakan untuk model `Entry`.
-
-Pada lesson berikutnya, kita akan menyelesaikan sistem authentication dengan fungsi login dan logout. Setelah itu, Catatku akan berdiri sepenuhnya di atas fondasinya sendiri, tanpa jalan pintas atau workaround yang tersisa.
+Di Lesson 11, kita akan menyelesaikan sistem authentication dengan fungsi login dan logout. Setelah itu, Catatku akan berdiri sepenuhnya di atas fondasinya sendiri, tanpa jalan pintas atau workaround yang tersisa.

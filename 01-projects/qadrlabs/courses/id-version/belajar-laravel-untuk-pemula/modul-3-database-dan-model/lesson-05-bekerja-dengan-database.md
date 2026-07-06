@@ -265,17 +265,8 @@ Anda tidak perlu menghafal semua ini sekarang. Kita akan memperkenalkan setiap t
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 6 {#next-up}
 
-Lesson ini membawa Catatku dari data palsu menuju fondasi database yang sesungguhnya. Berikut poin-poin pentingnya:
+Lesson ini membawa Catatku dari data palsu menuju fondasi database yang sesungguhnya. File **`.env`** kini menyimpan detail koneksi database Anda, yang dibaca Laravel untuk terhubung ke MySQL, dan tidak boleh pernah di-commit ke Git. **Migration** adalah file PHP yang mendefinisikan perubahan struktur database: dilacak di Git, dijalankan dengan satu perintah, dan dapat di-rollback bila diperlukan. Anda menjalankan `php artisan make:model Entry -m` untuk membuat model dan file migration dalam satu langkah, membiarkan Laravel memetakan nama model singular (`Entry`) ke nama tabel plural (`entries`) secara otomatis. Di dalam migration, method **`up()`** mendefinisikan apa yang terjadi saat migration dijalankan dan method **`down()`** membatalkannya; `foreignId('user_id')->constrained()->cascadeOnDelete()` membuat foreign key ke tabel `users` dan memastikan bahwa menghapus seorang user juga menghapus semua entri miliknya; dan `$table->string()` (teks pendek), `$table->text()` (teks panjang), serta `$table->timestamps()` (kolom `created_at` dan `updated_at` otomatis) melengkapi sisa skema. Terakhir, `php artisan migrate` menjalankan semua migration yang tertunda, dan `php artisan migrate:rollback` membatalkan batch paling baru, yang aman dilakukan di development tetapi berbahaya di production karena dapat menyebabkan kehilangan data.
 
-- File **`.env`** menyimpan detail koneksi database Anda. Laravel membaca nilai-nilai ini untuk terhubung ke MySQL. File ini tidak boleh pernah di-commit ke Git.
-- **Migration** adalah file PHP yang mendefinisikan perubahan struktur database. Migration dilacak di Git, dapat dijalankan dengan satu perintah, dan dapat di-rollback bila diperlukan.
-- `php artisan make:model Entry -m` membuat model dan file migration dalam satu langkah. Laravel secara otomatis memetakan nama model singular (`Entry`) ke nama tabel plural (`entries`).
-- Method **`up()`** mendefinisikan apa yang terjadi saat migration dijalankan. Method **`down()`** membatalkannya.
-- `foreignId('user_id')->constrained()->cascadeOnDelete()` membuat relasi foreign key ke tabel `users` dan memastikan bahwa menghapus seorang user juga akan menghapus semua entri miliknya.
-- `$table->string()` digunakan untuk teks pendek, `$table->text()` digunakan untuk teks panjang, dan `$table->timestamps()` secara otomatis menambahkan kolom `created_at` dan `updated_at`.
-- `php artisan migrate` menjalankan semua migration yang tertunda. `php artisan migrate:rollback` membatalkan batch yang paling baru.
-- Rollback aman dilakukan di development tetapi berbahaya di production karena dapat menyebabkan kehilangan data.
-
-Di lesson berikutnya, kita akan mempelajari cara berkomunikasi dengan tabel `entries` yang baru saja kita buat menggunakan **Eloquent**, ORM milik Laravel. Alih-alih menulis SQL mentah, Anda akan menulis kode PHP yang ekspresif seperti `auth()->user()->entries()->latest()->get()`, dan Anda akan segera menyadari mengapa cara ini jauh lebih menyenangkan untuk bekerja dengan data.
+Di Lesson 6, kita akan mempelajari cara berkomunikasi dengan tabel `entries` yang baru saja kita buat menggunakan **Eloquent**, ORM milik Laravel. Alih-alih menulis SQL mentah, Anda akan menulis kode PHP yang ekspresif seperti `auth()->user()->entries()->latest()->get()`, dan Anda akan segera menyadari mengapa cara ini jauh lebih menyenangkan untuk bekerja dengan data.

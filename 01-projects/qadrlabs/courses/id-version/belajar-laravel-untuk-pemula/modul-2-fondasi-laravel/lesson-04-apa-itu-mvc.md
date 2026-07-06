@@ -243,17 +243,8 @@ Saat ini, data `$entries` adalah array hardcoded di dalam controller. Di lesson 
 
 ---
 
-## Kesimpulan {#conclusion}
+## Selanjutnya - Lesson 5 {#next-up}
 
-Lesson ini membuat perubahan yang tidak terlihat oleh pengguna namun transformatif bagi developer. Berikut adalah poin-poin pentingnya:
+Lesson ini membuat perubahan yang tidak terlihat oleh pengguna namun transformatif bagi developer. **MVC** (Model-View-Controller) adalah pola arsitektur yang memisahkan aplikasi Anda menjadi tiga bagian, masing-masing dengan **satu tanggung jawab**: Model berkomunikasi dengan database, View merender HTML, dan Controller mengoordinasikan keduanya. Anda membuat controller dengan `php artisan make:controller EntryController`, yang menghasilkan `app/Http/Controllers/EntryController.php`, lalu memindahkan logika yang sebelumnya berada di dalam route closure ke method `index()` (konvensi Laravel untuk menampilkan daftar resource). Route kini menunjuk ke controller menggunakan sintaks `[EntryController::class, 'index']`, sehingga `routes/web.php` tetap bersih dan hanya fokus pada pemetaan URL, dan `php artisan route:list` memastikan semuanya terhubung dengan benar. **Alur request** lengkapnya: browser mengirim request, route mengarahkannya ke controller, controller menyiapkan data dan mengirimkannya ke view, dan view merender HTML kembali ke browser. Refactoring ini menghasilkan **output yang persis sama** di browser; manfaatnya sepenuhnya ada pada organisasi kode, keterbacaan, dan kemudahan pemeliharaan.
 
-- **MVC** (Model-View-Controller) adalah pola arsitektur yang memisahkan aplikasi Anda menjadi tiga bagian: data (Model), presentasi (View), dan kontrol alur (Controller).
-- Setiap bagian memiliki **satu tanggung jawab**: Model berkomunikasi dengan database, View merender HTML, dan Controller mengoordinasikan keduanya.
-- `php artisan make:controller EntryController` membuat file controller baru di `app/Http/Controllers/EntryController.php`.
-- Method controller seperti `index()` berisi logika yang sebelumnya berada di dalam route closure. Nama method `index` adalah konvensi Laravel untuk menampilkan daftar resource.
-- Routes menunjuk ke controller menggunakan sintaks `[ControllerClass::class, 'methodName']`, sehingga `routes/web.php` tetap bersih dan hanya fokus pada pemetaan URL.
-- `php artisan route:list` menampilkan semua route yang terdaftar dan berguna untuk memverifikasi bahwa routes telah terhubung dengan benar.
-- **Alur request**-nya adalah: Browser mengirim request, route mengarahkannya ke controller, controller menyiapkan data dan mengirimkannya ke view, view merender HTML kembali ke browser.
-- Refactoring yang kita lakukan menghasilkan **output yang persis sama** di browser. Manfaatnya sepenuhnya ada pada organisasi kode, keterbacaan, dan kemudahan pemeliharaan.
-
-Di lesson berikutnya, kita akan mengganti array hardcoded dengan data yang sebenarnya. Kita akan membuat tabel database menggunakan **migration** dan berkenalan dengan **Eloquent**, ORM Laravel yang membuat komunikasi dengan database terasa jauh lebih natural daripada yang Anda bayangkan.
+Di Lesson 5, kita akan mengganti array hardcoded dengan data yang sebenarnya. Anda akan membuat tabel database menggunakan **migration** dan berkenalan dengan **Eloquent**, ORM Laravel yang membuat komunikasi dengan database terasa jauh lebih natural daripada yang Anda bayangkan.

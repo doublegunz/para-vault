@@ -265,17 +265,8 @@ You do not need to memorize all of these right now. We will introduce each type 
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 6 {#next-up}
 
-This lesson moved Catatku from fake data to a real database foundation. Here are the key takeaways:
+This lesson moved Catatku from fake data to a real database foundation. The **`.env`** file now stores your database connection details, which Laravel reads to connect to MySQL, and it should never be committed to Git. **Migrations** are PHP files that define database structure changes: they are tracked in Git, run with a single command, and can be rolled back when needed. You ran `php artisan make:model Entry -m` to create both a model and a migration in one step, letting Laravel map the singular model name (`Entry`) to the plural table name (`entries`) automatically. Inside the migration, the **`up()`** method defines what happens when it runs and the **`down()`** method undoes it; `foreignId('user_id')->constrained()->cascadeOnDelete()` creates a foreign key to the `users` table and ensures that deleting a user also deletes all of their entries; and `$table->string()` (short text), `$table->text()` (long text), and `$table->timestamps()` (automatic `created_at` and `updated_at` columns) covered the rest of the schema. Finally, `php artisan migrate` ran all pending migrations, and `php artisan migrate:rollback` undoes the most recent batch, which is safe in development but dangerous in production because it can cause data loss.
 
-- The **`.env`** file stores your database connection details. Laravel reads these values to connect to MySQL. This file should never be committed to Git.
-- **Migrations** are PHP files that define database structure changes. They are tracked in Git, can be run with a single command, and can be rolled back when needed.
-- `php artisan make:model Entry -m` creates both a model and a migration file in one step. Laravel automatically maps the singular model name (`Entry`) to the plural table name (`entries`).
-- The **`up()`** method defines what happens when the migration runs. The **`down()`** method undoes it.
-- `foreignId('user_id')->constrained()->cascadeOnDelete()` creates a foreign key relationship to the `users` table and ensures that deleting a user also deletes all of their entries.
-- `$table->string()` is for short text, `$table->text()` is for long text, and `$table->timestamps()` automatically adds `created_at` and `updated_at` columns.
-- `php artisan migrate` runs all pending migrations. `php artisan migrate:rollback` undoes the most recent batch.
-- Rolling back is safe in development but dangerous in production because it can cause data loss.
-
-In the next lesson, we will learn how to talk to the `entries` table we just created using **Eloquent**, Laravel's ORM. Instead of writing raw SQL, you will write expressive PHP code like `auth()->user()->entries()->latest()->get()`, and you will quickly see why that is a much more enjoyable way to work with data.
+In Lesson 6, we will learn how to talk to the `entries` table we just created using **Eloquent**, Laravel's ORM. Instead of writing raw SQL, you will write expressive PHP code like `auth()->user()->entries()->latest()->get()`, and you will quickly see why that is a much more enjoyable way to work with data.

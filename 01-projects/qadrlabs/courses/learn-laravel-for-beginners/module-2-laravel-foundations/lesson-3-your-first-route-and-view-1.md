@@ -286,18 +286,8 @@ This is one of the most important things to understand early: **the mechanism fo
 
 ---
 
-## Conclusion {#conclusion}
+## Next Up - Lesson 4 {#next-up}
 
-This lesson brought Catatku from a blank project to something you can see and interact with in the browser. Here are the key takeaways:
+This lesson brought Catatku from a blank project to something you can see and interact with in the browser. A **route** maps a URL to the code that should run when that URL is requested; all web routes live in `routes/web.php` and are defined with `Route::get('/path', function () { ... })`. A **view** is a Blade template file in `resources/views/` (using the `.blade.php` extension) that turns data into HTML, located through **dot notation** (`'entries.index'` maps to `resources/views/entries/index.blade.php`) and fed with data through `compact('entries')`, the shorthand for `['entries' => $entries]`. Inside the template, `{{ $variable }}` displays a value with automatic XSS protection (always use it instead of raw PHP `echo`), `@foreach` loops over collections to render repeated HTML blocks, and `{{-- comment --}}` creates comments that are stripped from the HTML output entirely. The **data flow pattern** you saw here (route prepares data, passes it to a view, Blade renders it) stays the same throughout the entire course; only the data source changes.
 
-- A **route** maps a URL to the code that should run when that URL is requested. All web routes live in `routes/web.php`.
-- `Route::get('/path', function () { ... })` defines a route that responds to GET requests at the given path.
-- A **view** is a Blade template file that turns data into HTML. Views live in `resources/views/` and use the `.blade.php` extension.
-- Laravel uses **dot notation** to map view names to folder paths: `'entries.index'` maps to `resources/views/entries/index.blade.php`.
-- `compact('entries')` is a shorthand for `['entries' => $entries]` and is the standard way to pass data from a route to a view.
-- `{{ $variable }}` displays a value with automatic XSS protection. Always use this instead of raw PHP `echo`.
-- `@foreach` loops over collections to render repeated HTML blocks without code duplication.
-- `{{-- comment --}}` creates comments that are stripped from the HTML output entirely.
-- The **data flow pattern** (route prepares data, passes it to a view, Blade renders it) stays the same throughout the entire course. Only the data source changes.
-
-In the next lesson, we will learn about the **MVC pattern** and why Laravel organizes code the way it does. Right now, all our logic and data live together in `routes/web.php`, and that will start feeling uncomfortable as the application grows. Controllers solve this problem, and understanding why they exist will make everything we build afterward feel much more natural.
+In Lesson 4, you will learn about the **MVC pattern** and why Laravel organizes code the way it does. Right now, all our logic and data live together in `routes/web.php`, and that will start feeling uncomfortable as the application grows. Controllers solve this problem, and understanding why they exist will make everything we build afterward feel much more natural.
