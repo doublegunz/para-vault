@@ -13,3 +13,17 @@
 **Short description:** Run Qwen3.5 on Google Colab's free T4 GPU with Ollama, expose it through an ngrok tunnel, and connect it to opencode on your laptop as a custom provider. (153 chars)
 **Category:** AI / LLM
 **Tags:** ollama, qwen, google-colab, ngrok, opencode, llm, self-hosted, openai-compatible-api
+
+## 2026-07-08 - Introduction to machine learning before the beginner course
+**File:** 01-projects/qadrlabs/post/01-draft/introduction-to-machine-learning-learn-from-data-before-you-build-your-first-model.md
+**Title:** Introduction to Machine Learning: Learn From Data Before You Build Your First Model
+**Short description:** Understand machine learning in plain language, see how models learn from data, and get ready to build your first models in Google Colab. (136 chars)
+**Category:** Machine Learning
+**Tags:** machine-learning, artificial-intelligence, beginner, google-colab, scikit-learn, supervised-learning, regression, classification
+
+## 2026-07-08 - Learn Laravel for beginners course introduction
+**File:** 01-projects/qadrlabs/post/01-draft/learn-laravel-for-beginners-build-catatku-from-zero-to-crud-and-authentication.md
+**Title:** Introducing Learn Laravel for Beginners: Build Your First CRUD App With Laravel 13
+**Short description:** Start learning Laravel 13 by building Catatku, a beginner-friendly journal app that teaches routing, MVC, database, CRUD, authentication, and data privacy. (155 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, beginner, course, crud, authentication, php, mysql, mvc
