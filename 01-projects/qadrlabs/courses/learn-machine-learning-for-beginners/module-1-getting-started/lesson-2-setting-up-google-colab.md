@@ -137,10 +137,10 @@ Line by line: `import sys` gives access to information about the Python interpre
 The output looks something like this, though your exact version numbers will differ because Colab updates over time:
 
 ```
-Python version: 3.12.0
-NumPy: 2.1.0
-pandas: 2.2.0
-scikit-learn: 1.5.0
+Python version: 3.12.13
+NumPy: 2.0.2
+pandas: 2.2.2
+scikit-learn: 1.6.1
 ```
 
 If this runs without errors, your environment is ready. The specific numbers do not matter for this course.
