@@ -27,3 +27,10 @@
 **Short description:** Start learning Laravel 13 by building Catatku, a beginner-friendly journal app that teaches routing, MVC, database, CRUD, authentication, and data privacy. (155 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, beginner, course, crud, authentication, php, mysql, mvc
+
+## 2026-07-09 - HTTP QUERY method support in Laravel 13.19
+**File:** 01-projects/qadrlabs/post/01-draft/http-query-method-support-in-laravel-13-19.md
+**Title:** HTTP QUERY Method Support in Laravel 13.19
+**Short description:** Learn how Laravel 13.19 adds HTTP QUERY support with Http::query(), queryJson(), and body-based filters inspired by RFC 10008. (126 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, http-client, http-query, rfc-10008, testing, pest, api
