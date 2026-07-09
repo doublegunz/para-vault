@@ -47,6 +47,7 @@ Let us get you into Colab and create the notebook you will use for the rest of t
 ### Step 1: Open Colab
 
 In your browser, go to [https://colab.research.google.com](https://colab.research.google.com). If you are not already signed in, sign in with your Google account. You will land on a welcome screen with a dialog listing recent notebooks.
+![dialog listing recent notebooks](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/01-dialog-listing-recent-notebooks.webp)
 
 Colab is a Google product, so your account is all you need. There is no separate sign-up.
 
@@ -54,12 +55,17 @@ Colab is a Google product, so your account is all you need. There is no separate
 
 In the dialog, click **New notebook** in the bottom right. If the dialog is closed, use the menu **File > New notebook**. A fresh notebook opens with a single empty code cell, ready for you to type Python.
 
+![dialog listing recent notebooks](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/01-dialog-listing-recent-notebooks.webp)
+
 This new notebook is automatically saved to a folder called "Colab Notebooks" in your Google Drive.
 
 ### Step 3: Rename the notebook
 
-At the top left, the notebook is named something like `Untitled0.ipynb`. Click that name and change it to `ml-setup`. Naming your notebooks clearly is a small habit that saves you a lot of confusion once you have many of them.
+At the top left, the notebook is named something like `Untitled0.ipynb`. 
+![new notebook](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/02-new-notebook.webp)
 
+Click that name and change it to `ml-setup`. Naming your notebooks clearly is a small habit that saves you a lot of confusion once you have many of them.
+![rename notebook](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/03-rename-notebook.webp)
 You now have an empty, named notebook. Time to run some code.
 
 ---
@@ -82,7 +88,11 @@ To run the cell, click the round play button on its left, or press **Shift + Ent
 Hello, machine learning!
 ```
 
+![write first line](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/04-write-first-line.webp)
+
 `print()` is the built-in Python function that displays text. `Shift + Enter` runs the current cell and moves focus to the next one, which is the shortcut you will use constantly.
+
+![first run](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/04-01-first-run.webp)
 
 ### Step 2: Add another cell
 
@@ -100,6 +110,8 @@ Run it and you will see:
 15
 ```
 
+![add another cell](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/04-02-add-another-cell.webp)
+
 Here you store two numbers in the variables `a` and `b`, then print their sum. This is plain Python, exactly what you already know, just running in the cloud.
 
 ### Step 3: Understand execution order
@@ -107,6 +119,8 @@ Here you store two numbers in the variables `a` and `b`, then print their sum. T
 This is the one Colab concept that trips up beginners, so read it carefully. Cells do not run on their own. They run only when you run them, and they share the same memory in the order you run them, not the order they appear on the page.
 
 For example, if you define a variable in one cell, run it, then use that variable in another cell, it works. But if you skip running the cell that defines the variable, the later cell fails with a `NameError`. The fix is almost always to run the earlier cell first. When in doubt, use the menu **Runtime > Run all** to run every cell from top to bottom in order.
+
+![run all](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/04-03-run-all.webp)
 
 Keeping your cells runnable from top to bottom is a good habit. It means anyone (including future you) can reopen the notebook and reproduce your results by running all cells.
 
@@ -143,6 +157,8 @@ pandas: 2.2.2
 scikit-learn: 1.6.1
 ```
 
+![print library](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/05-01-print-library-version.webp)
+
 If this runs without errors, your environment is ready. The specific numbers do not matter for this course.
 
 ### Step 2: Import the rest of the toolkit
@@ -178,13 +194,22 @@ Running it gives:
 
 ```
 (150, 5)
-   sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)  target
-0                5.1               3.5                1.4               0.2       0
-1                4.9               3.0                1.4               0.2       0
-2                4.7               3.2                1.4               0.2       0
-3                4.6               3.1                1.5               0.2       0
-4                5.0               3.6                1.4               0.2       0
+   sepal length (cm)  sepal width (cm)  petal length (cm)  petal width (cm)  \
+0                5.1               3.5                1.4               0.2   
+1                4.9               3.0                1.4               0.2   
+2                4.7               3.2                1.3               0.2   
+3                4.6               3.1                1.5               0.2   
+4                5.0               3.6                1.4               0.2   
+
+   target  
+0       0  
+1       0  
+2       0  
+3       0  
+4       0  
 ```
+
+![load dataset](https://cdn.jsdelivr.net/gh/gungunpriatna/learn-machine-learning-course-assets@main/lesson-02/05-03-load-dataset.webp)
 
 The `(150, 5)` tells you there are 150 flowers and 5 columns: four measurement features and one `target` column with the species encoded as a number. Seeing this table means NumPy, pandas, and scikit-learn are all working together. You are fully set up.
 
