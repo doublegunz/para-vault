@@ -360,7 +360,21 @@ Each row of this summary is a statistic: `count` is how many values there are, `
 
 So far you typed data by hand, but real datasets come from files, most often CSV files. In Colab you usually upload a file or read one, then load it with `pd.read_csv()`.
 
-### Step 1: Get a CSV into Colab
+### Step 1: Create students.csv
+
+Before you can upload the file, create it on your computer. Open Visual Studio Code, or any text editor you like, then create a new file and copy this data into it:
+
+```csv
+name,age,city,score
+Ana,23,Bandung,90
+Budi,35,Jakarta,85
+Cici,29,Bandung,95
+Dedi,42,Surabaya,70
+```
+
+Save the file with the exact name `students.csv`. Make sure the file extension is `.csv`, not `.txt`, because pandas will read it by that filename in the next step.
+
+### Step 2: Get a CSV into Colab
 
 You have two common options. To upload a file from your computer, run this in a cell and pick the file when prompted:
 
@@ -371,7 +385,7 @@ uploaded = files.upload()
 
 `files.upload()` is a Colab helper that opens a file picker and stores the chosen file in your notebook's temporary storage. The other option, which needs no upload, is to read a CSV directly from a public web address by passing the URL straight to `pd.read_csv()`.
 
-### Step 2: Read the CSV into a DataFrame
+### Step 3: Read the CSV into a DataFrame
 
 Once the file is available (say it is named `students.csv`), load it:
 
