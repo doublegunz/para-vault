@@ -210,7 +210,7 @@ K-means depends on its random starting centers. `n_init=10` tries several and ke
 
 **Exercise 2:** Fit a 3-cluster K-means on the scaled Iris data, then use `predict` to assign a new flower with small petals (sepal length 5.0, sepal width 3.4, petal length 1.5, petal width 0.2) to a cluster.
 
-**Exercise 3:** Load the wine dataset, scale it, and print the inertia for k from 1 to 5, plus the silhouette score at k=3. Where is the elbow?
+**Exercise 3:** Load the penguins dataset with seaborn, drop the rows with missing values, keep the four numeric measurements, scale them, and print the inertia for k from 1 to 5, plus the silhouette score at k=3. Where is the elbow?
 
 ---
 
@@ -271,30 +271,33 @@ The new flower has the tiny petals typical of setosa, and K-means assigns it to 
 **Solution for Exercise 3:**
 
 ```python
-from sklearn.datasets import load_wine
+import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
-X_wine = StandardScaler().fit_transform(load_wine().data)
+penguins = sns.load_dataset("penguins").dropna()
+X_peng = StandardScaler().fit_transform(
+    penguins[["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"]]
+)
 for k in range(1, 6):
-    print(f"k={k}: inertia={round(KMeans(n_clusters=k, random_state=42, n_init=10).fit(X_wine).inertia_, 2)}")
-labels = KMeans(n_clusters=3, random_state=42, n_init=10).fit_predict(X_wine)
-print("silhouette k=3:", round(silhouette_score(X_wine, labels), 4))
+    print(f"k={k}: inertia={round(KMeans(n_clusters=k, random_state=42, n_init=10).fit(X_peng).inertia_, 2)}")
+labels = KMeans(n_clusters=3, random_state=42, n_init=10).fit_predict(X_peng)
+print("silhouette k=3:", round(silhouette_score(X_peng, labels), 4))
 ```
 
 Output:
 
 ```
-k=1: inertia=2314.0
-k=2: inertia=1658.76
-k=3: inertia=1277.93
-k=4: inertia=1175.43
-k=5: inertia=1109.51
-silhouette k=3: 0.2849
+k=1: inertia=1332.0
+k=2: inertia=552.67
+k=3: inertia=370.77
+k=4: inertia=293.9
+k=5: inertia=228.51
+silhouette k=3: 0.4462
 ```
 
-The inertia drops steeply from k=1 to k=3, then the gains shrink, putting the elbow around k=3, which happens to match the three wine cultivars in the data. The silhouette of 0.2849 is modest, reflecting that the wine clusters are less cleanly separated than Iris, a realistic outcome for messier data.
+The inertia drops steeply from k=1 to k=3, then the gains shrink, putting the elbow around k=3, which happens to match the three penguin species in the data. The silhouette of 0.4462 is decent rather than perfect: Gentoo penguins form a clearly separate cluster, while Adelie and Chinstrap overlap in size, the same kind of partial overlap you saw with the Iris species.
 
 ---
 

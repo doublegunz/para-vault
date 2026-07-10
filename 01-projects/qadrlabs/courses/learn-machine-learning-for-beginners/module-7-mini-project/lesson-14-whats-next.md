@@ -88,7 +88,7 @@ Beyond that, two larger directions open up once you are comfortable with classic
 
 Skills fade without use. The best way to lock in what you learned is to do more projects on data you find interesting. Here are concrete ways to keep going.
 
-- **Re-run this course's projects with changes.** Try new features on Titanic, a different model on housing, or a new dataset entirely. Seaborn and scikit-learn ship with several (`load_wine`, `load_breast_cancer`, `load_diabetes`, the seaborn `penguins` and `diamonds` datasets) that you can practice on immediately.
+- **Re-run this course's projects with changes.** Try new features on Titanic, a different model on housing, or a new dataset entirely. Seaborn and scikit-learn ship with several (`load_breast_cancer`, `load_diabetes`, `load_digits`, the seaborn `diamonds` dataset) that you can practice on immediately.
 - **Enter a Kaggle competition.** Kaggle hosts beginner-friendly datasets and competitions, including the Titanic challenge, with a huge community sharing notebooks you can learn from.
 - **Find data you care about.** A sport, a hobby, your own spending, anything with a CSV. Motivation is highest when the question matters to you.
 - **Explain what you build.** Writing up or teaching a project, even informally, is one of the fastest ways to discover what you do and do not understand.

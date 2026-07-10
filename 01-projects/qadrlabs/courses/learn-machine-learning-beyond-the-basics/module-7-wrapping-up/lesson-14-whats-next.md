@@ -83,7 +83,7 @@ There is no single path. Pick the direction that excites you, and let your curio
 
 Skills fade without use, and machine learning rewards consistent, hands-on practice more than passive reading. Here are concrete ways to keep growing.
 
-- **Apply this workflow to new datasets.** Try the full pipeline on other built-in datasets (`load_wine`, `load_breast_cancer`, the seaborn `penguins` and `diamonds` sets) or data you find interesting. Each one teaches something new.
+- **Apply this workflow to new datasets.** Try the full pipeline on other built-in datasets (`load_diabetes`, `load_digits`, the seaborn `diamonds` and `taxis` sets) or data you find interesting. Each one teaches something new.
 - **Enter Kaggle competitions.** Kaggle is the best place to practice on real problems, compare your approach to others, and learn from shared notebooks. Start with its beginner-friendly tabular competitions.
 - **Build something end to end.** Take a project all the way from raw data to a saved model behind a small app. Nothing cements the workflow like shipping it once.
 - **Teach what you learned.** Writing up a project or explaining a concept to someone else is one of the fastest ways to find and fill the gaps in your understanding.

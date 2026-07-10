@@ -6,7 +6,7 @@ In this lesson you will see the problem with your own eyes: the same model scori
 
 ### What You'll Build
 
-A notebook that loads the wine dataset, whose features have wildly different ranges, shows a k-nearest neighbors classifier failing on the raw data, then applies standardization and normalization to fix it, with the accuracy jumping as a result.
+A notebook that loads the penguins dataset, whose body measurements have wildly different ranges, shows a k-nearest neighbors classifier struggling on the raw data, then applies standardization and normalization to fix it, with the accuracy jumping as a result.
 
 ### What You'll Learn
 
@@ -21,7 +21,7 @@ A notebook that loads the wine dataset, whose features have wildly different ran
 
 - The data-prep skills from Lesson 11
 - The KNN model from Lesson 8
-- A Colab notebook with scikit-learn
+- A Colab notebook with scikit-learn and seaborn
 
 ---
 
@@ -40,28 +40,29 @@ Not every model needs scaling, which you will sort out later in the lesson. Firs
 
 ## 3. See the Problem
 
-The wine dataset classifies wines into three types from 13 chemical measurements. Those measurements are on very different scales, which makes it perfect for exposing the scaling problem.
+The penguins dataset describes three penguin species (Adelie, Chinstrap, and Gentoo) with four body measurements. Those measurements are on very different scales, which makes it perfect for exposing the scaling problem.
 
 ### Step 1: Look at the feature ranges
 
 ```python
-from sklearn.datasets import load_wine
+import seaborn as sns
 
-wine = load_wine(as_frame=True)
-X, y = wine.data, wine.target
+penguins = sns.load_dataset("penguins").dropna()
+X = penguins[["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"]]
+y = penguins["species"]
 
-X[["proline", "magnesium", "alcohol", "color_intensity"]].describe().loc[["min", "max"]].round(2)
+X.describe().loc[["min", "max"]].round(2)
 ```
 
 Output:
 
 ```
-     proline  magnesium  alcohol  color_intensity
-min    278.0       70.0    11.03             1.28
-max   1680.0      162.0    14.83            13.00
+     bill_length_mm  bill_depth_mm  flipper_length_mm  body_mass_g
+min            32.1           13.1              172.0       2700.0
+max            59.6           21.5              231.0       6300.0
 ```
 
-Look at the gap. `proline` runs from 278 to 1680, while `alcohol` runs from about 11 to 15. To a distance-based model, `proline` will completely dominate simply because its numbers are hundreds of times larger, even though alcohol may matter just as much.
+The dataset has a few rows with missing values, so `.dropna()` removes them with the skill you learned in Lesson 11, leaving 333 penguins. Now look at the gap in the ranges. `body_mass_g` runs from 2700 to 6300 grams, while `bill_depth_mm` runs from about 13 to 22 millimeters. To a distance-based model, `body_mass_g` will completely dominate simply because its numbers are hundreds of times larger, even though the bill measurements may matter just as much.
 
 ### Step 2: Train KNN on the raw data
 
@@ -81,10 +82,10 @@ print("KNN without scaling:", round(accuracy_score(y_test, knn.predict(X_test)),
 Output:
 
 ```
-KNN without scaling: 0.7222
+KNN without scaling: 0.78
 ```
 
-A test accuracy of 0.72 is mediocre. KNN classifies by finding the nearest neighbors, and because `proline` dominates the distance, the model is essentially comparing wines on that one feature. Let us fix it with scaling.
+A test accuracy of 0.78 is mediocre. KNN classifies by finding the nearest neighbors, and because `body_mass_g` dominates the distance, the model is essentially comparing penguins on weight alone. That is a problem, because Adelie and Chinstrap penguins weigh about the same and only differ in their bill measurements, which the raw distances barely register. Let us fix it with scaling.
 
 ---
 
@@ -110,18 +111,18 @@ This is the critical pattern. `scaler.fit_transform(X_train)` learns the mean an
 import pandas as pd
 
 scaled_df = pd.DataFrame(X_train_scaled, columns=X.columns)
-print("proline mean:", round(scaled_df["proline"].mean(), 4))
-print("proline std:", round(scaled_df["proline"].std(), 4))
+print("body_mass_g mean:", round(scaled_df["body_mass_g"].mean(), 4))
+print("body_mass_g std:", round(scaled_df["body_mass_g"].std(), 4))
 ```
 
 Output:
 
 ```
-proline mean: -0.0
-proline std: 1.0041
+body_mass_g mean: -0.0
+body_mass_g std: 1.0022
 ```
 
-After standardization, `proline` has a mean of essentially 0 and a standard deviation of about 1, instead of ranging into the thousands. Every other feature is rescaled the same way, so now they are all comparable. The tiny deviations from exactly 0 and 1 are just floating-point and sampling details.
+After standardization, `body_mass_g` has a mean of essentially 0 and a standard deviation of about 1, instead of ranging into the thousands. Every other feature is rescaled the same way, so now they are all comparable. The tiny deviations from exactly 0 and 1 are just floating-point and sampling details.
 
 ### Step 3: Train KNN on the scaled data
 
@@ -133,10 +134,10 @@ print("KNN with scaling:", round(accuracy_score(y_test, knn_scaled.predict(X_tes
 Output:
 
 ```
-KNN with scaling: 0.9444
+KNN with scaling: 1.0
 ```
 
-The accuracy jumps from 0.7222 to 0.9444 with no change to the model, only to the data's scale. This is the whole point: scaling let every feature contribute fairly, and the model improved dramatically. For distance-based models, scaling is not optional.
+The accuracy jumps from 0.78 to a perfect 1.0 with no change to the model, only to the data's scale. This is the whole point: with every feature contributing fairly, the bill measurements can finally separate Adelie from Chinstrap, and the three species become fully distinguishable. For distance-based models, scaling is not optional.
 
 ---
 
@@ -152,8 +153,8 @@ X_train_mm = minmax.fit_transform(X_train)
 X_test_mm = minmax.transform(X_test)
 
 mm_df = pd.DataFrame(X_train_mm, columns=X.columns)
-print("proline min:", round(mm_df["proline"].min(), 4))
-print("proline max:", round(mm_df["proline"].max(), 4))
+print("body_mass_g min:", round(mm_df["body_mass_g"].min(), 4))
+print("body_mass_g max:", round(mm_df["body_mass_g"].max(), 4))
 
 knn_mm = KNeighborsClassifier(n_neighbors=5).fit(X_train_mm, y_train)
 print("KNN with MinMax:", round(accuracy_score(y_test, knn_mm.predict(X_test_mm)), 4))
@@ -162,12 +163,12 @@ print("KNN with MinMax:", round(accuracy_score(y_test, knn_mm.predict(X_test_mm)
 Output:
 
 ```
-proline min: 0.0
-proline max: 1.0
-KNN with MinMax: 0.963
+body_mass_g min: 0.0
+body_mass_g max: 1.0
+KNN with MinMax: 1.0
 ```
 
-`MinMaxScaler` follows the exact same fit-on-train, transform-both pattern. After it, `proline` runs from 0 to 1, and KNN scores 0.963, similar to standardization. So which do you pick? Standardization is the safer default and handles outliers better, while normalization is handy when you specifically need values bounded between 0 and 1. In practice, standardization is the more common choice.
+`MinMaxScaler` follows the exact same fit-on-train, transform-both pattern. After it, `body_mass_g` runs from 0 to 1, and KNN again scores a perfect 1.0, matching standardization. So which do you pick? Standardization is the safer default and handles outliers better, while normalization is handy when you specifically need values bounded between 0 and 1. In practice, standardization is the more common choice.
 
 ---
 
@@ -238,11 +239,11 @@ Scaling applies to the input features. The target stays in its original units so
 
 ## 8. Exercises
 
-**Exercise 1:** Load the wine dataset and print the standard deviation of every feature (use `X.std()`). Which features have the largest spread, and why would that hurt a distance-based model?
+**Exercise 1:** Load the penguins dataset and print the standard deviation of every feature (use `X.std()`). Which feature has the largest spread, and why would that hurt a distance-based model?
 
-**Exercise 2:** Train a logistic regression on the wine data without scaling and then with `StandardScaler` (use a stratified 30 percent test split, `random_state=42`). Compare the two test accuracies.
+**Exercise 2:** Section 6 claims tree-based models do not need scaling. Prove it: train a `DecisionTreeClassifier(max_depth=2, random_state=42)` on the penguin features without scaling and then with `StandardScaler` (use a stratified 30 percent test split, `random_state=42`). Compare the two test accuracies.
 
-**Exercise 3:** Apply `StandardScaler` to the wine training features and confirm that the `alcohol` feature now has a mean of about 0 and a standard deviation of about 1.
+**Exercise 3:** Apply `StandardScaler` to the penguin training features and confirm that the `flipper_length_mm` feature now has a mean of about 0 and a standard deviation of about 1.
 
 ---
 
@@ -251,57 +252,58 @@ Scaling applies to the input features. The target stays in its original units so
 **Solution for Exercise 1:**
 
 ```python
-from sklearn.datasets import load_wine
+import seaborn as sns
 
-X, y = load_wine(return_X_y=True, as_frame=True)
-print(X.std().round(2).sort_values(ascending=False).head())
+penguins = sns.load_dataset("penguins").dropna()
+X = penguins[["bill_length_mm", "bill_depth_mm", "flipper_length_mm", "body_mass_g"]]
+print(X.std().round(2).sort_values(ascending=False))
 ```
 
 Output:
 
 ```
-proline              314.91
-magnesium             14.28
-alcalinity_of_ash      3.34
-color_intensity        2.32
-malic_acid             1.12
+body_mass_g          805.22
+flipper_length_mm     14.02
+bill_length_mm         5.47
+bill_depth_mm          1.97
 dtype: float64
 ```
 
-`proline` has by far the largest spread, hundreds of times bigger than features like `malic_acid`. In a distance-based model, that single high-spread feature would dominate every distance calculation, drowning out the others until you scale them onto a common range.
+`body_mass_g` has by far the largest spread, hundreds of times bigger than `bill_depth_mm`. In a distance-based model, that single high-spread feature would dominate every distance calculation, drowning out the others until you scale them onto a common range.
 
 **Solution for Exercise 2:**
 
 ```python
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score
 
+y = penguins["species"]
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=42, stratify=y
 )
 
-# Without scaling (this may print a ConvergenceWarning)
-lr = LogisticRegression(max_iter=5000).fit(X_train, y_train)
-print("no scaling:", round(accuracy_score(y_test, lr.predict(X_test)), 4))
+# Without scaling
+tree = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X_train, y_train)
+print("no scaling:", round(accuracy_score(y_test, tree.predict(X_test)), 4))
 
 # With scaling
 scaler = StandardScaler()
 X_train_s = scaler.fit_transform(X_train)
 X_test_s = scaler.transform(X_test)
-lr2 = LogisticRegression(max_iter=5000).fit(X_train_s, y_train)
-print("with scaling:", round(accuracy_score(y_test, lr2.predict(X_test_s)), 4))
+tree2 = DecisionTreeClassifier(max_depth=2, random_state=42).fit(X_train_s, y_train)
+print("with scaling:", round(accuracy_score(y_test, tree2.predict(X_test_s)), 4))
 ```
 
 Output:
 
 ```
-no scaling: 0.963
-with scaling: 0.9815
+no scaling: 0.93
+with scaling: 0.93
 ```
 
-Scaling raises accuracy from 0.963 to 0.9815. Just as telling, the unscaled version may print a ConvergenceWarning because the unscaled features make training struggle to settle, while the scaled version converges cleanly. Scaling helps both the score and the stability of training.
+The accuracy is identical either way. A decision tree splits on one feature at a time using thresholds ("is `body_mass_g` above 4500?"), and rescaling a feature just rescales the threshold without changing which rows go left or right. Compare that with KNN, which jumped from 0.78 to 1.0: scaling is essential for distance-based models and pointless for trees.
 
 **Solution for Exercise 3:**
 
@@ -312,18 +314,18 @@ scaler = StandardScaler()
 X_train_s = scaler.fit_transform(X_train)
 scaled_df = pd.DataFrame(X_train_s, columns=X.columns)
 
-print("alcohol mean:", round(scaled_df["alcohol"].mean(), 4))
-print("alcohol std:", round(scaled_df["alcohol"].std(), 4))
+print("flipper_length_mm mean:", round(scaled_df["flipper_length_mm"].mean(), 4))
+print("flipper_length_mm std:", round(scaled_df["flipper_length_mm"].std(), 4))
 ```
 
 Output:
 
 ```
-alcohol mean: 0.0
-alcohol std: 1.0041
+flipper_length_mm mean: -0.0
+flipper_length_mm std: 1.0022
 ```
 
-After standardization the `alcohol` feature is centered at 0 with a standard deviation of about 1, exactly like every other feature. That shared scale is what lets each feature contribute fairly to the model.
+After standardization the `flipper_length_mm` feature is centered at 0 with a standard deviation of about 1, exactly like every other feature. That shared scale is what lets each feature contribute fairly to the model.
 
 ---
 
