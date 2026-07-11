@@ -4,6 +4,8 @@ slug: "tutorial-install-laravel-di-hp-android-via-termux"
 category: "How To Install"
 date: "2024-12-02"
 status: "published"
+original_title: "How to Install Laravel on Android via Termux"
+original_slug: "how-to-install-laravel-on-android-via-termux"
 ---
 
 Setelah kita install composer pada [tutorial sebelumnya](https://qadrlabs.com/post/tutorial-install-dan-setup-composer-di-hp-android-menggunakan-termux), kita bisa install beberapa package dan juga framework. Salah satu framework yang dapat kita install melalui composer adalah laravel. Pertanyaanya adalah apakah kita bisa install laravel di hp android dengan memanfaatkan termux? Pada tutorial ini kita akan coba install laravel menggunakan composer dan termux d hp android.
