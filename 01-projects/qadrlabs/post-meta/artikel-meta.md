@@ -34,3 +34,10 @@
 **Short description:** Learn how Laravel 13.19 adds HTTP QUERY support with Http::query(), queryJson(), and body-based filters inspired by RFC 10008. (126 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, http-client, http-query, rfc-10008, testing, pest, api
+
+## 2026-07-11 - Rotate backup logs with logrotate on Ubuntu 26.04
+**File:** 01-projects/qadrlabs/post/01-draft/how-to-rotate-backup-logs-with-logrotate-on-ubuntu-26-04.md
+**Title:** How to Rotate Backup Logs with Logrotate on Ubuntu 26.04
+**Short description:** Prevent backup logs from filling your Ubuntu VPS by rotating them daily, compressing old files, enforcing secure permissions, and testing the setup. (148 chars)
+**Category:** DevOps
+**Tags:** ubuntu-26-04, logrotate, linux, vps, backup, systemd
