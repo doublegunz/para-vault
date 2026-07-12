@@ -33,7 +33,7 @@ mkdir lesson-12 && cd lesson-12
 go mod init lesson-12
 ```
 
-This creates the `go.mod` file for this lesson. You will create multiple `.go` files in this lesson, each demonstrating a different aspect of file and JSON handling.
+This creates the `go.mod` file for this lesson. You will create multiple standalone programs, each demonstrating a different aspect of file and JSON handling. Each file has its own `func main()`, so run and check it separately with commands such as `go run files.go` and `go vet files.go`. Do not run `go test ./...` from this lesson folder because Go would try to compile the multiple `main` functions together.
 
 ---
 

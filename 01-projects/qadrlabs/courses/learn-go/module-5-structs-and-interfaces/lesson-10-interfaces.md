@@ -32,7 +32,7 @@ cd lesson-10
 go mod init learn-go/lesson-10
 ```
 
-This creates the `go.mod` file for this lesson. You will create multiple `.go` files in this folder so that each section of code stays focused and readable.
+This creates the `go.mod` file for this lesson. You will create multiple standalone programs in this folder so that each section stays focused and readable. Each file has its own `func main()`, so run and check it separately with commands such as `go run stringer.go` and `go vet stringer.go`. Do not run `go test ./...` from this lesson folder because Go would try to compile the multiple `main` functions together.
 
 ---
 

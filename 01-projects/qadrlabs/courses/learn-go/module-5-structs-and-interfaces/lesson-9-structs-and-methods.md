@@ -32,7 +32,7 @@ cd lesson-09
 go mod init learn-go/lesson-09
 ```
 
-This creates the `go.mod` file for this lesson. In this lesson you will create multiple `.go` files in the same folder. All files in the same folder with the same `package main` declaration are compiled together as one program.
+This creates the `go.mod` file for this lesson. You will create multiple standalone programs in the same folder. Each file declares its own `func main()`, so run and check each demonstration separately with commands such as `go run methods.go` and `go vet methods.go`. Do not run `go test ./...` from this lesson folder because Go would try to compile the multiple `main` functions together.
 
 ---
 
@@ -112,7 +112,7 @@ A method is a function with a receiver. The receiver appears in parentheses betw
 
 ### Step 1: Create `methods.go`
 
-Create a new file `methods.go` inside `lesson-09`. Because it uses `package main`, the Go compiler will include it automatically when you run any file in the folder.
+Create a new file `methods.go` inside `lesson-09`. This file is a standalone demonstration with its own `func main()`. Run it by naming the file explicitly so Go does not combine it with the other demonstrations in this folder.
 
 ### Step 2: Write the Code
 

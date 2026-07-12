@@ -2,7 +2,8 @@
 
 **Tanggal uji:** 2026-07-12  
 **Penguji:** Codex  
-**Hasil keseluruhan:** ✅ Seluruh badan utama Lesson 1-14 berhasil divalidasi. Semua snippet program inti dapat dikompilasi dan dijalankan, project package/file I/O/concurrency berfungsi, dan mini project TaskMan menyelesaikan seluruh skenario course.
+**Hasil keseluruhan:** ✅ Seluruh badan utama Lesson 1-14 berhasil divalidasi. Semua snippet program inti dapat dikompilasi dan dijalankan, project package/file I/O/concurrency berfungsi, dan mini project TaskMan menyelesaikan seluruh skenario course.  
+**Status perbaikan (2026-07-12):** ✅ Temuan tentang snippet `init()`, program multi-main, dan versi dependency telah ditindaklanjuti pada lesson terkait. Temuan cache read-only dikonfirmasi sebagai kendala environment pengujian dan tidak memerlukan perubahan course.
 
 ## Cakupan dan Metode
 
@@ -67,13 +68,13 @@ Binary `taskman` berhasil dibangun. Empat task ditambahkan, task 1 dan 2 ditanda
 
 ## Temuan Penting
 
-1. **Snippet `init()` Lesson 11 harus ditambahkan, bukan menggantikan seluruh file.** Snippet pada section tersebut hanya menampilkan `Hello` dan tidak menyertakan `Farewell`, sedangkan `main.go` masih memanggil `greeting.Farewell`. Instruksi teks sudah mengatakan "Add the following to the top", sehingga implementasi yang benar adalah mempertahankan `Farewell` sambil menambahkan `init()`. Course sebaiknya menegaskan hal ini atau menampilkan file lengkap agar pembaca tidak mengganti isi file secara tidak sengaja.
+1. **✅ Diperbaiki: snippet `init()` Lesson 11 harus ditambahkan, bukan menggantikan seluruh file.** Section tersebut sekarang menampilkan isi lengkap `greeting/greeting.go`, mempertahankan `Hello` dan `Farewell`, menambahkan `init()`, serta memperlihatkan output aktual setelah dijalankan.
 
-2. **Beberapa lesson sengaja memiliki beberapa program `main` mandiri.** Lesson 9, 10, 12, dan 13 meminta beberapa file yang masing-masing mendefinisikan `func main()`. Perintah `go test ./...` pada direktori tersebut akan melihat redeklarasi jika semua file dikompilasi sekaligus. Cara yang sesuai course adalah `go run <nama-file>.go` dan `go vet <nama-file>.go` per demonstrasi.
+2. **✅ Diperbaiki: beberapa lesson sengaja memiliki beberapa program `main` mandiri.** Setup Lesson 9, 10, 12, dan 13 sekarang menjelaskan bahwa setiap file dijalankan dan diperiksa secara terpisah dengan `go run <nama-file>.go` dan `go vet <nama-file>.go`. Course juga memperingatkan agar tidak menjalankan `go test ./...` dari root lesson tersebut.
 
-3. **Gunakan cache yang writable pada environment terbatas.** Cache default mengarah ke `/home/gun-gun-priatna/.cache/go-build`, yang read-only pada sesi pengujian. Menetapkan `GOCACHE=/tmp/learn-go-cache` menyelesaikan masalah. Ini kendala environment penguji, bukan masalah source course.
+3. **ℹ️ Tidak memerlukan perubahan course: gunakan cache yang writable pada environment terbatas.** Cache default mengarah ke `/home/gun-gun-priatna/.cache/go-build`, yang read-only pada sesi pengujian. Menetapkan `GOCACHE=/tmp/learn-go-cache` menyelesaikan masalah. Ini kendala environment penguji, bukan masalah source course.
 
-4. **Versi dependency berbeda dari contoh.** Course menampilkan `github.com/fatih/color v1.16.0`; `go get` pada 2026-07-12 mengambil v1.19.0. API yang dibahas tetap kompatibel. Contoh versi sebaiknya diperlakukan sebagai ilustrasi, bukan nilai yang harus identik.
+4. **✅ Diperbaiki: versi dependency berbeda dari contoh.** Lesson 11 sekarang menampilkan versi v1.19.0 dari pengujian aktual dan menjelaskan bahwa Go dapat memilih versi yang lebih baru saat pembaca menjalankan `go get`.
 
 ## Yang Tidak Diuji
 

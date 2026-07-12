@@ -178,10 +178,10 @@ The `go get` command downloads and installs external packages. Run the following
 go get github.com/fatih/color
 ```
 
-After running this, `go.mod` gains a `require` block:
+After running this, `go.mod` gains a `require` entry. The exact version is selected by Go and may be newer when you follow this lesson. The test run for this course produced:
 
 ```
-require github.com/fatih/color v1.16.0
+require github.com/fatih/color v1.19.0
 ```
 
 A `go.sum` file is also created, which records the cryptographic hashes of downloaded packages to prevent tampering. You can then import and use the package:
@@ -238,7 +238,7 @@ This is a powerful organizational tool: you can split large packages into multip
 
 Every Go package can define an `init()` function. This function runs automatically when the package is first imported, before `main()` runs. It takes no parameters and returns nothing. Use it for setup that must happen before any code in the package runs.
 
-Add the following to the top of `greeting/greeting.go`:
+Update `greeting/greeting.go` with the complete file below. Keep both existing greeting functions and add `init()` before them. Do not replace the file with a shortened example because `main.go` still calls both `Hello` and `Farewell`.
 
 ```go
 package greeting
@@ -250,11 +250,30 @@ func init() {
 }
 
 func Hello(name string) string {
-    return "Hello, " + name
+    return fmt.Sprintf("Hello, %s! Welcome to Go.", name)
+}
+
+func Farewell(name string) string {
+    return fmt.Sprintf("Goodbye, %s! See you next time.", name)
 }
 ```
 
-When `main.go` imports `"lesson-11/greeting"`, Go calls `init()` automatically before `main()` starts. The output `[greeting package initialized]` appears before any output from `main()` itself.
+Run `go run main.go` again. Go calls `init()` automatically before `main()` starts, so the package initialization message appears before the application output:
+
+```text
+[greeting package initialized]
+=== Math Utilities ===
+Add(10, 5) = 15
+Subtract(10, 5) = 5
+CircleArea(7) = 153.94
+Max(42, 17) = 42
+
+=== Greetings ===
+Hello, Budi! Welcome to Go.
+Goodbye, Budi! See you next time.
+```
+
+The complete file preserves `Farewell`, which is still used by `main.go`, while adding the one-time initialization behavior.
 
 `init()` runs once per package per program execution, even if the package is imported by multiple other packages. Use `init()` for one-time setup tasks like loading configuration or initializing package-level variables. Avoid heavy computation or operations that can fail in `init()`, because errors in `init()` are not easily recoverable.
 

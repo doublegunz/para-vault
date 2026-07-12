@@ -32,7 +32,7 @@ mkdir lesson-13 && cd lesson-13
 go mod init lesson-13
 ```
 
-This creates the `go.mod` file for this lesson. You will create three separate `.go` files in this folder, each demonstrating a different concurrency concept.
+This creates the `go.mod` file for this lesson. You will create three standalone programs, each demonstrating a different concurrency concept. Every file has its own `func main()`, so run and check it separately with commands such as `go run channels.go` and `go vet channels.go`. Do not run `go test ./...` from this lesson folder because Go would try to compile the three `main` functions together.
 
 ---
 
