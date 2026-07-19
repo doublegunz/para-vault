@@ -41,3 +41,10 @@
 **Short description:** Prevent backup logs from filling your Ubuntu VPS by rotating them daily, compressing old files, enforcing secure permissions, and testing the setup. (148 chars)
 **Category:** DevOps
 **Tags:** ubuntu-26-04, logrotate, linux, vps, backup, systemd
+
+## 2026-07-18 - Laravel Installer 5.31.0 package scaffolding
+**File:** 01-projects/qadrlabs/post/01-draft/whats-new-in-laravel-installer-v5-31-0.md
+**Title:** What's New in Laravel Installer 5.31.0: Package Scaffolding Comes to the CLI
+**Short description:** Discover what's new in Laravel Installer 5.31.0: the new laravel package command plus fixes for Prompts output, Windows queues, starter kits, and CI. (147 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-installer, laravel-package, package-development, composer, starter-kits, github-actions, windows
