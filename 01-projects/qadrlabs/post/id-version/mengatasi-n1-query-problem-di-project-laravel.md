@@ -1,6 +1,8 @@
 ---
 title: "Mengatasi N+1 Query Problem di Project Laravel"
 slug: "mengatasi-n1-query-problem-di-project-laravel"
+original_title: "Fixing the N+1 Query Problem in Your Laravel Project"
+original_slug: "fixing-the-n1-query-problem-in-your-laravel-project"
 category: "Laravel"
 date: "2024-12-27"
 status: "published"
@@ -68,7 +70,7 @@ Untuk mengidentifikasi N+1 query problem di aplikasi Laravel, kita bisa gunakan 
 1. Pertama kita instal Laravel Debugbar dengan run command berikut:
 
    ```bash
-   composer require barryvdh/laravel-debugbar --dev
+   composer require fruitcake/laravel-debugbar --dev
    ```
 
 2. Jalankan aplikasi kita menggunakan `php artisan serve`, akses halaman dan lihat tab **Queries** di Debugbar.
@@ -208,14 +210,40 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $posts = Post::all();
-        foreach ($posts as $post) {
-            echo $post->title . ' - ' .$post->category->name . '<br/>';
-        }
+//        $posts = Post::with('category')->get();
+
+        return view('posts.index', compact('posts'));
     }
 }
+
+```
+
+
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix N+1 Query Problem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+
+    @forelse ($posts as $post)
+        <p>{{ $post->title . ' - ' .$post->category->name }}</p>
+    @empty
+        <p>No posts found.</p>
+    @endforelse
+</body>
+</html>
+
 ```
 
 Seperti yang terlihat pada baris kode di atas, kita akan ambil semua data post menggunakan `Post::all()`, lalu kita coba tampilkan data tersebut menggunakan `foreach`.
@@ -232,9 +260,8 @@ Untuk mengatasi masalah ini kita akan coba gunakan Eager Loading. Sekarang buka 
     public function index()
     {
         $posts = Post::with('category')->get();
-        foreach ($posts as $post) {
-            echo $post->title . ' - ' .$post->category->name . '<br/>';
-        }
+
+        return view('posts.index', compact('posts'));
     }
 ```
 
