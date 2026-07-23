@@ -48,3 +48,10 @@
 **Short description:** Discover what's new in Laravel Installer 5.31.0: the new laravel package command plus fixes for Prompts output, Windows queues, starter kits, and CI. (147 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-installer, laravel-package, package-development, composer, starter-kits, github-actions, windows
+
+## 2026-07-23 - Laravel 13 DataTables server-side Posts
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-13-datatables-server-side-processing-display-posts-with-yajra.md
+**Title:** Laravel 13 DataTables Server-Side Processing: Display Posts with Yajra
+**Short description:** Build a server-side Posts DataTable in Laravel 13 with Yajra, Eloquent, Tailwind, SQLite, and Pest tests for pagination, search, and sorting. (141 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, yajra-datatables, datatables, server-side-processing, eloquent, pest
