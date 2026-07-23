@@ -8,6 +8,9 @@ status: "published"
 
 Mana yang lebih baik framework Laravel atau framework yang lain? Ya, ini adalah salah satu dari sekian pertanyaan yang sering kita temukan dan boleh jadi kita sendiri yang membuat pertanyaan. Dan untuk menemukan jawaban pertanyaan ini, saya memutuskan untuk mencoba belajar Laravel 8 sampai membuat aplikasi CRUD sederhana. Tentu saja untuk mempelajari dengan sungguh-sungguh, ada roadmap belajar yang bisa kita ikuti untuk mempelajari framework Laravel 8. Tulisan ini saya buat untuk mendokumentasikan hasil belajar laravel 8 ketika sudah memasuki materi crud.
 
+> Laravel versi 8 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 22 Juli 2022 dan security fixes sampai tanggal 24 Januari 2023 sehingga sangat disarankan untuk menggunakan laravel versi terbaru. Untuk tutorial terkait CRUD pada versi terbaru dapat dibaca pada [Tutorial CRUD Laravel 13](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step). Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
+
 ## CRUD App Overview {#overview}
 Sebagai komparasi dengan framework yang saya tulis di postingan sebelumnya, aplikasi crud sederhana yang akan kita buat di dalam tutorial ini adalah sebuah blog sederhana. Dalam pembuatan aplikasi ini, kita akan mempelajari beberapa hal yang berhubungan dengan operasi yang berinteraksi dengan database, seperti create data, read data, update data, dan delete data. Untuk menangani operasi yang berinteraksi dengan database, kita akan menggunakan `Eloquent`, sebuah object-relational-mapper (ORM) dari framework laravel.
 
@@ -799,3 +802,6 @@ Lalu buka url `http://127.0.0.1:8000/post` di browser. Teman-teman bisa coba unt
 
 ## Kesimpulan {#kesimpulan}
 Mana yang lebih baik framework Laravel atau framework yang lain? Itulah pertanyaan yang sering kita temukan di forum programming dan boleh jadi menjadi pertanyaan yang sering kita tanyakan. Setelah mempelajari laravel 8 untuk membuat aplikasi crud sederhana ini, ada beberapa hal yang saya temukan. Ya, kurang lebih saya sudah menemukan jawabannya. Bagaimana dengan kamu? Apakah sudah kamu temukan jawabannya?
+
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 8 @ [https://laravel.com/docs/8.x/releases](https://laravel.com/docs/8.x/releases)

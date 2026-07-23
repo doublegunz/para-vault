@@ -10,6 +10,12 @@ Sebagian besar data yang ditampilkan di karya yang saya buat itu menggunakan dat
 
 [Laravel DataTables](https://github.com/yajra/laravel-datatables) ini merupakan sebuah package untuk framework Laravel yang menangani penggunaan dataTables secara server side rendering. Selain itu package ini dapat menangani kostomisasi dataTables seperti column editing, row editing, searching, sorting atau ordering, dan juga plugin yang digunakan di dataTables.
 
+
+> Laravel versi 8 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 22 Juli 2022 dan security fixes sampai tanggal 24 Januari 2023 sehingga sangat disarankan untuk menggunakan laravel versi terbaru. 
+> 
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
+
 ## Overview {#overview}
 
 Tutorial ini memberikan panduan langkah demi langkah untuk mengintegrasikan **Laravel 8** dengan **DataTables**, sebuah library populer yang digunakan untuk menampilkan data dalam tabel dengan fitur seperti pencarian, pengurutan, dan paginasi. Dengan menggunakan package **Laravel DataTables**, proses integrasi menjadi lebih mudah karena package ini mendukung rendering server-side, sehingga memungkinkan pengelolaan data dalam jumlah besar secara efisien.
@@ -419,3 +425,5 @@ Meskipun kita sudah berhasil membuat tabel sederhana dengan data dari database, 
 - **Penggunaan Plugin Tambahan**: Memanfaatkan plugin DataTables lainnya untuk meningkatkan fungsionalitas tabel.
 
 Dengan eksplorasi lebih lanjut, Anda dapat memaksimalkan penggunaan **Laravel DataTables** untuk kebutuhan aplikasi yang lebih kompleks. Integrasi ini tidak hanya mempermudah proses pengembangan, tetapi juga memberikan pengalaman pengguna yang lebih baik dalam menavigasi dan mengelola data dalam jumlah besar.
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 8 @ [https://laravel.com/docs/8.x/releases](https://laravel.com/docs/8.x/releases)

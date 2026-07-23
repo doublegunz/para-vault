@@ -10,8 +10,7 @@ Ketika belajar web programming, saya selalu membuat target kalau web yang saya b
 
 [Heroku](https://www.heroku.com/what) adalah sebuah cloud platform yang mendukung beberapa bahasa pemrograman, seperti PHP, Node.js, Ruby, Java, Python, Go, Scala dan Clojure. Heroku ini termasuk sebuah *Platform As A Service* (PaaS), sehingga kita tidak perlu bingung dengan masalah infrastruktur ketika ingin men-deploy aplikasi. Kita hanya perlu push menggunakan git, setting konfigurasi aplikasi dan project pun bisa langsung kita akses. Ini sangat cocok untuk belajar deploy project laravel kita dan kabar baiknya heroku juga menyediakan *free tier* yang bisa kita gunakan untuk uji coba.
 
-**Keterangan**
-Berdasarkan email dari heroku, per tanggal 28 November 2022 *free tier* heroku sudah tidak tersedia.
+>**Keterangan** Berdasarkan email dari heroku, per tanggal 28 November 2022 *free tier* heroku sudah tidak tersedia.
 
 Di edisi [belajar laravel 8](https://qadrlabs.com/series/belajar-laravel-8) ini, kita akan sama-sama belajar,
 1. Cara deploy project laravel 8 ke heroku.
