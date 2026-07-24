@@ -10,6 +10,11 @@ Adakalanya saat kita mengembangkan web, setelah kita perhatikan dan kita review 
 
 Mengutip tulisan om Martin Fowler, [Refactor](https://martinfowler.com/tags/refactoring.html) adalah teknik restrukturisasi kode program komputer yang ada tanpa mengubah perilaku eksternalnya. Sebagai contoh studi kasusnya, kita akan coba merefactor kode dari seri belajar laravel 8 sebelumnya tentang crud. Pada fitur crud tentu ada fitur menambahkan data dan update data dan di dalamnya terdapat proses validasi form. Bagian validasi form ini akan kita coba ubah dan pisahkan dari method untuk menambahkan data dan update data dengan menggunakan solusi yang terdapat pada framework laravel, yaitu [Form Request Validation](https://laravel.com/docs/9.x/validation#form-request-validation). Selain itu, kita juga akan coba menggunakan `phpunit` untuk proses testing supaya setelah proses refactoring tidak mengubah fungsionalitas dari method yang sudah kita refactor nantinya. Nah, sekarang kita coba mulai belajar refactor controller.
 
+
+> Laravel versi 8 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 22 Juli 2022 dan security fixes sampai tanggal 24 Januari 2023 sehingga sangat disarankan untuk menggunakan laravel versi terbaru. Untuk tutorial terkait refactor pada versi terbaru dapat dibaca pada [Tutorial Laravel 13: Refactor your controller with form request validation](https://qadrlabs.com/post/laravel-13-refactor-your-controller-with-form-request-validation).
+> 
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
 ## Overview {#overview}
 Dalam tutorial kali ini, kita akan belajar tentang proses refactoring kode pada controller Laravel 8, khususnya dalam menangani validasi form. Seringkali saat mengembangkan aplikasi web, kita menemukan bahwa logika bisnis menumpuk di satu tempat seperti di controller class. Contohnya pada proses insert data blog yang memiliki berbagai proses mulai dari validasi form, create data post, upload image, hingga kirim notifikasi ke subscriber. 
 
@@ -455,3 +460,5 @@ Pertama, kita berhasil memindahkan rules validasi dari PostController ke dalam c
 Hasil dari refactoring ini membuat kode kita menjadi lebih terorganisir dan mudah dimaintain karena logika validasi sudah dipisahkan ke class tersendiri. Meskipun secara jumlah file menjadi lebih banyak, namun pendekatan ini memberikan beberapa keuntungan seperti kode yang lebih modular, kemudahan dalam testing, dan potensi untuk reuse logika validasi di tempat lain.
 
 Bagaimana menurutmu? Apakah pendekatan refactoring seperti ini lebih membantu dalam development aplikasi Laravel? Atau kamu punya pendekatan lain yang lebih baik? Mari kita diskusikan di kolom komentar.
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 8 @ [https://laravel.com/docs/8.x/releases](https://laravel.com/docs/8.x/releases)
