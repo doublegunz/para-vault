@@ -19,6 +19,11 @@ Ada beberapa hal yang akan kita pelajari di edisi [belajar laravel 8](https://qa
 
 Karena ada contoh penggunaan, kita akan menambahkan studi kasus dan di sini kita akan menggunakan kembali hasil belajar laravel 8 di edisi sebelumnya, yaitu aplikasi crud sederhana tentang mengelola post. Di edisi belajar 8 kali ini, kita akan coba menambahkan role dan permission di aplikasi tersebut. Role yang akan kita tambahkan ada tiga, yaitu `superadmin`, `admin`, dan `writer`. Pengguna dengan role `writer` dapat melakukan operasi crud post. Sebagai pembeda, role `admin` nanti dapat melakukan publish dan unpublish post selain operasi crud. Sedangkan superadmin bebas bisa melakukan apa saja. Ya, ini hanya contoh, jadi studi kasusnya saya buat sederhana saja.
 
+
+> Laravel versi 8 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 22 Juli 2022 dan security fixes sampai tanggal 24 Januari 2023 sehingga sangat disarankan untuk menggunakan laravel versi terbaru. 
+> 
+> Untuk tutorial terkait spatie laravel permission pada versi terbaru dapat dibaca pada  [Laravel 13: Role-Based Access Control with Spatie Permission and Middleware Attributes](https://qadrlabs.com/post/laravel-13-role-based-access-control-with-spatie-permission-and-middleware-attributes). Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
 ## Persiapan{#persiapan}
 Sebelum memulai, teman-teman boleh mencoba dulu [membuat aplikasi crud sederhana](https://qadrlabs.com/post/belajar-laravel-8-membuat-aplikasi-crud-sederhana) di seri belajar laravel 8 edisi sebelumnya. Sebagai alternatif, teman-teman bisa juga langsung clone dari [repositori hasil belajar laravel 8](https://github.com/qadrLabs/belajar-laravel-8-crud-example), lalu ikuti petunjuknya di README.
 
@@ -375,3 +380,5 @@ Misalkan kita hapus directive `@can()` untuk publish dan unpublish, kita bisa li
 Pada seri Belajar Laravel 8 ini kita sudah coba menerapkan role dan permission di project laravel yang sebelumnya sudah kita buat menggunakan package spatie laravel-permission. Kita sudah belajar cara install package, cara membuat permission dan role, cara menerapkan akses super admin dan cara menggunakan permission middleware di controller dan juga pengecekan permission di view.
 
 Setelah mencoba, apa lagi yang bisa kita eksplore? Karena yang ada di edisi belajar kali ini masih contoh penggunaan dasar, tentu ada banyak hal yang kita eksplore, misalnya bagaimana cara menggunakan `model policies`, best practices antara `role` vs `permission`, tentang performance tips, testing, dan lain-lain. Selamat mencoba..
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 8 @ [https://laravel.com/docs/8.x/releases](https://laravel.com/docs/8.x/releases)

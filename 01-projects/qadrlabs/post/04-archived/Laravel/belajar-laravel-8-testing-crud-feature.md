@@ -38,6 +38,10 @@ Setelah *googling* tentang phpunit ini, saya coba terapkan di aplikasi CRUD sede
 - Step 6: Test fitur delete post.
 
 
+> Laravel versi 8 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 22 Juli 2022 dan security fixes sampai tanggal 24 Januari 2023 sehingga sangat disarankan untuk menggunakan laravel versi terbaru. Untuk tutorial terkait testing pada versi terbaru dapat dibaca pada [Tutorial menulis testing menggunakan Pest pada aplikasi CRUD laravel 13](https://qadrlabs.com/post/laravel-13-testing-with-pest-write-tests-for-your-crud-application).
+> 
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
 ## Overview {#overview}
 Tutorial ini membahas cara melakukan testing otomatis pada aplikasi Laravel menggunakan PHPUnit dan Laravel BrowserKit Testing. Berbeda dengan testing manual yang sering dilakukan, pendekatan ini memungkinkan pengembang menuliskan skenario pengujian dalam bentuk kode, sehingga proses testing menjadi lebih efisien dan dapat diotomatiskan. Tutorial ini mencakup langkah-langkah praktis untuk menguji fitur CRUD (Create, Read, Update, Delete) pada aplikasi Laravel 8, mulai dari setup awal hingga implementasi skenario pengujian untuk setiap fitur. Dengan menggunakan PHPUnit, pengembang dapat menghemat waktu, mengurangi kesalahan manual, dan memastikan aplikasi berjalan sesuai spesifikasi yang direncanakan. Selain itu, tutorial ini juga memberikan wawasan tentang manfaat automated testing serta ruang lingkup pengembangan lebih lanjut, seperti penerapan Test-Driven Development (TDD).
 
@@ -625,3 +629,6 @@ Ada beberapa hal yang bisa kita tingkatkan untuk aplikasi CRUD sederhana hasil b
 Selain itu ada beberapa hal yang bisa kita pelajari lebih lanjut, misalnya best practice untuk testing ini seperti apa, tentang Test Drivent Development (TDD) atau tentang automated testing yang (mungkin) akan dibahas di postingan selanjutnya. 
 
 Demikian catatan saya ketika belajar testing untuk aplikasi yang dibangun menggunakan framework Laravel 8. Semoga bermanfaat.
+
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 8 @ [https://laravel.com/docs/8.x/releases](https://laravel.com/docs/8.x/releases)
