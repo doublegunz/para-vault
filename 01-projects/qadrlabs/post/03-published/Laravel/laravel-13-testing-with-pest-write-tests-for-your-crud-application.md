@@ -183,10 +183,19 @@ Save the file.
 
 ## Step 3: Write Tests for Listing Posts {#step-3-test-listing-posts}
 
-Now let's start writing the actual tests. Before writing the code, define the user flows and expected results for the posts index:
+Now let's start writing the actual tests. The posts index needs two separate test scenarios. Each scenario below maps directly to one Pest test with the same name.
 
-1. Generate three posts, open the posts index, and confirm that the request succeeds, the correct view receives the posts, and every title appears on the page.
-2. Open the posts index without any post records and confirm that the page displays the empty-state message.
+**Test scenario: `index page displays a list of posts`**
+
+1. Generate three posts in the database.
+2. Send a GET request to the posts index route.
+3. Confirm that the request succeeds, the correct view loads, and the view receives the posts.
+4. Confirm that every post title appears in the response.
+
+**Test scenario: `index page shows empty state when no posts exist`**
+
+1. Send a GET request to the posts index route without generating any posts.
+2. Confirm that the request succeeds and the empty-state message appears in the response.
 
 These scenarios cover both ways readers can encounter the index page: with existing content and with an empty database. Create a new test file:
 
@@ -205,22 +214,28 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 test('index page displays a list of posts', function () {
+    // Arrange: generate three posts.
     $posts = Post::factory()->count(3)->create();
 
+    // Act: request the posts index.
     $response = $this->get(route('posts.index'));
 
+    // Assert: verify the response, view, and view data.
     $response->assertStatus(200);
     $response->assertViewIs('posts.index');
     $response->assertViewHas('posts');
 
+    // Assert: verify that every post title is visible.
     foreach ($posts as $post) {
         $response->assertSee($post->title);
     }
 });
 
 test('index page shows empty state when no posts exist', function () {
+    // Act: request the posts index without creating any posts.
     $response = $this->get(route('posts.index'));
 
+    // Assert: verify the response and empty-state message.
     $response->assertStatus(200);
     $response->assertSee('No posts found.');
 });
@@ -244,37 +259,71 @@ Save the file.
 
 ## Step 4: Write Tests for Creating Posts {#step-4-test-creating-posts}
 
-Creating a post involves displaying the form, accepting valid input, generating a slug, and rejecting invalid input. Define these scenarios before writing the tests:
+Creating a post involves seven separate test scenarios. Each scenario maps directly to one Pest test with the same name.
 
-1. Open the create page and confirm that the request succeeds, the correct view loads, and the form heading is visible.
-2. Submit valid post data and confirm that the response redirects to the index, includes a success message, and stores every field in the database.
-3. Submit a title and confirm that Laravel generates and stores its slug automatically.
-4. Submit an empty form and confirm that `title`, `content`, and `status` produce validation errors.
-5. Submit a title longer than 255 characters and confirm that `title` produces a validation error.
-6. Submit a status other than `draft` or `publish` and confirm that `status` produces a validation error.
-7. Submit a title whose generated slug already exists and confirm that `slug` produces a uniqueness validation error.
+**Test scenario: `create page displays the form`**
+
+1. Send a GET request to the create post route.
+2. Confirm that the request succeeds, the correct view loads, and the form heading is visible.
+
+**Test scenario: `a new post can be stored`**
+
+1. Submit valid post data to the store route.
+2. Confirm that the response redirects to the posts index and includes a success message.
+3. Confirm that the submitted data and generated slug exist in the database.
+
+**Test scenario: `slug is automatically generated from the title`**
+
+1. Submit valid post data with the title `Laravel 13 Is Amazing`.
+2. Confirm that the post is stored with the slug `laravel-13-is-amazing`.
+
+**Test scenario: `store validates required fields`**
+
+1. Submit an empty request to the store route.
+2. Confirm that `title`, `content`, and `status` produce validation errors.
+
+**Test scenario: `store validates title max length`**
+
+1. Submit post data with a title longer than 255 characters.
+2. Confirm that `title` produces a validation error.
+
+**Test scenario: `store validates status must be draft or publish`**
+
+1. Submit post data with `archived` as the status.
+2. Confirm that `status` produces a validation error because only `draft` and `publish` are accepted.
+
+**Test scenario: `store validates slug uniqueness`**
+
+1. Generate a post with the slug `duplicate-title`.
+2. Submit another post whose title produces the same slug.
+3. Confirm that `slug` produces a uniqueness validation error.
 
 The first three scenarios cover the successful flow, while the remaining scenarios protect the application from invalid or duplicate input. Add the following tests to the same file:
 
 ```php
 test('create page displays the form', function () {
+    // Act: request the create post page.
     $response = $this->get(route('posts.create'));
 
+    // Assert: verify the response, view, and form heading.
     $response->assertStatus(200);
     $response->assertViewIs('posts.create');
     $response->assertSee('Create Post');
 });
 
 test('a new post can be stored', function () {
+    // Act: submit valid post data.
     $response = $this->post(route('posts.store'), [
         'title' => 'My First Blog Post',
         'content' => 'This is the content of my first blog post.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the redirect and success message.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('success', 'Post created successfully.');
 
+    // Assert: verify the post and generated slug in the database.
     $this->assertDatabaseHas('posts', [
         'title' => 'My First Blog Post',
         'slug' => 'my-first-blog-post',
@@ -284,12 +333,14 @@ test('a new post can be stored', function () {
 });
 
 test('slug is automatically generated from the title', function () {
+    // Act: submit a post with a title that can be converted to a slug.
     $this->post(route('posts.store'), [
         'title' => 'Laravel 13 Is Amazing',
         'content' => 'Some content here.',
         'status' => 'draft',
     ]);
 
+    // Assert: verify the generated slug in the database.
     $this->assertDatabaseHas('posts', [
         'title' => 'Laravel 13 Is Amazing',
         'slug' => 'laravel-13-is-amazing',
@@ -297,40 +348,49 @@ test('slug is automatically generated from the title', function () {
 });
 
 test('store validates required fields', function () {
+    // Act: submit an empty request.
     $response = $this->post(route('posts.store'), []);
 
+    // Assert: verify validation errors for every required field.
     $response->assertSessionHasErrors(['title', 'content', 'status']);
 });
 
 test('store validates title max length', function () {
+    // Act: submit a title longer than 255 characters.
     $response = $this->post(route('posts.store'), [
         'title' => str_repeat('a', 256),
         'content' => 'Some content.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the title validation error.
     $response->assertSessionHasErrors(['title']);
 });
 
 test('store validates status must be draft or publish', function () {
+    // Act: submit a status outside the allowed values.
     $response = $this->post(route('posts.store'), [
         'title' => 'Test Post',
         'content' => 'Some content.',
         'status' => 'archived',
     ]);
 
+    // Assert: verify the status validation error.
     $response->assertSessionHasErrors(['status']);
 });
 
 test('store validates slug uniqueness', function () {
+    // Arrange: create a post with a known slug.
     Post::factory()->create(['title' => 'Duplicate Title', 'slug' => 'duplicate-title']);
 
+    // Act: submit another title that produces the same slug.
     $response = $this->post(route('posts.store'), [
         'title' => 'Duplicate Title',
         'content' => 'Different content.',
         'status' => 'draft',
     ]);
 
+    // Assert: verify the slug uniqueness validation error.
     $response->assertSessionHasErrors(['slug']);
 });
 ```
@@ -348,19 +408,30 @@ These tests cover both the happy path and the validation edge cases:
 
 ## Step 5: Write Tests for Viewing a Post {#step-5-test-viewing-post}
 
-The show page needs scenarios for both an existing record and a missing record:
+The show page needs two separate test scenarios. Each scenario maps directly to one Pest test with the same name.
 
-1. Generate a post, open its show page, and confirm that the request succeeds, the correct view loads, and the title and content are visible.
-2. Request a post ID that does not exist and confirm that Laravel returns a 404 response.
+**Test scenario: `show page displays a single post`**
+
+1. Generate a post in the database.
+2. Send a GET request to that post's show route.
+3. Confirm that the request succeeds, the correct view loads, and the title and content appear in the response.
+
+**Test scenario: `show returns 404 for non-existent post`**
+
+1. Send a GET request to the show route with a post ID that does not exist.
+2. Confirm that Laravel returns a 404 response.
 
 These scenarios verify the normal reading flow and the failure behavior provided by route model binding. Add these tests to verify the show page:
 
 ```php
 test('show page displays a single post', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: request the post's show page.
     $response = $this->get(route('posts.show', $post));
 
+    // Assert: verify the response, view, title, and content.
     $response->assertStatus(200);
     $response->assertViewIs('posts.show');
     $response->assertSee($post->title);
@@ -368,8 +439,10 @@ test('show page displays a single post', function () {
 });
 
 test('show returns 404 for non-existent post', function () {
+    // Act: request a post ID that does not exist.
     $response = $this->get(route('posts.show', 9999));
 
+    // Assert: verify the not-found response.
     $response->assertStatus(404);
 });
 ```
@@ -379,21 +452,44 @@ The first test creates a post, requests its detail page, and verifies that both 
 
 ## Step 6: Write Tests for Updating Posts {#step-6-test-updating-posts}
 
-Updating a post requires scenarios for loading existing data, saving valid changes, and handling validation:
+Updating a post requires four separate test scenarios. Each scenario maps directly to one Pest test with the same name.
 
-1. Generate a post, open its edit page, and confirm that the request succeeds, the correct view loads, and the existing title and content are visible.
-2. Submit valid changes and confirm that the response redirects to the index, includes a success message, and updates the correct database record and slug.
-3. Submit an empty update form and confirm that `title`, `content`, and `status` produce validation errors.
-4. Update a post without changing its title and confirm that its own slug does not trigger a uniqueness validation error.
+**Test scenario: `edit page displays the form with existing data`**
+
+1. Generate a post in the database.
+2. Send a GET request to that post's edit route.
+3. Confirm that the request succeeds, the correct view loads, and the existing title and content appear in the response.
+
+**Test scenario: `a post can be updated`**
+
+1. Generate a post with known field values.
+2. Submit valid changes to that post's update route.
+3. Confirm that the response redirects to the posts index and includes a success message.
+4. Confirm that the correct database record contains the updated data and generated slug.
+
+**Test scenario: `update validates required fields`**
+
+1. Generate a post in the database.
+2. Submit an empty request to that post's update route.
+3. Confirm that `title`, `content`, and `status` produce validation errors.
+
+**Test scenario: `update allows same slug for the same post`**
+
+1. Generate a post with a known title and slug.
+2. Submit an update that keeps the same title.
+3. Confirm that the response redirects to the posts index without validation errors.
 
 Together, these scenarios cover the edit form, the successful update flow, required-field validation, and the slug uniqueness edge case. Add tests for the edit form and update operation:
 
 ```php
 test('edit page displays the form with existing data', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: request the post's edit page.
     $response = $this->get(route('posts.edit', $post));
 
+    // Assert: verify the response, view, and existing post data.
     $response->assertStatus(200);
     $response->assertViewIs('posts.edit');
     $response->assertSee($post->title);
@@ -401,6 +497,7 @@ test('edit page displays the form with existing data', function () {
 });
 
 test('a post can be updated', function () {
+    // Arrange: create a post with known values.
     $post = Post::factory()->create([
         'title' => 'Original Title',
         'slug' => 'original-title',
@@ -408,15 +505,18 @@ test('a post can be updated', function () {
         'status' => 'draft',
     ]);
 
+    // Act: submit valid updated data.
     $response = $this->put(route('posts.update', $post), [
         'title' => 'Updated Title',
         'content' => 'Updated content.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the redirect and success message.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('success', 'Post updated successfully.');
 
+    // Assert: verify that the correct record contains the updated data.
     $this->assertDatabaseHas('posts', [
         'id' => $post->id,
         'title' => 'Updated Title',
@@ -427,25 +527,31 @@ test('a post can be updated', function () {
 });
 
 test('update validates required fields', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: submit an empty update request.
     $response = $this->put(route('posts.update', $post), []);
 
+    // Assert: verify validation errors for every required field.
     $response->assertSessionHasErrors(['title', 'content', 'status']);
 });
 
 test('update allows same slug for the same post', function () {
+    // Arrange: create a post with a known title and slug.
     $post = Post::factory()->create([
         'title' => 'Keep This Title',
         'slug' => 'keep-this-title',
     ]);
 
+    // Act: update the post without changing its title.
     $response = $this->put(route('posts.update', $post), [
         'title' => 'Keep This Title',
         'content' => 'Updated content only.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the redirect and absence of validation errors.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHasNoErrors();
 });
@@ -458,30 +564,45 @@ The last test is particularly important. It verifies that updating a post withou
 
 ## Step 7: Write Tests for Deleting Posts {#step-7-test-deleting-posts}
 
-Deleting a post has one successful scenario and one missing-record scenario:
+Deleting a post requires two separate test scenarios. Each scenario maps directly to one Pest test with the same name.
 
-1. Generate a post, delete it, and confirm that the response redirects to the index, includes a success message, and removes the record from the database.
-2. Delete a post ID that does not exist and confirm that Laravel returns a 404 response.
+**Test scenario: `a post can be deleted`**
+
+1. Generate a post in the database.
+2. Send a DELETE request to that post's destroy route.
+3. Confirm that the response redirects to the posts index and includes a success message.
+4. Confirm that the post no longer exists in the database.
+
+**Test scenario: `deleting a non-existent post returns 404`**
+
+1. Send a DELETE request to the destroy route with a post ID that does not exist.
+2. Confirm that Laravel returns a 404 response.
 
 These scenarios verify both the database change after a successful deletion and the expected failure response. Add tests for the delete operation:
 
 ```php
 test('a post can be deleted', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: delete the post.
     $response = $this->delete(route('posts.destroy', $post));
 
+    // Assert: verify the redirect and success message.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('success', 'Post deleted successfully.');
 
+    // Assert: verify that the post no longer exists.
     $this->assertDatabaseMissing('posts', [
         'id' => $post->id,
     ]);
 });
 
 test('deleting a non-existent post returns 404', function () {
+    // Act: delete a post ID that does not exist.
     $response = $this->delete(route('posts.destroy', 9999));
 
+    // Assert: verify the not-found response.
     $response->assertStatus(404);
 });
 ```
@@ -566,45 +687,56 @@ uses(RefreshDatabase::class);
 
 // Index Tests
 test('index page displays a list of posts', function () {
+    // Arrange: generate three posts.
     $posts = Post::factory()->count(3)->create();
 
+    // Act: request the posts index.
     $response = $this->get(route('posts.index'));
 
+    // Assert: verify the response, view, and view data.
     $response->assertStatus(200);
     $response->assertViewIs('posts.index');
     $response->assertViewHas('posts');
 
+    // Assert: verify that every post title is visible.
     foreach ($posts as $post) {
         $response->assertSee($post->title);
     }
 });
 
 test('index page shows empty state when no posts exist', function () {
+    // Act: request the posts index without creating any posts.
     $response = $this->get(route('posts.index'));
 
+    // Assert: verify the response and empty-state message.
     $response->assertStatus(200);
     $response->assertSee('No posts found.');
 });
 
 // Create Tests
 test('create page displays the form', function () {
+    // Act: request the create post page.
     $response = $this->get(route('posts.create'));
 
+    // Assert: verify the response, view, and form heading.
     $response->assertStatus(200);
     $response->assertViewIs('posts.create');
     $response->assertSee('Create Post');
 });
 
 test('a new post can be stored', function () {
+    // Act: submit valid post data.
     $response = $this->post(route('posts.store'), [
         'title' => 'My First Blog Post',
         'content' => 'This is the content of my first blog post.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the redirect and success message.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('success', 'Post created successfully.');
 
+    // Assert: verify the post and generated slug in the database.
     $this->assertDatabaseHas('posts', [
         'title' => 'My First Blog Post',
         'slug' => 'my-first-blog-post',
@@ -614,12 +746,14 @@ test('a new post can be stored', function () {
 });
 
 test('slug is automatically generated from the title', function () {
+    // Act: submit a post with a title that can be converted to a slug.
     $this->post(route('posts.store'), [
         'title' => 'Laravel 13 Is Amazing',
         'content' => 'Some content here.',
         'status' => 'draft',
     ]);
 
+    // Assert: verify the generated slug in the database.
     $this->assertDatabaseHas('posts', [
         'title' => 'Laravel 13 Is Amazing',
         'slug' => 'laravel-13-is-amazing',
@@ -627,49 +761,61 @@ test('slug is automatically generated from the title', function () {
 });
 
 test('store validates required fields', function () {
+    // Act: submit an empty request.
     $response = $this->post(route('posts.store'), []);
 
+    // Assert: verify validation errors for every required field.
     $response->assertSessionHasErrors(['title', 'content', 'status']);
 });
 
 test('store validates title max length', function () {
+    // Act: submit a title longer than 255 characters.
     $response = $this->post(route('posts.store'), [
         'title' => str_repeat('a', 256),
         'content' => 'Some content.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the title validation error.
     $response->assertSessionHasErrors(['title']);
 });
 
 test('store validates status must be draft or publish', function () {
+    // Act: submit a status outside the allowed values.
     $response = $this->post(route('posts.store'), [
         'title' => 'Test Post',
         'content' => 'Some content.',
         'status' => 'archived',
     ]);
 
+    // Assert: verify the status validation error.
     $response->assertSessionHasErrors(['status']);
 });
 
 test('store validates slug uniqueness', function () {
+    // Arrange: create a post with a known slug.
     Post::factory()->create(['title' => 'Duplicate Title', 'slug' => 'duplicate-title']);
 
+    // Act: submit another title that produces the same slug.
     $response = $this->post(route('posts.store'), [
         'title' => 'Duplicate Title',
         'content' => 'Different content.',
         'status' => 'draft',
     ]);
 
+    // Assert: verify the slug uniqueness validation error.
     $response->assertSessionHasErrors(['slug']);
 });
 
 // Show Tests
 test('show page displays a single post', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: request the post's show page.
     $response = $this->get(route('posts.show', $post));
 
+    // Assert: verify the response, view, title, and content.
     $response->assertStatus(200);
     $response->assertViewIs('posts.show');
     $response->assertSee($post->title);
@@ -677,17 +823,22 @@ test('show page displays a single post', function () {
 });
 
 test('show returns 404 for non-existent post', function () {
+    // Act: request a post ID that does not exist.
     $response = $this->get(route('posts.show', 9999));
 
+    // Assert: verify the not-found response.
     $response->assertStatus(404);
 });
 
 // Edit and Update Tests
 test('edit page displays the form with existing data', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: request the post's edit page.
     $response = $this->get(route('posts.edit', $post));
 
+    // Assert: verify the response, view, and existing post data.
     $response->assertStatus(200);
     $response->assertViewIs('posts.edit');
     $response->assertSee($post->title);
@@ -695,6 +846,7 @@ test('edit page displays the form with existing data', function () {
 });
 
 test('a post can be updated', function () {
+    // Arrange: create a post with known values.
     $post = Post::factory()->create([
         'title' => 'Original Title',
         'slug' => 'original-title',
@@ -702,15 +854,18 @@ test('a post can be updated', function () {
         'status' => 'draft',
     ]);
 
+    // Act: submit valid updated data.
     $response = $this->put(route('posts.update', $post), [
         'title' => 'Updated Title',
         'content' => 'Updated content.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the redirect and success message.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('success', 'Post updated successfully.');
 
+    // Assert: verify that the correct record contains the updated data.
     $this->assertDatabaseHas('posts', [
         'id' => $post->id,
         'title' => 'Updated Title',
@@ -721,46 +876,58 @@ test('a post can be updated', function () {
 });
 
 test('update validates required fields', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: submit an empty update request.
     $response = $this->put(route('posts.update', $post), []);
 
+    // Assert: verify validation errors for every required field.
     $response->assertSessionHasErrors(['title', 'content', 'status']);
 });
 
 test('update allows same slug for the same post', function () {
+    // Arrange: create a post with a known title and slug.
     $post = Post::factory()->create([
         'title' => 'Keep This Title',
         'slug' => 'keep-this-title',
     ]);
 
+    // Act: update the post without changing its title.
     $response = $this->put(route('posts.update', $post), [
         'title' => 'Keep This Title',
         'content' => 'Updated content only.',
         'status' => 'publish',
     ]);
 
+    // Assert: verify the redirect and absence of validation errors.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHasNoErrors();
 });
 
 // Delete Tests
 test('a post can be deleted', function () {
+    // Arrange: generate a post.
     $post = Post::factory()->create();
 
+    // Act: delete the post.
     $response = $this->delete(route('posts.destroy', $post));
 
+    // Assert: verify the redirect and success message.
     $response->assertRedirect(route('posts.index'));
     $response->assertSessionHas('success', 'Post deleted successfully.');
 
+    // Assert: verify that the post no longer exists.
     $this->assertDatabaseMissing('posts', [
         'id' => $post->id,
     ]);
 });
 
 test('deleting a non-existent post returns 404', function () {
+    // Act: delete a post ID that does not exist.
     $response = $this->delete(route('posts.destroy', 9999));
 
+    // Assert: verify the not-found response.
     $response->assertStatus(404);
 });
 ```
