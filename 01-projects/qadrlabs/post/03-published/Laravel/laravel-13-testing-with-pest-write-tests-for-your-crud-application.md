@@ -26,6 +26,7 @@ By following this tutorial, you will learn how to:
 
 - Replace PHPUnit with Pest in an existing Laravel 13 project.
 - Create model factories for generating test data.
+- Translate user flows and edge cases into clear test scenarios.
 - Write feature tests for each CRUD operation.
 - Use `RefreshDatabase` to keep tests isolated.
 - Assert HTTP responses, redirects, session data, and database state.
@@ -182,7 +183,12 @@ Save the file.
 
 ## Step 3: Write Tests for Listing Posts {#step-3-test-listing-posts}
 
-Now let's start writing the actual tests. Create a new test file:
+Now let's start writing the actual tests. Before writing the code, define the user flows and expected results for the posts index:
+
+1. Generate three posts, open the posts index, and confirm that the request succeeds, the correct view receives the posts, and every title appears on the page.
+2. Open the posts index without any post records and confirm that the page displays the empty-state message.
+
+These scenarios cover both ways readers can encounter the index page: with existing content and with an empty database. Create a new test file:
 
 ```
 php artisan make:test PostControllerTest --pest
@@ -238,7 +244,17 @@ Save the file.
 
 ## Step 4: Write Tests for Creating Posts {#step-4-test-creating-posts}
 
-Add the following tests to the same file:
+Creating a post involves displaying the form, accepting valid input, generating a slug, and rejecting invalid input. Define these scenarios before writing the tests:
+
+1. Open the create page and confirm that the request succeeds, the correct view loads, and the form heading is visible.
+2. Submit valid post data and confirm that the response redirects to the index, includes a success message, and stores every field in the database.
+3. Submit a title and confirm that Laravel generates and stores its slug automatically.
+4. Submit an empty form and confirm that `title`, `content`, and `status` produce validation errors.
+5. Submit a title longer than 255 characters and confirm that `title` produces a validation error.
+6. Submit a status other than `draft` or `publish` and confirm that `status` produces a validation error.
+7. Submit a title whose generated slug already exists and confirm that `slug` produces a uniqueness validation error.
+
+The first three scenarios cover the successful flow, while the remaining scenarios protect the application from invalid or duplicate input. Add the following tests to the same file:
 
 ```php
 test('create page displays the form', function () {
@@ -332,7 +348,12 @@ These tests cover both the happy path and the validation edge cases:
 
 ## Step 5: Write Tests for Viewing a Post {#step-5-test-viewing-post}
 
-Add these tests to verify the show page:
+The show page needs scenarios for both an existing record and a missing record:
+
+1. Generate a post, open its show page, and confirm that the request succeeds, the correct view loads, and the title and content are visible.
+2. Request a post ID that does not exist and confirm that Laravel returns a 404 response.
+
+These scenarios verify the normal reading flow and the failure behavior provided by route model binding. Add these tests to verify the show page:
 
 ```php
 test('show page displays a single post', function () {
@@ -358,7 +379,14 @@ The first test creates a post, requests its detail page, and verifies that both 
 
 ## Step 6: Write Tests for Updating Posts {#step-6-test-updating-posts}
 
-Add tests for the edit form and update operation:
+Updating a post requires scenarios for loading existing data, saving valid changes, and handling validation:
+
+1. Generate a post, open its edit page, and confirm that the request succeeds, the correct view loads, and the existing title and content are visible.
+2. Submit valid changes and confirm that the response redirects to the index, includes a success message, and updates the correct database record and slug.
+3. Submit an empty update form and confirm that `title`, `content`, and `status` produce validation errors.
+4. Update a post without changing its title and confirm that its own slug does not trigger a uniqueness validation error.
+
+Together, these scenarios cover the edit form, the successful update flow, required-field validation, and the slug uniqueness edge case. Add tests for the edit form and update operation:
 
 ```php
 test('edit page displays the form with existing data', function () {
@@ -430,7 +458,12 @@ The last test is particularly important. It verifies that updating a post withou
 
 ## Step 7: Write Tests for Deleting Posts {#step-7-test-deleting-posts}
 
-Add tests for the delete operation:
+Deleting a post has one successful scenario and one missing-record scenario:
+
+1. Generate a post, delete it, and confirm that the response redirects to the index, includes a success message, and removes the record from the database.
+2. Delete a post ID that does not exist and confirm that Laravel returns a 404 response.
+
+These scenarios verify both the database change after a successful deletion and the expected failure response. Add tests for the delete operation:
 
 ```php
 test('a post can be deleted', function () {

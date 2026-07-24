@@ -27,6 +27,7 @@ Dengan mengikuti tutorial ini, Anda akan belajar cara:
 
 - Mengganti PHPUnit dengan Pest di proyek Laravel 13 yang sudah ada.
 - Membuat model factory untuk menghasilkan data test.
+- Menerjemahkan user flow dan edge case menjadi skenario test yang jelas.
 - Menulis feature test untuk setiap operasi CRUD.
 - Menggunakan `RefreshDatabase` agar test tetap terisolasi.
 - Melakukan assert pada HTTP response, redirect, session data, dan state database.
@@ -183,7 +184,12 @@ Simpan file tersebut.
 
 ## Step 3: Write Tests for Listing Posts {#step-3-test-listing-posts}
 
-Sekarang mari kita mulai menulis test yang sebenarnya. Buat file test baru:
+Sekarang mari kita mulai menulis test yang sebenarnya. Sebelum menulis kode, definisikan user flow dan hasil yang diharapkan untuk index post:
+
+1. Generate tiga post, buka index post, dan pastikan request berhasil, view yang benar menerima post tersebut, serta setiap title muncul di halaman.
+2. Buka index post tanpa record post apa pun dan pastikan halaman menampilkan pesan empty state.
+
+Skenario ini mencakup dua kondisi yang dapat ditemui pembaca pada halaman index: dengan content yang sudah ada dan dengan database kosong. Buat file test baru:
 
 ```
 php artisan make:test PostControllerTest --pest
@@ -239,7 +245,17 @@ Simpan file tersebut.
 
 ## Step 4: Write Tests for Creating Posts {#step-4-test-creating-posts}
 
-Tambahkan test berikut ke file yang sama:
+Membuat post mencakup menampilkan form, menerima input yang valid, menghasilkan slug, dan menolak input yang tidak valid. Definisikan skenario berikut sebelum menulis test:
+
+1. Buka halaman create dan pastikan request berhasil, view yang benar dimuat, serta heading form terlihat.
+2. Submit data post yang valid dan pastikan response melakukan redirect ke index, menyertakan success message, serta menyimpan setiap field ke database.
+3. Submit sebuah title dan pastikan Laravel secara otomatis menghasilkan serta menyimpan slug-nya.
+4. Submit form kosong dan pastikan `title`, `content`, serta `status` menghasilkan validation error.
+5. Submit title dengan panjang lebih dari 255 karakter dan pastikan `title` menghasilkan validation error.
+6. Submit status selain `draft` atau `publish` dan pastikan `status` menghasilkan validation error.
+7. Submit title yang generated slug-nya sudah ada dan pastikan `slug` menghasilkan uniqueness validation error.
+
+Tiga skenario pertama mencakup successful flow, sedangkan skenario lainnya melindungi aplikasi dari input yang tidak valid atau duplikat. Tambahkan test berikut ke file yang sama:
 
 ```php
 test('create page displays the form', function () {
@@ -333,7 +349,12 @@ Test-test ini mencakup baik happy path maupun edge case validasi:
 
 ## Step 5: Write Tests for Viewing a Post {#step-5-test-viewing-post}
 
-Tambahkan test berikut untuk memverifikasi halaman show:
+Halaman show membutuhkan skenario untuk record yang tersedia dan record yang tidak ditemukan:
+
+1. Generate sebuah post, buka halaman show-nya, dan pastikan request berhasil, view yang benar dimuat, serta title dan content terlihat.
+2. Request ID post yang tidak tersedia dan pastikan Laravel mengembalikan response 404.
+
+Skenario ini memverifikasi reading flow normal dan failure behavior yang disediakan oleh route model binding. Tambahkan test berikut untuk memverifikasi halaman show:
 
 ```php
 test('show page displays a single post', function () {
@@ -359,7 +380,14 @@ Test pertama membuat sebuah post, meminta halaman detailnya, dan memverifikasi b
 
 ## Step 6: Write Tests for Updating Posts {#step-6-test-updating-posts}
 
-Tambahkan test untuk form edit dan operasi update:
+Memperbarui post membutuhkan skenario untuk memuat data yang sudah ada, menyimpan perubahan valid, dan menangani validation:
+
+1. Generate sebuah post, buka halaman edit-nya, dan pastikan request berhasil, view yang benar dimuat, serta title dan content yang sudah ada terlihat.
+2. Submit perubahan yang valid dan pastikan response melakukan redirect ke index, menyertakan success message, serta memperbarui record database dan slug yang benar.
+3. Submit form update kosong dan pastikan `title`, `content`, serta `status` menghasilkan validation error.
+4. Update sebuah post tanpa mengubah title-nya dan pastikan slug milik post tersebut tidak memicu uniqueness validation error.
+
+Secara keseluruhan, skenario ini mencakup form edit, successful update flow, required-field validation, dan edge case slug uniqueness. Tambahkan test untuk form edit dan operasi update:
 
 ```php
 test('edit page displays the form with existing data', function () {
@@ -431,7 +459,12 @@ Test terakhir sangat penting. Ia memverifikasi bahwa meng-update sebuah post tan
 
 ## Step 7: Write Tests for Deleting Posts {#step-7-test-deleting-posts}
 
-Tambahkan test untuk operasi delete:
+Menghapus post memiliki satu successful scenario dan satu skenario missing record:
+
+1. Generate sebuah post, hapus post tersebut, dan pastikan response melakukan redirect ke index, menyertakan success message, serta menghapus record dari database.
+2. Hapus ID post yang tidak tersedia dan pastikan Laravel mengembalikan response 404.
+
+Skenario ini memverifikasi perubahan database setelah proses delete berhasil dan failure response yang diharapkan. Tambahkan test untuk operasi delete:
 
 ```php
 test('a post can be deleted', function () {
