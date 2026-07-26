@@ -55,3 +55,10 @@
 **Short description:** Build a server-side Posts DataTable in Laravel 13 with Yajra, Eloquent, Tailwind, SQLite, and Pest tests for pagination, search, and sorting. (141 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, yajra-datatables, datatables, server-side-processing, eloquent, pest
+
+## 2026-07-26 - Laravel queued welcome email
+**File:** 01-projects/qadrlabs/post/01-draft/send-email-in-the-background-with-laravel-queues.md
+**Title:** Send Email in the Background with Laravel Queues
+**Short description:** Learn how to send welcome emails in the background with Laravel queues, a database worker, log mailer, form validation, and Pest tests. (135 chars)
+**Category:** Laravel
+**Tags:** laravel, queue, email, mailable, pest, background-jobs, smtp

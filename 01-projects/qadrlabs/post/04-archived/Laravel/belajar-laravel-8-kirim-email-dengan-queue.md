@@ -36,6 +36,11 @@ Untuk laravel 12, berikut code method `content()`
     }
 ```
 
+
+> Laravel versi 8 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 22 Juli 2022 dan security fixes sampai tanggal 24 Januari 2023 sehingga sangat disarankan untuk menggunakan laravel versi terbaru. 
+> 
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
 ## Persiapan{#persiapan}
 Karena studi kasusnya adalah mengirimkan email, sudah pasti kita perlu email yang digunakan untuk keperluan uji coba. Sewaktu belajar Laravel 8 untuk mengirimkan email, saya pakai SMTP dari hosting provider yang saya gunakan. Sebagai alternatif, kita juga bisa pakai SMTP gmail. Untuk menggunakan SMTP  Gmail kita bisa gunakan email gmail kita dan juga app password gmail. App Password gmail bisa kamu dapatkan dengan membaca tutorial [mengirim email sebelumnya pada Step 1 - Setup App password Gmail](https://qadrlabs.com/post/mengirim-email-via-gmail-smtp-menggunakan-email-library-codeigniter#step-1). 
 
@@ -265,3 +270,5 @@ Setelah selesai proses kirim email di background process, kita bisa cek email ya
 
 ## Penutup{#penutup}
 Mengirimkan email dapat mempengaruhi waktu respon aplikasi yang kita kembangkan. Sebagai solusinya kita bisa menggunakan `queue` untuk menangani fitur kirim email untuk diproses di background process. Membuat fitur kirim email maupun `queue` itu lumayan kompleks, kabar baiknya Laravel sudah menyediakan API untuk menangani keduanya. Dan di tulisan ini kita sudah belajar bagaimana cara mengirim email dengan queue, di mana email tersebut akan dikirimkan setelah job dieksekusi di background process.
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 8 @ [https://laravel.com/docs/8.x/releases](https://laravel.com/docs/8.x/releases)
