@@ -10,6 +10,14 @@ Laravel 11 telah dirilis pada 12 Maret 2024 lalu, membawa berbagai fitur dan pen
 
 Dalam tutorial ini, kita akan membuat aplikasi pengelolaan user dengan fitur lengkap mulai dari menampilkan daftar user, menambah user baru, mengubah data user yang sudah ada, hingga menghapus data user. Mari kita mulai belajar sambil praktik langsung!
 
+> Laravel versi 11 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 3 September 2025 dan security fixes sampai tanggal 12 Maret 2026. Selain itu ketika create project menggunakan laravel versi 11 akan tampil seperti yang dituliskan pada catatan [step 1](#step-1), sehingga laravel versi 11 sudah tidak bisa diinstall dan sangat direkomendasikan untuk menggunakan laravel versi terbaru.
+
+> Berdasarkan uji coba per **tanggal 28 Juli 2026**, tutorial ini masih dapat digunakan dan diimplementasi menggunakan Laravel versi 13.
+ 
+> Untuk tutorial terkait CRUD pada versi terbaru dapat dibaca pada [Tutorial CRUD Laravel 13](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step). 
+
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
 ## Overview{#overview}
 Tutorial CRUD Laravel 11 ini akan memandu Anda membuat aplikasi pengelolaan user dari awal hingga akhir. Kita akan membangun fitur-fitur esensial yang sering digunakan dalam pengembangan aplikasi web modern.
 
@@ -61,8 +69,33 @@ Jika outputnya bukan PHP 8.2, teman-teman bisa mengikuti tutorial [setup dan men
 ## Step 1 - Create Laravel Project{#step-1}
 Sekarang kita coba buat project laravel baru menggunakan `composer`. Buka kembali terminal lalu run command berikut ini untuk membuat project laravel 11 baru.
 ```
- composer create-project laravel/laravel:^11.0 crud-app-example
+composer create-project laravel/laravel:^11.0 crud-app-example
 
+```
+
+
+> **Catatan:** Uji coba per tanggal 28 Juli 2026, berbeda dengan sebelumnya setelah update composer menjadi versi terbaru akan tampil error berikut ketika mencoba create project laravel versi 11.
+
+```
+$ composer create-project laravel/laravel:^11.0 crud-app-example
+Creating a "laravel/laravel:^11.0" project at "./crud-app-example"
+Installing laravel/laravel (v11.6.1)
+  - Installing laravel/laravel (v11.6.1): Extracting archive
+Created project in /home/gun-gun-priatna/learning-lab/testing-tutorial/crud-app-example
+> @php -r "file_exists('.env') || copy('.env.example', '.env');"
+Loading composer repositories with package information
+Updating dependencies
+Your requirements could not be resolved to an installable set of packages.
+
+  Problem 1
+    - Root composer.json requires laravel/framework ^11.31, found laravel/framework[v11.31.0, ..., v11.55.0] but these were not loaded, because they are affected by security advisories ("PKSA-m5cs-t1y6-qpcs", "PKSA-3r5d-mb8f-1qw9", "PKSA-mdq4-51ck-6kdq", "PKSA-8qx3-n5y5-vvnd", "PKSA-q46n-4fdk-zjr4", "PKSA-qzrn-rnz3-85w1"). Go to https://packagist.org/security-advisories/ to find advisory details. To ignore the advisories, add their IDs to the "policy.advisories.ignore-id" config or add the package to "policy.advisories.ignore". To turn the feature off entirely, you can set "policy.advisories.block" to false.
+
+```
+
+> Apabila mengikuti petunjuk untuk nonaktifkan notifikasi error tersebut, laravel 11 dapat diinstall. Namun **sangat tidak direkomendasikan** untuk menonaktifkan policy advisories tersebut dan lebih merekomendasikan untuk install laravel versi terbaru dengan running command berikut:
+
+```
+composer create-project laravel/laravel --prefer-dist crud-app-example
 ```
 
 Setelah proses create project selesai, di output yang ditampilkan terdapat output berikut ini.
@@ -726,3 +759,7 @@ Di seri tutorial [Belajar Laravel 11](https://qadrlabs.com/series/belajar-larave
 - [Menggunakan Database MariaDB di laravel 11](https://qadrlabs.com/post/menggunakan-mariadb-di-laravel-11)
 - [Browser Testing menggunakan Laravel Dusk](https://qadrlabs.com/post/percobaan-browser-testing-menggunakan-laravel-dusk)
 - [Testing menggunakan Pest](https://qadrlabs.com/post/testing-menggunakan-pest)
+
+
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 11 @ [https://laravel.com/docs/11.x/releases](https://laravel.com/docs/11.x/releases)
