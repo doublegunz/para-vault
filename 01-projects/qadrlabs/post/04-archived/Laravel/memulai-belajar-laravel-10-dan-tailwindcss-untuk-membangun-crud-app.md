@@ -17,6 +17,15 @@ Beberapa pertanyaan kritis yang muncul:
 
 Untuk menjawab keraguan tersebut, saya memutuskan untuk melakukan eksperimen langsung dengan Laravel 10. Project yang dipilih adalah pengembangan aplikasi CRUD (Create, Read, Update, Delete) - fondasi dari setiap aplikasi web modern. Untuk memberikan nilai tambah, project ini juga mengintegrasikan Tailwind CSS sebagai framework UI, berbeda dengan [tutorial crud Laravel 8 sebelumnya](https://qadrlabs.com/post/belajar-laravel-8-membuat-aplikasi-crud-sederhana).
 
+
+> Laravel versi 10 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 6 Agustus 2024 dan security fixes sampai tanggal 4 Februari 2025. Selain itu ketika create project menggunakan laravel versi 10 akan tampil seperti yang dituliskan pada catatan [step 1](#step-1), sehingga laravel versi 10 sudah tidak bisa diinstall dan sangat direkomendasikan untuk menggunakan laravel versi terbaru.
+> 
+> Untuk tutorial terkait CRUD pada versi terbaru dapat dibaca pada [Tutorial CRUD Laravel 13](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step). 
+> 
+> 
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
+
 ## Persiapan Environment Development{#persiapan}
 Sebelum memulai perjalanan dengan Laravel 10, pastikan environment development kita memenuhi persyaratan teknis. Laravel 10 membutuhkan PHP versi 8.1 atau yang lebih tinggi. Mari kita verifikasi versi PHP yang terinstal:
 
@@ -65,7 +74,29 @@ composer create-project laravel/laravel:^10.0 blog
 ```
 Karena pada saat ini laravel 10 bukan versi terbaru, jadi kita tambahkan constrain versi `:^10.0` pada command create-project untuk menggunakan versi laravel 10.x terbaru yang kompatibel.
 
-Setelah Laravel 10 sudah terinstall, selanjutnya kita masuk ke direktori project.
+> **Catatan:** Uji coba per tanggal 28 Juli 2026, berbeda dengan sebelumnya setelah update composer menjadi versi terbaru akan tampil error berikut ketika mencoba create project laravel versi 10.
+
+```
+$ composer create-project laravel/laravel:^10.0 blog
+Creating a "laravel/laravel:^10.0" project at "./blog"
+Installing laravel/laravel (v10.3.3)
+  - Downloading laravel/laravel (v10.3.3)
+  - Installing laravel/laravel (v10.3.3): Extracting archive
+Created project in /home/gun-gun-priatna/learning-lab/testing-tutorial/blog
+> @php -r "file_exists('.env') || copy('.env.example', '.env');"
+Loading composer repositories with package information
+Updating dependencies
+Your requirements could not be resolved to an installable set of packages.
+
+  Problem 1
+    - Root composer.json requires laravel/framework ^10.10, found laravel/framework[v10.10.0, ..., 10.50.2] but these were not loaded, because they are affected by security advisories ("PKSA-m5cs-t1y6-qpcs", "PKSA-3r5d-mb8f-1qw9", "PKSA-mdq4-51ck-6kdq", "PKSA-8qx3-n5y5-vvnd", "PKSA-w7xr-vk7n-rstm"). Go to https://packagist.org/security-advisories/ to find advisory details. To ignore the advisories, add their IDs to the "policy.advisories.ignore-id" config or add the package to "policy.advisories.ignore". To turn the feature off entirely, you can set "policy.advisories.block" to false.
+
+```
+
+> Apabila mengikuti petunjuk untuk nonaktifkan notifikasi error tersebut, laravel 10 dapat diinstall. Namun **sangat tidak direkomendasikan** untuk menonaktifkan policy advisories tersebut dan lebih merekomendasikan untuk mengikuti tutorial laravel versi terbaru yang dapat dibaca pada [Tutorial CRUD Laravel 13](https://qadrlabs.com/post/laravel-13-crud-tutorial-build-a-simple-blog-step-by-step). 
+
+
+Setelah Laravel sudah terinstall, selanjutnya kita masuk ke direktori project.
 ```bash
 cd blog
 ```
@@ -944,3 +975,5 @@ Setelah berhasil membuat aplikasi CRUD menggunakan Laravel 10 dan Tailwind CSS, 
 Dari hasi belajar kali ini baru dua fitur laravel 10 yang saya temukan, selain percobaan menggunakan tailwind CSS dan penggunaan route model binding. 
 
 Kembali ke pertanyaan awal, apakah fokus belajar laravel 8 atau mulai mencoba laravel 10? Menurut saya, terlepas dari versi yang kita gunakan, kita lebih baik fokus ke basic dan memahami konsep dari framework laravel. Sehingga ketika ada rilis versi berapa pun, selama kita paham, kita bisa dengan mudah mempelajarinya.
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 10 @ [https://laravel.com/docs/10.x/releases](https://laravel.com/docs/10.x/releases)

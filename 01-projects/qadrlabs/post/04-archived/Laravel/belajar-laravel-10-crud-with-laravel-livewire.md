@@ -47,6 +47,15 @@ Laravel Livewire menghadirkan paradigma baru dalam pengembangan aplikasi web int
 
 Breaking News: Pada 25 Agustus 2023, Laravel Livewire mencapai milestone signifikan dengan merilis [versi 3.0.0](https://github.com/livewire/livewire/releases/tag/v3.0.0). Tutorial ini akan menggunakan versi terbaru tersebut, memberikan Anda pengalaman hands-on dengan fitur-fitur terkini dari Livewire 3.
 
+
+> Laravel versi 10 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 6 Agustus 2024 dan security fixes sampai tanggal 4 Februari 2025. Selain itu ketika create project menggunakan laravel versi 10 akan tampil seperti yang dituliskan pada catatan [step 1](#step-1), sehingga laravel versi 10 sudah tidak bisa diinstall dan sangat direkomendasikan untuk menggunakan laravel versi terbaru.
+> 
+> Untuk tutorial terkait CRUD pada versi terbaru dapat dibaca pada [Tutorial Crud Laravel with livewire terbaru](https://qadrlabs.com/post/laravel-13-crud-with-livewire-4-build-interactive-components-without-javascript) menggunakan laravel 13 dan livewire 4.
+> 
+> 
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
+
+
 ## Overview{#overview}
 Pada tutorial laravel 10 ini kita akan coba menggunakan Laravel Livewire 3 untuk membangun project sederhana dengan fitur CRUD. Untuk data yang akan kita gunakan dalam project ini seperti biasa kita gunakan data `post`. Tujuan akhirnya seperti judul tutorial ini, project kita dapat melakukan operasi crud untuk menampilkan data post, membuat post baru, memperbaharui dat apost, dan menghapus data post.
 
@@ -56,6 +65,28 @@ Pertama kita buat project laravel baru menggunakan `composer`. Buka terminal lal
 ```
 composer create-project laravel/laravel:^10.0 crud_livewire
 ```
+
+
+> **Catatan:** Uji coba per tanggal 28 Juli 2026, berbeda dengan sebelumnya setelah update composer menjadi versi terbaru akan tampil error berikut ketika mencoba create project laravel versi 10.
+
+```
+$ composer create-project laravel/laravel:^10.0 blog
+Creating a "laravel/laravel:^10.0" project at "./blog"
+Installing laravel/laravel (v10.3.3)
+  - Downloading laravel/laravel (v10.3.3)
+  - Installing laravel/laravel (v10.3.3): Extracting archive
+Created project in /home/gun-gun-priatna/learning-lab/testing-tutorial/blog
+> @php -r "file_exists('.env') || copy('.env.example', '.env');"
+Loading composer repositories with package information
+Updating dependencies
+Your requirements could not be resolved to an installable set of packages.
+
+  Problem 1
+    - Root composer.json requires laravel/framework ^10.10, found laravel/framework[v10.10.0, ..., 10.50.2] but these were not loaded, because they are affected by security advisories ("PKSA-m5cs-t1y6-qpcs", "PKSA-3r5d-mb8f-1qw9", "PKSA-mdq4-51ck-6kdq", "PKSA-8qx3-n5y5-vvnd", "PKSA-w7xr-vk7n-rstm"). Go to https://packagist.org/security-advisories/ to find advisory details. To ignore the advisories, add their IDs to the "policy.advisories.ignore-id" config or add the package to "policy.advisories.ignore". To turn the feature off entirely, you can set "policy.advisories.block" to false.
+
+```
+
+> Apabila mengikuti petunjuk untuk nonaktifkan notifikasi error tersebut, laravel 10 dapat diinstall. Namun **sangat tidak direkomendasikan** untuk menonaktifkan policy advisories tersebut dan lebih merekomendasikan untuk mengikuti tutorial laravel versi terbaru yang dibaca pada [Tutorial Crud Laravel with livewire terbaru](https://qadrlabs.com/post/laravel-13-crud-with-livewire-4-build-interactive-components-without-javascript) menggunakan laravel 13 dan livewire 4.
 
 ## Step 2 - Set Konfigurasi Database{#step-2}
 Selanjutnya kita masuk ke dalam direktori root project kita menggunakan command di bawah ini.
@@ -617,3 +648,6 @@ Project ini membuka berbagai kemungkinan pengembangan yang menarik, seperti:
 - UI/UX enhancements dengan Alpine.js
 
 Bagaimana pengalaman Anda mengikuti tutorial ini? Apakah Laravel Livewire memberikan perspektif baru dalam pengembangan aplikasi web? Mari kita eksplorasi lebih lanjut potensi framework ini dalam project Anda berikutnya!
+
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 10 @ [https://laravel.com/docs/10.x/releases](https://laravel.com/docs/10.x/releases)
