@@ -62,3 +62,10 @@
 **Short description:** Learn how to send welcome emails in the background with Laravel queues, a database worker, log mailer, form validation, and Pest tests. (135 chars)
 **Category:** Laravel
 **Tags:** laravel, queue, email, mailable, pest, background-jobs, smtp
+
+## 2026-07-30 - Laracon US 2026 announcements
+**File:** 01-projects/qadrlabs/post/01-draft/everything-announced-at-laracon-us-2026.md
+**Title:** Everything Announced at Laracon US 2026: Laravel, AI, and Cloud Updates
+**Short description:** Explore Laracon US 2026 in Boston, its speaker lineup, and every major Laravel Framework, AI SDK, developer tooling, and Cloud announcement. (140 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, laracon-us, laracon-us-2026, laravel-cloud, laravel-ai-sdk, inertia, laravel-pint, developer-tools
