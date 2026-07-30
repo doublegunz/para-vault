@@ -69,3 +69,10 @@
 **Short description:** Explore Laracon US 2026 in Boston, its speaker lineup, and every major Laravel Framework, AI SDK, developer tooling, and Cloud announcement. (140 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, laracon-us, laracon-us-2026, laravel-cloud, laravel-ai-sdk, inertia, laravel-pint, developer-tools
+
+## 2026-07-30 - Laravel 13 avatar image processing
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-13-image-processing-tutorial-build-an-avatar-uploader.md
+**Title:** Laravel 13 Image Processing Tutorial: Build an Avatar Uploader
+**Short description:** Build a Laravel 13 avatar uploader that validates photos, corrects orientation, crops to 400x400, converts to WebP, and verifies output with Pest. (146 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, image-processing, avatar, webp, intervention-image, gd, pest, file-upload
