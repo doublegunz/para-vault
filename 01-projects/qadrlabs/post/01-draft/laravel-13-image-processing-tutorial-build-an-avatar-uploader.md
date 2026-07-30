@@ -2,7 +2,7 @@
 
 User-uploaded profile photos rarely arrive in a consistent shape. One user uploads a large landscape JPEG, another uploads a portrait PNG, and a third uploads a photo that appears rotated because of its EXIF metadata. Storing these files unchanged creates uneven layouts, wastes bandwidth, and pushes image cleanup into every view that displays an avatar.
 
-[Laravel 13.20.0 introduced first-party image processing](https://qadrlabs.com/post/whats-new-laravel-13-20-0), giving Laravel applications a fluent API for reading, transforming, converting, and storing images. In this tutorial, you will use the current Laravel 13 Image API to turn different uploads into consistent 400 by 400 pixel WebP avatars.
+[Laravel 13.20.0 introduced first-party image processing](https://qadrlabs.com/post/whats-new-in-laravel-13200-image-processing-new-apis-and-important-fixes), giving Laravel applications a fluent API for reading, transforming, converting, and storing images. In this tutorial, you will use the current Laravel 13 Image API to turn different uploads into consistent 400 by 400 pixel WebP avatars.
 
 The feature first appeared in the [Laravel Framework 13.20.0 release](https://github.com/laravel/framework/releases/tag/v13.20.0). Its API continued to evolve after that release, so this tutorial follows the [current Laravel 13 image manipulation documentation](https://laravel.com/docs/13.x/images) and was tested with Laravel Framework 13.23.0 and Intervention Image 4.2.0.
 
@@ -35,7 +35,7 @@ You will build a small standalone avatar processor. It does not require a databa
 - Laravel Installer 5.31.0 or later.
 - The PHP GD extension.
 - Basic knowledge of Laravel routes, controllers, Blade, validation, and Pest.
-- The previous [Laravel 13.20.0 release overview](https://qadrlabs.com/post/whats-new-laravel-13-20-0) for background on when the Image API was introduced.
+- The previous [Laravel 13.20.0 release overview](https://qadrlabs.com/post/whats-new-in-laravel-13200-image-processing-new-apis-and-important-fixes) for background on when the Image API was introduced.
 
 ## Step 1: Create the Laravel Project {#step-1-create-the-laravel-project}
 

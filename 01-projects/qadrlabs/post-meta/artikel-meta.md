@@ -75,4 +75,4 @@
 **Title:** Laravel 13 Image Processing Tutorial: Build an Avatar Uploader
 **Short description:** Build a Laravel 13 avatar uploader that validates photos, corrects orientation, crops to 400x400, converts to WebP, and verifies output with Pest. (146 chars)
 **Category:** Laravel
-**Tags:** laravel, laravel-13, image-processing, avatar, webp, intervention-image, gd, pest, file-upload
+**Tags:** laravel, laravel-13, Image Processing, avatar, webp, intervention-image, gd, pest, file-upload
