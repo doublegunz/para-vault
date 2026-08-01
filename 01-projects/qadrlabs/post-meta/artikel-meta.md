@@ -76,3 +76,10 @@
 **Short description:** Build a Laravel 13 avatar uploader that validates photos, corrects orientation, crops to 400x400, converts to WebP, and verifies output with Pest. (146 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, Image Processing, avatar, webp, intervention-image, gd, pest, file-upload
+
+## 2026-08-01 - Laravel LSP framework-aware editor support
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-lsp-explained-framework-aware-editor-support-across-editors.md
+**Title:** Laravel LSP Explained: Framework-Aware Editor Support Across Editors
+**Short description:** Explore Laravel LSP, the official language server bringing Laravel-aware completions, diagnostics, navigation, and quick fixes to multiple editors. (147 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, laravel-lsp, Language Server Protocol, Developer Tools, vscode, neovim, zed, blade
