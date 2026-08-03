@@ -83,3 +83,17 @@
 **Short description:** Explore Laravel LSP, the official language server bringing Laravel-aware completions, diagnostics, navigation, and quick fixes to multiple editors. (147 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, laravel-lsp, Language Server Protocol, Developer Tools, vscode, neovim, zed, blade
+
+## 2026-08-03 - Laravel Fortify integration into a plain project
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-13-fortify-tutorial-add-authentication-to-a-plain-project.md
+**Title:** Laravel 13 Fortify Tutorial: Add Authentication to a Plain Laravel Project
+**Short description:** Wire Laravel Fortify into a plain composer create-project app: install it, bind your own Blade auth views, and enable two-factor authentication. (144 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, laravel-fortify, authentication, two-factor-authentication, password-reset, blade, pest, starter-kit
+
+## 2026-08-03 - tmux terminal multiplexer guide for developers
+**File:** 01-projects/qadrlabs/post/01-draft/tmux-tutorial-a-terminal-multiplexer-guide-for-developers.md
+**Title:** tmux Tutorial: A Terminal Multiplexer Guide for Developers
+**Short description:** Learn tmux, the terminal multiplexer: install it, keep sessions alive through disconnects, use windows and panes, and build a real remote workflow. (147 chars)
+**Category:** Tools
+**Tags:** tmux, terminal, terminal-multiplexer, linux, ssh, wsl, macos, developer-tools, productivity, tmux-conf
