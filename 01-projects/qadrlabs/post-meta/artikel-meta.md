@@ -97,3 +97,10 @@
 **Short description:** Learn tmux, the terminal multiplexer: install it, keep sessions alive through disconnects, use windows and panes, and build a real remote workflow. (147 chars)
 **Category:** Tools
 **Tags:** tmux, terminal, terminal-multiplexer, linux, ssh, wsl, macos, developer-tools, productivity, tmux-conf
+
+## 2026-08-04 - CPX one-off Composer package execution
+**File:** 01-projects/qadrlabs/post/01-draft/how-to-run-composer-packages-without-installing-them-with-cpx.md
+**Title:** How to Run Composer Packages Without Installing Them with CPX
+**Short description:** Run Composer packages without adding them to your project. Learn CPX installation, isolated execution, version constraints, local binaries, and aliases. (152 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, cpx, composer, php, developer-tools, laravel-pint, php-cs-fixer, cli
