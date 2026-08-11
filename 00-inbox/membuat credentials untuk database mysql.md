@@ -109,3 +109,18 @@ GRANT REFERENCES ON db_lms.* TO 'lms_user'@'localhost';
 
 FLUSH PRIVILEGES;
 ```
+
+testing project lms
+```
+CREATE DATABASE db_lms_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'lms_test_user'@'localhost' IDENTIFIED BY 'password_yang_kuat';
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON db_lms_test.* TO 'lms_test_user'@'localhost';
+
+GRANT CREATE, ALTER, DROP, INDEX ON db_lms_test.* TO 'lms_test_user'@'localhost';
+
+GRANT REFERENCES ON db_lms_test.* TO 'lms_test_user'@'localhost';
+
+FLUSH PRIVILEGES;
+```
