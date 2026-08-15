@@ -104,3 +104,24 @@
 **Short description:** Run Composer packages without adding them to your project. Learn CPX installation, isolated execution, version constraints, local binaries, and aliases. (152 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, cpx, composer, php, developer-tools, laravel-pint, php-cs-fixer, cli
+
+## 2026-08-15 - php artisan dev command in Laravel 13
+**File:** 01-projects/qadrlabs/post/01-draft/how-to-use-the-php-artisan-dev-command-in-laravel-13.md
+**Title:** How to Use the php artisan dev Command in Laravel 13
+**Short description:** Learn php artisan dev in Laravel 13: default processes, customizing with DevCommands, filtering with only and except, and migrating off composer run dev. (153 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, artisan, php-artisan-dev, devcommands, composer-run-dev, multiplex, vite, queue, laravel-pail, development-workflow
+
+## 2026-08-15 - php artisan dev command in Laravel 13 (ID version)
+**File:** 01-projects/qadrlabs/post/id-version/cara-menggunakan-php-artisan-dev-di-laravel-13.md
+**Title:** Cara Menggunakan Command php artisan dev di Laravel 13
+**Short description:** Pelajari php artisan dev di Laravel 13: empat process bawaan, kustomisasi lewat DevCommands, filter only dan except, dan migrasi dari composer run dev. (151 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, artisan, php-artisan-dev, devcommands, composer-run-dev, multiplex, vite, queue, laravel-pail, development-workflow
+
+## 2026-08-15 - artisan dev complete guide (formal style)
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-13-artisan-dev-command-a-complete-guide.md
+**Title:** Laravel 13 artisan dev Command: A Complete Guide
+**Short description:** A complete guide to php artisan dev in Laravel 13: default processes, DevCommands customization, filtering, the multiplex UI, and composer run dev migration. (157 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, artisan, php-artisan-dev, devcommands, laravel-multiplex, composer-run-dev, vite, queue, laravel-pail, developer-tools, development-workflow
