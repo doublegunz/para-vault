@@ -125,3 +125,10 @@
 **Short description:** A complete guide to php artisan dev in Laravel 13: default processes, DevCommands customization, filtering, the multiplex UI, and composer run dev migration. (157 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, artisan, php-artisan-dev, devcommands, laravel-multiplex, composer-run-dev, vite, queue, laravel-pail, developer-tools, development-workflow
+
+## 2026-08-19 - Laravel 13 read-through filesystem driver
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-13-read-through-filesystem-driver-explained.md
+**Title:** Laravel 13 Read-Through Filesystem Driver Explained: Migrate Object Storage Without Downtime
+**Short description:** Laravel 13's read-through filesystem driver explained: primary and fallback disks, promotion on read, operation routing, strict mode, delete order, and costs. (158 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, filesystem, read-through-disk, object-storage, s3, cloudflare-r2, flysystem, storage-facade, migration, egress-cost, devops
