@@ -1,6 +1,6 @@
 ## 1. Before You Begin
 
-When a class needs to perform an operation that can be done in multiple ways (sorting, payment processing, discount calculation), hardcoding the algorithm with `if/else` violates the Open/Closed Principle. Adding a new algorithm means modifying existing code. The **Strategy** pattern extracts each algorithm into a separate class, making them interchangeable at runtime. Strategy is one of the most widely used behavioral patterns: it defines a family of algorithms, encapsulates each one in a class, and makes them interchangeable so the client can select the appropriate one at runtime.
+When a class needs to perform an operation that can be done in multiple ways (sorting, payment processing, discount calculation), hardcoding the algorithm with `if/else` means every new algorithm requires modifying existing code. The **Strategy** pattern extracts each algorithm into a separate class, making them interchangeable at runtime. Strategy is one of the most widely used behavioral patterns: it defines a family of algorithms, encapsulates each one in a class, and makes them interchangeable so the client can select the appropriate one at runtime.
 
 ### What You'll Build
 
@@ -16,13 +16,13 @@ You will create a payment processing system where the payment method (credit car
 
 ### What You'll Need
 
-- Lesson 10 completed
+- Lesson 9 completed
 
 ---
 
 ## 2. The Problem
 
-A payment system supports multiple methods. The if/else approach violates OCP:
+A payment system supports multiple methods. The `if/else` approach becomes harder to extend as each new method adds another branch:
 
 ```php
 // BAD: adding PayPal requires modifying this method
@@ -289,8 +289,8 @@ class Sorter
 
 ---
 
-## 8. Next Up - Lesson 12
+## 8. Next Up - Lesson 11
 
-Strategy encapsulates interchangeable algorithms behind a common interface. The context delegates to whichever strategy is injected. New strategies can be added without modifying existing code, satisfying OCP. Always type the context's strategy property to the interface, and keep strategies stateless when possible. Laravel uses Strategy for filesystem, cache, mail, and queue drivers.
+Strategy encapsulates interchangeable algorithms behind a common interface. The context delegates to whichever strategy is injected. New strategies can be added without modifying the context. Always type the context's strategy property to the interface, and keep strategies stateless when possible. Laravel uses Strategy for filesystem, cache, mail, and queue drivers.
 
-In Lesson 12, you will learn the Observer pattern: a way to define a one-to-many dependency so that when one object changes state, all registered observers are notified automatically.
+In Lesson 11, you will learn the Observer pattern: a way to define a one-to-many dependency so that when one object changes state, all registered observers are notified automatically.

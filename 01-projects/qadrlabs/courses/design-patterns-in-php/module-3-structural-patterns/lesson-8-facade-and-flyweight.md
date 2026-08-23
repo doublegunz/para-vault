@@ -16,7 +16,7 @@ You will create a Facade for an order processing subsystem and a Flyweight for r
 
 ### What You'll Need
 
-- Lesson 8 completed
+- Lesson 7 completed
 
 ---
 
@@ -269,8 +269,8 @@ The cache inside the factory is what makes Flyweight effective. Build the cache 
 
 ---
 
-## 7. Next Up - Lesson 10
+## 7. Next Up - Lesson 9
 
 Facade provides a simple interface to a complex subsystem. Clients can still access the subsystem directly if needed, but the Facade handles the common coordinate-and-call workflow in one method. Flyweight shares immutable intrinsic state between many objects, while each object keeps its own extrinsic state. Use Facade to simplify wide API surfaces; use Flyweight when memory pressure is a concern with thousands of similar objects.
 
-This concludes the Structural Patterns module. In Lesson 10, you will learn the Composite pattern: a way to compose objects into tree structures so that individual objects and groups of objects can be treated uniformly.
+This concludes the Structural Patterns module. In Lesson 9, you will learn the Composite pattern: a way to compose objects into tree structures so that individual objects and groups of objects can be treated uniformly.

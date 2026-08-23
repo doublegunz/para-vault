@@ -17,7 +17,7 @@ You will create a database connection manager and a configuration manager using 
 
 ### What You'll Need
 
-- Lesson 2 completed with SOLID understanding
+- Lesson 1 completed
 
 ---
 
@@ -300,8 +300,8 @@ echo count($logger1->getLogs());  // 2 (same instance!)
 
 ---
 
-## 9. Next Up - Lesson 4
+## 9. Next Up - Lesson 3
 
 Singleton ensures exactly one instance of a class exists by combining a private constructor, a static property, and a static accessor. Always block cloning with a private `__clone()` method and prevent unserialization with `__wakeup()`. Use Singleton for genuinely shared resources such as database connections and configuration managers, and prefer a dependency injection container when one is available because it provides the same single-instance guarantee without introducing global state.
 
-In Lesson 4, you will learn the Factory Method and Abstract Factory patterns: two ways to create objects without specifying their exact classes, keeping your code open for new types without modifying existing code.
+In Lesson 3, you will learn the Factory Method and Abstract Factory patterns: two ways to create objects without specifying their exact classes, keeping your code open for new types without modifying existing code.

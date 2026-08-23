@@ -210,4 +210,4 @@ Understanding patterns means understanding frameworks at a deeper level.
 
 Design patterns are proven solutions to recurring software design problems. The 23 GoF patterns are organized into three categories: Creational (object creation), Structural (object composition), and Behavioral (object communication). Each pattern has an intent, a problem it solves, and a structure. Use patterns when the complexity is justified. Avoid them when a simpler solution works.
 
-In Lesson 2, you will learn the SOLID principles: the five guidelines that make object-oriented code flexible and maintainable, and the foundation that makes every design pattern in this course feel intuitive rather than arbitrary.
+In Lesson 2, you will learn Singleton, the first creational pattern: how it ensures a class has exactly one instance, why it is often used for shared resources, and when its global access makes code harder to test.

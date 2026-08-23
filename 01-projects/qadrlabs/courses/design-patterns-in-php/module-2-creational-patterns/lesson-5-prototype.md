@@ -16,7 +16,7 @@ You will create a document template system and a game entity spawner that use cl
 
 ### What You'll Need
 
-- Lesson 5 completed
+- Lesson 4 completed
 
 ---
 
@@ -232,8 +232,8 @@ $w2 = clone $template; $w2->name = 'Warrior B'; $w2->pos->x = 20;
 
 ---
 
-## 8. Next Up - Lesson 7
+## 8. Next Up - Lesson 6
 
 Prototype creates objects by cloning an existing instance. PHP's `clone` keyword performs a shallow copy — implement `__clone()` to deep clone any nested objects. A Prototype Registry manages named templates and returns clones on demand. Use Prototype when object construction is expensive and a similar object already exists. Prototype is incompatible with Singleton.
 
-This concludes the Creational Patterns module. In Lesson 7, you will begin Structural Patterns with Adapter and Bridge: two patterns that manage interface differences between classes.
+This concludes the Creational Patterns module. In Lesson 6, you will begin Structural Patterns with Adapter and Bridge: two patterns that manage interface differences between classes.

@@ -1,6 +1,6 @@
 ## 1. Before You Begin
 
-When an object changes state, other objects often need to react: when a user registers, send a welcome email, create a default profile, and log the event. Hardcoding these reactions in the user creation code violates SRP and makes it impossible to add new reactions without modifying the original class. The **Observer** pattern defines a one-to-many dependency: when the subject changes, all observers are notified automatically. Observer is the foundation of event systems in every PHP framework — Laravel's event/listener system, Symfony's event dispatcher, and JavaScript's `addEventListener` are all implementations of this pattern.
+When an object changes state, other objects often need to react: when a user registers, send a welcome email, create a default profile, and log the event. Hardcoding these reactions in the user creation code mixes unrelated concerns and forces the original class to change whenever a reaction is added. The **Observer** pattern defines a one-to-many dependency: when the subject changes, all observers are notified automatically. Observer is the foundation of event systems in every PHP framework — Laravel's event/listener system, Symfony's event dispatcher, and JavaScript's `addEventListener` are all implementations of this pattern.
 
 ### What You'll Build
 
@@ -16,7 +16,7 @@ You will create an event system for user registration that notifies multiple lis
 
 ### What You'll Need
 
-- Lesson 11 completed
+- Lesson 10 completed
 
 ---
 
@@ -240,8 +240,8 @@ class TypedDispatcher
 
 ---
 
-## 7. Next Up - Lesson 13
+## 7. Next Up - Lesson 12
 
 Observer defines a one-to-many dependency where all registered observers are notified automatically when the subject changes. It decouples the subject from its reactions: new observers can be added without modifying the subject class. Dispatch events from service classes, not constructors. Pass event data as arrays to prevent observers from mutating shared state. Laravel events/listeners and Symfony's event dispatcher are Observer implementations.
 
-In Lesson 13, you will learn Template Method and Command: Template Method defines an algorithm skeleton with customizable steps, and Command encapsulates actions as objects that can be queued, logged, or undone.
+In Lesson 12, you will learn Template Method and Command: Template Method defines an algorithm skeleton with customizable steps, and Command encapsulates actions as objects that can be queued, logged, or undone.

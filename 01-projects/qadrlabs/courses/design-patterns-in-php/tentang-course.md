@@ -7,7 +7,7 @@ status: "draft"
 # Design Patterns in PHP: Master All 23 GoF Patterns with Practical Examples
 
 ## Deskripsi
-Master all 23 Gang of Four design patterns in PHP 8. Creational, structural, behavioral patterns with real-world examples, SOLID principles, and framework mappings.
+Master all 23 Gang of Four design patterns in PHP 8. Learn creational, structural, and behavioral patterns through real-world examples and framework mappings.
 
 ## Konten
 Design patterns are proven solutions to recurring software design problems. They were cataloged by the "Gang of Four" (GoF) in their 1994 book and remain the foundation of professional software architecture. Every major PHP framework (Laravel, Symfony, CodeIgniter) uses design patterns extensively.
@@ -31,38 +31,36 @@ Unlike courses that only cover 5-6 popular patterns, this course covers the comp
 - Working knowledge of all 23 GoF design patterns
 - The ability to identify which pattern solves which problem
 - Practical PHP implementations you can reuse in your projects
-- Understanding of SOLID principles and how patterns support them
+- Understanding of how design patterns make object-oriented code easier to extend and maintain
 - Knowledge of how Laravel and Symfony use patterns internally
 
 ## Daftar Modul
 
 ### 1. Module 1 — Foundations
 - Lesson 1 — What Are Design Patterns?
-- Lesson 2 — SOLID Principles in PHP
 
 ### 2. Module 2 — Creational Patterns
-- Lesson 3 — Singleton
-- Lesson 4 — Factory Method and Abstract Factory
-- Lesson 5 — Builder
-- Lesson 6 — Prototype
+- Lesson 2 — Singleton
+- Lesson 3 — Factory Method and Abstract Factory
+- Lesson 4 — Builder
+- Lesson 5 — Prototype
 
 ### 3. Module 3 — Structural Patterns
-- Lesson 7 — Adapter and Bridge
-- Lesson 8 — Decorator and Proxy
-- Lesson 9 — Facade and Flyweight
-- Lesson 10 — Composite
+- Lesson 6 — Adapter and Bridge
+- Lesson 7 — Decorator and Proxy
+- Lesson 8 — Facade and Flyweight
+- Lesson 9 — Composite
 
 ### 4. Module 4 — Behavioral Patterns: Part 1
-- Lesson 11 — Strategy
-- Lesson 12 — Observer
-- Lesson 13 — Template Method and Command
+- Lesson 10 — Strategy
+- Lesson 11 — Observer
+- Lesson 12 — Template Method and Command
 
 ### 5. Module 5 — Behavioral Patterns: Part 2
-- Lesson 14 — Chain of Responsibility and State
-- Lesson 15 — Iterator and Mediator
-- Lesson 16 — Memento, Visitor, and Interpreter
+- Lesson 13 — Chain of Responsibility and State
+- Lesson 14 — Iterator and Mediator
+- Lesson 15 — Memento, Visitor, and Interpreter
 
 ### 6. Module 6 — Practical Application
-- Lesson 17 — Design Patterns in PHP Frameworks
-- Lesson 18 — What's Next
-
+- Lesson 16 — Design Patterns in PHP Frameworks
+- Lesson 17 — What's Next

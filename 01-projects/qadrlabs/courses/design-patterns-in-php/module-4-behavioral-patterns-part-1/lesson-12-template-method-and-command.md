@@ -16,7 +16,7 @@ You will create a data import system (Template Method) and a text editor with un
 
 ### What You'll Need
 
-- Lesson 12 completed
+- Lesson 11 completed
 
 ---
 
@@ -324,8 +324,8 @@ class MacroCommand implements Command
 
 ---
 
-## 7. Next Up - Lesson 14
+## 7. Next Up - Lesson 13
 
 Template Method defines an algorithm skeleton in a base class with customizable steps. Use `final` on the template method to lock the structure. Abstract methods force subclass implementation; hook methods with default implementations are optional. Command encapsulates actions as objects, enabling undo, redo, and queuing. Both patterns replace complex conditional branching with polymorphism and clear class responsibilities.
 
-In Lesson 14, you will learn Chain of Responsibility and State: Chain of Responsibility passes requests along a handler pipeline, and State encapsulates behavior that changes based on an object's internal state.
+In Lesson 13, you will learn Chain of Responsibility and State: Chain of Responsibility passes requests along a handler pipeline, and State encapsulates behavior that changes based on an object's internal state.

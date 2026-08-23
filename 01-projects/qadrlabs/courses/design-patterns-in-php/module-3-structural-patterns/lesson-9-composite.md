@@ -16,7 +16,7 @@ You will create a file system (files and directories) and a menu system (items a
 
 ### What You'll Need
 
-- Lesson 9 completed
+- Lesson 8 completed
 
 ---
 
@@ -274,8 +274,8 @@ public function find(string $name): ?FileSystemNode
 
 ---
 
-## 7. Next Up - Lesson 11
+## 7. Next Up - Lesson 10
 
 Composite organizes objects into tree structures with a uniform interface. Leaf nodes handle individual objects. Composite nodes contain children and delegate recursive operations to them. The same method call traverses the entire tree regardless of depth. Use Composite for hierarchical data: file systems, menus, organization charts, UI component trees, and pricing structures.
 
-This concludes the Structural Patterns module. In Lesson 11, you will begin Behavioral Patterns with the Strategy pattern: a way to encapsulate interchangeable algorithms behind a common interface and swap them at runtime.
+This concludes the Structural Patterns module. In Lesson 10, you will begin Behavioral Patterns with the Strategy pattern: a way to encapsulate interchangeable algorithms behind a common interface and swap them at runtime.

@@ -16,7 +16,7 @@ You will create a middleware-like decorator chain for HTTP requests, and a cachi
 
 ### What You'll Need
 
-- Lesson 7 completed
+- Lesson 6 completed
 
 ---
 
@@ -88,7 +88,7 @@ $logger->log('Disk space is running low');
 // Output: [WARNING] [2026-04-10 14:30:00] Disk space is running low
 ```
 
-Decorators can be stacked in any order. Each one adds one concern. This follows SRP and OCP.
+Decorators can be stacked in any order. Each decorator adds one focused concern, and new decorators can be introduced without changing the existing ones.
 
 ---
 
@@ -296,8 +296,8 @@ class AccessControlProxy implements UserRepository
 
 ---
 
-## 8. Next Up - Lesson 9
+## 8. Next Up - Lesson 8
 
 Decorator adds behavior by wrapping objects in composable layers. Stack multiple decorators in any order for composable features. Proxy controls access with caching, lazy loading, or access control. Both patterns implement the same interface as the wrapped object. Laravel's middleware is a Decorator chain; ORM lazy-loading uses Proxy.
 
-In Lesson 9, you will learn Facade and Flyweight: Facade provides a simplified interface to a complex subsystem, while Flyweight shares memory between thousands of similar objects.
+In Lesson 8, you will learn Facade and Flyweight: Facade provides a simplified interface to a complex subsystem, while Flyweight shares memory between thousands of similar objects.

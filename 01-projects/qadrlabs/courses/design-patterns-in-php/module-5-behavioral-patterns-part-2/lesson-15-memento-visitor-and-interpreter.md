@@ -16,7 +16,7 @@ You will create a Memento-based undo system for an editor, a Visitor for calcula
 
 ### What You'll Need
 
-- Lesson 15 completed
+- Lesson 14 completed
 
 ---
 
@@ -359,8 +359,8 @@ class EditorWithRedo
 
 ---
 
-## 8. Next Up - Lesson 17
+## 8. Next Up - Lesson 16
 
 Memento saves and restores object state for undo/redo without violating encapsulation — use `readonly` properties to keep snapshots immutable. Visitor adds operations to class hierarchies without modifying them: ideal for adding new operations, but costly when adding new element types because all Visitors must be updated. Interpreter evaluates sentences in a simple grammar through composable expression trees. Always include terminal expressions as the recursion base case.
 
-This concludes all 23 GoF Behavioral Patterns. In Lesson 17, you will see how these design patterns appear in PHP frameworks like Laravel and Symfony — the patterns you have learned are exactly what powers their most important features.
+This concludes all 23 GoF Behavioral Patterns. In Lesson 16, you will see how these design patterns appear in PHP frameworks like Laravel and Symfony — the patterns you have learned are exactly what powers their most important features.

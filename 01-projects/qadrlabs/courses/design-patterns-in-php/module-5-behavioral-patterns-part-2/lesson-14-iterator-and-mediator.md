@@ -16,7 +16,7 @@ You will create a custom collection with an Iterator for paginated database resu
 
 ### What You'll Need
 
-- Lesson 14 completed
+- Lesson 13 completed
 
 ---
 
@@ -268,8 +268,8 @@ foreach ($active as $user) { echo $user['name'] . "\n"; }
 
 ---
 
-## 7. Next Up - Lesson 16
+## 7. Next Up - Lesson 15
 
 Iterator provides uniform traversal for any collection without exposing its internal structure. PHP's `IteratorAggregate` and Generators make custom iterators straightforward to implement. Mediator centralizes communication between many objects, reducing N-to-N dependencies to N connections through a single hub. Use Iterator for custom collections; use Mediator when objects have complex, many-to-many communication that is difficult to trace.
 
-In Lesson 16, you will learn Memento, Visitor, and Interpreter: the three remaining behavioral patterns that solve specialized problems in state management, class hierarchy operations, and grammar evaluation.
+In Lesson 15, you will learn Memento, Visitor, and Interpreter: the three remaining behavioral patterns that solve specialized problems in state management, class hierarchy operations, and grammar evaluation.

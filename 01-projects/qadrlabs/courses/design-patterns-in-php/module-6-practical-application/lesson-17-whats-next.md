@@ -1,6 +1,6 @@
 ## 1. Before You Begin
 
-You have completed the Design Patterns in PHP course. You now understand all 23 GoF patterns, the SOLID principles that underpin them, and how they appear in real PHP frameworks. This final lesson reviews the complete catalog, provides a pattern selection guide, and maps out your next steps.
+You have completed the Design Patterns in PHP course. You now understand all 23 GoF patterns and how they appear in real PHP frameworks. This final lesson revisits the complete catalog, provides a pattern selection guide, and maps out your next steps.
 
 ### What You'll Learn
 
@@ -147,8 +147,6 @@ System Design
 
 **Patterns are tools, not goals.** Use them when they simplify your code. Avoid them when they add unnecessary complexity.
 
-**Start with SOLID.** If your code follows SOLID principles, patterns emerge naturally.
-
 **Know the intent.** Understanding WHY a pattern exists is more important than memorizing its structure.
 
 **Composition over inheritance.** Most patterns prefer composition (has-a) over inheritance (is-a).
@@ -161,7 +159,7 @@ System Design
 
 ## 7. You Have Completed the Course
 
-You started with "What are design patterns?" and have now mastered all 23 GoF patterns: 5 creational (Singleton, Factory Method, Abstract Factory, Builder, Prototype), 7 structural (Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy), and 11 behavioral (Chain of Responsibility, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor). You understand the SOLID principles that underpin them, the selection guide for choosing the right pattern, and how Laravel and Symfony implement these patterns in production code.
+You started with "What are design patterns?" and have now mastered all 23 GoF patterns: 5 creational (Singleton, Factory Method, Abstract Factory, Builder, Prototype), 7 structural (Adapter, Bridge, Composite, Decorator, Facade, Flyweight, Proxy), and 11 behavioral (Chain of Responsibility, Command, Interpreter, Iterator, Mediator, Memento, Observer, State, Strategy, Template Method, Visitor). You understand the selection guide for choosing the right pattern and how Laravel and Symfony implement these patterns in production code.
 
 Design patterns are the vocabulary of professional software design. Use them when they simplify your code; avoid them when a simpler solution works. The foundation you built here will serve you in every PHP project, framework contribution, and architectural decision you make.
 

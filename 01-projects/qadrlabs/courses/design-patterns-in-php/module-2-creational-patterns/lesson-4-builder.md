@@ -16,7 +16,7 @@ You will create an Email builder and a Query builder that construct complex obje
 
 ### What You'll Need
 
-- Lesson 4 completed
+- Lesson 3 completed
 
 ---
 
@@ -287,8 +287,8 @@ class EmailDirector
 
 ---
 
-## 8. Next Up - Lesson 6
+## 8. Next Up - Lesson 5
 
 Builder constructs complex objects step by step through a fluent interface. Each setter method returns `$this` for chaining. The `build()` method validates and creates the final product, which should be immutable with `readonly` properties. A Director class can encapsulate common construction sequences. Laravel's Query Builder and Mail builder are real-world examples of this pattern.
 
-In Lesson 6, you will learn the Prototype pattern: a way to create new objects by cloning an existing instance instead of constructing from scratch, which is useful when object creation is expensive.
+In Lesson 5, you will learn the Prototype pattern: a way to create new objects by cloning an existing instance instead of constructing from scratch, which is useful when object creation is expensive.

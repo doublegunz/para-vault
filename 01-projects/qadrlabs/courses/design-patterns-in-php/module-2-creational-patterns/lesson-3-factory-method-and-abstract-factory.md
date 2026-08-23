@@ -1,6 +1,6 @@
 ## 1. Before You Begin
 
-When your code creates objects directly with `new`, it becomes tightly coupled to specific classes. If you later need a different implementation (a different payment gateway, a different notification channel), you must modify every place that creates the object. **Factory patterns** solve this by encapsulating object creation: the calling code asks for an object through an interface, and the factory decides which concrete class to instantiate. This lesson covers two related patterns: Factory Method, which delegates object creation to subclasses, and Abstract Factory, which creates families of related objects. Both follow the Open/Closed Principle — adding new product types requires zero changes to existing code.
+When your code creates objects directly with `new`, it becomes tightly coupled to specific classes. If you later need a different implementation (a different payment gateway, a different notification channel), you must modify every place that creates the object. **Factory patterns** solve this by encapsulating object creation: the calling code asks for an object through an interface, and the factory decides which concrete class to instantiate. This lesson covers two related patterns: Factory Method, which delegates object creation to subclasses, and Abstract Factory, which creates families of related objects. Both allow new product types to be added without changing existing client code.
 
 ### What You'll Build
 
@@ -17,7 +17,7 @@ You will build a notification system (Factory Method) and a cross-platform UI co
 
 ### What You'll Need
 
-- Lesson 3 completed
+- Lesson 2 completed
 
 ---
 
@@ -112,7 +112,7 @@ sendAlert(new SmsNotificationCreator(), '+62812345', 'Server is down!');
 sendAlert(new PushNotificationCreator(), 'device-token-123', 'Server is down!');
 ```
 
-Adding a new notification type (e.g., WhatsApp) requires creating two classes: `WhatsAppNotification` and `WhatsAppNotificationCreator`. Zero changes to existing code. OCP satisfied.
+Adding a new notification type (e.g., WhatsApp) requires creating two classes: `WhatsAppNotification` and `WhatsAppNotificationCreator`. Existing client code does not need to change.
 
 ---
 
@@ -243,9 +243,9 @@ class NotificationFactory
 
 Always type the return value as the interface (`Notification`), not the concrete class (`EmailNotification`).
 
-**Error 2: Modifying the factory for every new type (violates OCP).**
+**Error 2: Modifying the factory for every new type.**
 
-A simple `if/elseif` or `match` inside the factory means adding a new type requires editing the factory class. This violates the Open/Closed Principle because the factory is not closed for modification.
+A simple `if/elseif` or `match` inside the factory means adding a new type requires editing the factory class, so every extension risks changing already-tested creation logic.
 
 ```php
 // Wrong: every new type requires editing this method
@@ -331,8 +331,8 @@ $n = NotificationFactory::create('email');
 
 ---
 
-## 9. Next Up - Lesson 5
+## 9. Next Up - Lesson 4
 
-Factory Method delegates object creation to subclasses through an overridable method. Abstract Factory creates families of related objects through a factory interface. The Simple Factory (static method) is the most common variant in PHP. All factory patterns decouple the client from concrete classes, following OCP and DIP. Laravel's service container uses factory patterns internally to resolve dependencies.
+Factory Method delegates object creation to subclasses through an overridable method. Abstract Factory creates families of related objects through a factory interface. The Simple Factory (static method) is the most common variant in PHP. Factory patterns decouple clients from concrete classes and make implementations easier to replace or extend. Laravel's service container uses factory patterns internally to resolve dependencies.
 
-In Lesson 5, you will learn the Builder pattern: a way to construct complex objects step by step using a fluent interface, avoiding the unreadable constructor with many parameters.
+In Lesson 4, you will learn the Builder pattern: a way to construct complex objects step by step using a fluent interface, avoiding the unreadable constructor with many parameters.

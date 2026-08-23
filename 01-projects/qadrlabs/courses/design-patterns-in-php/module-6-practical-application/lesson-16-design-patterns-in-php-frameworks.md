@@ -132,8 +132,8 @@ Symfony uses patterns with more explicit naming and less "magic" than Laravel.
 
 ---
 
-## 7. Next Up - Lesson 18
+## 7. Next Up - Lesson 17
 
 Every major PHP framework is built on design patterns. Laravel uses Singleton (service container), Factory (bindings and model factories), Strategy (filesystem, cache, mail, and queue drivers), Observer (model events and event/listener system), Decorator combined with Chain of Responsibility (middleware pipeline), and Builder (Query Builder, Mail, Notification). Symfony uses similar patterns with more explicit naming and less "magic." Understanding these patterns means understanding frameworks at the architecture level, not just the API level.
 
-In Lesson 18, you will review the complete pattern catalog, use the pattern selection guide to identify the right tool for each problem, and map out your next steps toward architectural mastery.
+In Lesson 17, you will review the complete pattern catalog, use the pattern selection guide to identify the right tool for each problem, and map out your next steps toward architectural mastery.

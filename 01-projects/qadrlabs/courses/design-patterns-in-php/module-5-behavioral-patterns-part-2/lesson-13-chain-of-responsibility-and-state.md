@@ -16,7 +16,7 @@ You will create a middleware pipeline (Chain of Responsibility) and an order sta
 
 ### What You'll Need
 
-- Lesson 13 completed
+- Lesson 12 completed
 
 ---
 
@@ -294,8 +294,8 @@ $auth->setNext($validation)->setNext($rateLimit)->setNext($logging);
 
 ---
 
-## 7. Next Up - Lesson 15
+## 7. Next Up - Lesson 14
 
 Chain of Responsibility passes requests through a pipeline of handlers, each deciding to process or delegate. Always call `parent::handle()` to continue the chain unless intentionally short-circuiting. State encapsulates state-specific behavior into separate classes, eliminating large conditional blocks. State transitions happen by replacing the state object. Both patterns replace complex conditional logic with clear, polymorphic class hierarchies.
 
-In Lesson 15, you will learn Iterator and Mediator: Iterator provides uniform access to any collection, and Mediator centralizes complex many-to-many communication through a single hub object.
+In Lesson 14, you will learn Iterator and Mediator: Iterator provides uniform access to any collection, and Mediator centralizes complex many-to-many communication through a single hub object.

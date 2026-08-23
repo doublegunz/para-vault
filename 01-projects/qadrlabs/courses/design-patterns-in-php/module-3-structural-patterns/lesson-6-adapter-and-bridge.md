@@ -16,7 +16,7 @@ You will create an Adapter that wraps different payment gateways into a unified 
 
 ### What You'll Need
 
-- Lesson 6 completed
+- Lesson 5 completed
 
 ---
 
@@ -255,8 +255,8 @@ class XmlToJsonAdapter implements DataProvider
 
 ---
 
-## 8. Next Up - Lesson 8
+## 8. Next Up - Lesson 7
 
 Adapter wraps an incompatible interface to match the expected one. Use it when integrating third-party libraries that you cannot modify. Bridge separates abstraction from implementation, allowing both hierarchies to vary independently. Use it when you have two independent dimensions of variation. Both patterns favor composition over inheritance.
 
-In Lesson 8, you will learn Decorator and Proxy: two patterns that wrap objects with the same interface — Decorator to add behavior, and Proxy to control access.
+In Lesson 7, you will learn Decorator and Proxy: two patterns that wrap objects with the same interface — Decorator to add behavior, and Proxy to control access.
