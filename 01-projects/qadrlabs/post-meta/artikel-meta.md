@@ -132,3 +132,10 @@
 **Short description:** Laravel 13's read-through filesystem driver explained: primary and fallback disks, promotion on read, operation routing, strict mode, delete order, and costs. (158 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, filesystem, read-through-disk, object-storage, s3, cloudflare-r2, flysystem, storage-facade, migration, egress-cost, devops
+
+## 2026-08-28 - Laravel 13.27.0 release roundup
+**File:** 01-projects/qadrlabs/post/01-draft/whats-new-in-laravel-13-27-0.md
+**Title:** What's New in Laravel 13.27.0: refreshForUpdate, MariaDB Vector Search, and More
+**Short description:** The six changes in Laravel 13.27.0 that touch app code: refreshForUpdate, MariaDB vector search, queue totals, whereBinary, Cloud facade, read-through fixes. (157 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, laravel-13-27, release-notes, eloquent, pessimistic-locking, refresh-for-update, mariadb, vector-search, embeddings, queue, query-builder, where-binary, laravel-cloud, filesystem, read-through-disk
