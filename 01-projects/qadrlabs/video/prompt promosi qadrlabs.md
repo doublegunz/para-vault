@@ -13,7 +13,7 @@ Expression & Action:
 She looks directly into the camera with a calm, confident, and friendly expression. She speaks slowly and clearly.
 
 Dialogue:
-"Pernah ngerasa belajar coding tapi nggak tau harus mulai dari mana?  Tutorial di internet banyak... tapi mana yang beneran bisa dipraktikkin langsung?"
+"Pernah ngerasa ingin belajar coding tapi nggak tau harus mulai dari mana?  Tutorial di internet banyak... tapi mana yang beneran bisa dipraktikkin langsung?"
 
 Pronunciation:
 Phonetic reading only, smooth Indonesian pronunciation.
