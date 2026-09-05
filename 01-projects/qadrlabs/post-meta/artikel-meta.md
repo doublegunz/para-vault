@@ -6,3 +6,10 @@
 **Short description:** Build a runnable Laravel 13 case study where a plain where() lookup matches the wrong API token owner, then fix it with whereBinary() and cover it with Pest. (157 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, Eloquent, query-builder, mariadb, mysql, collation, pest, security
+
+## 2026-09-05 - Laravel MCP server for content
+**File:** 01-projects/qadrlabs/post/01-draft/build-an-mcp-server-in-laravel-so-ai-agents-can-query-your-content.md
+**Title:** Build an MCP Server in Laravel So AI Agents Can Query Your Content
+**Short description:** Build a read-only MCP server in Laravel 13 with laravel/mcp so an AI agent can search, read, and summarise your published articles without ever seeing a draft. (159 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, mcp, Model Context Protocol, laravel-mcp, ai-agents, claude-code, json-rpc, stdio, eloquent, pest, php
