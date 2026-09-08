@@ -13,3 +13,10 @@
 **Short description:** Build a read-only MCP server in Laravel 13 with laravel/mcp so an AI agent can search, read, and summarise your published articles without ever seeing a draft. (159 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, mcp, Model Context Protocol, laravel-mcp, ai-agents, claude-code, json-rpc, stdio, eloquent, pest, php
+
+## 2026-09-07 - Git branch recovery
+**File:** 01-projects/qadrlabs/post/01-draft/recover-a-deleted-git-branch-with-reflog.md
+**Title:** Recover a Deleted Git Branch with Reflog
+**Short description:** Recover an unmerged Git branch with reflog in a tested local experiment, verify both commits and file contents, and understand when recovery is possible. (153 chars)
+**Category:** Git
+**Tags:** git, reflog, Branch Recovery, Version Control
