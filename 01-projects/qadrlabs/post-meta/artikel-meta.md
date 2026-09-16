@@ -20,3 +20,10 @@
 **Short description:** Recover an unmerged Git branch with reflog in a tested local experiment, verify both commits and file contents, and understand when recovery is possible. (153 chars)
 **Category:** Git
 **Tags:** git, reflog, Branch Recovery, Version Control
+
+## 2026-09-16 - Laravel Vet dependency audit
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-vet-audit-what-composer-update-writes-into-vendor.md
+**Title:** Laravel Vet: Audit What composer update Writes Into vendor/ Before It Lands
+**Short description:** Install Laravel Vet in Laravel 13, record a vet.json trust baseline, intercept a dependency update before it lands, and hand the diff to your coding agent. (155 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-vet, composer, supply-chain-security, dependency-audit, php, vet-json, ai-agents, claude-code, ci, devops

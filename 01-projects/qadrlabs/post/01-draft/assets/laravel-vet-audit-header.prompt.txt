@@ -1,0 +1,8 @@
+Mode: built-in image_gen
+
+Use case: stylized-concept
+Asset type: wide editorial header illustration for a technical article, landscape 16:9.
+Primary request: illustrate Laravel Vet auditing dependency code changes before Composer writes them into the project's vendor directory, entirely without text.
+Scene and subject: a refined isometric software supply-chain checkpoint. A short stream of small package cubes approaches a translucent inspection gate in front of an open project folder. One incoming cube is opened into two floating sheets bearing only abstract short horizontal red and green bars, representing a code diff; a large elegant magnifying glass closely examines those sheets at the gate. A pending amber package stays outside; a reviewed package with a simple checkmark sits inside the protected folder. A small red Laravel geometric logomark embossed on the folder connects the scene to Laravel. The visual emphasis is inspection of changes before entry, not generic antivirus.
+Style: polished editorial 3D illustration with tactile matte surfaces, crisp silhouettes, restrained detail, soft studio shadows, tasteful spacious background. Cohesive visually balanced composition, strong focal point, readable at thumbnail size, generous margins for header cropping.
+Constraints: absolutely no text, letters, numbers, words, labels, captions, watermarks, terminal windows or readable code. Code changes are abstract bars only. The Laravel symbol may appear without any wordmark. No people, no hacker imagery, no clutter.
