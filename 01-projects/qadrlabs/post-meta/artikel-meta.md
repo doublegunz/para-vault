@@ -27,3 +27,10 @@
 **Short description:** Install Laravel Vet in Laravel 13, record a vet.json trust baseline, intercept a dependency update before it lands, and hand the diff to your coding agent. (155 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-vet, composer, supply-chain-security, dependency-audit, php, vet-json, ai-agents, claude-code, ci, devops
+
+## 2026-09-17 - Laravel MCP 1.0 release
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-mcp-1-0-is-stable.md
+**Title:** Laravel MCP 1.0 Is Stable: What's New and What Changes for Your Application
+**Short description:** Explore Laravel MCP 1.0, from modern protocol support and OAuth improvements to registration testing, client caching, and what existing apps should review. (155 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-mcp, mcp, ai-agents, oauth
