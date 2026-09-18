@@ -1,0 +1,7 @@
+Generation mode: built-in image_gen
+
+Use case: stylized-concept.
+Asset type: wide 16:9 editorial header illustration for a technical article about what's new in PHP 8.6.
+Create a polished dimensional illustration, an elegant sculptural PHP oval emblem as the main focal point with the version 8.6 immediately below it. Around it, integrate a small harmonious arrangement of visual metaphors: interlocking modular pieces with one open slot for partial function application, a clear solid block with an embedded lock for readonly properties, a minimalist stopwatch with no numerals for Time Duration, and a few flowing connected paths for stream improvements. These are sculptural objects, not labeled diagram panels. Keep the design clean, cohesive, balanced and recognizable at thumbnail size, with ample breathing room and generous crop-safe margins.
+Style: premium editorial 3D illustration, softly rounded precision forms, matte and subtly translucent materials, soft studio lighting and refined shadows. PHP-inspired periwinkle and indigo against a light neutral background, restrained contrast. Clear visual hierarchy with PHP and its version dominant.
+Text (verbatim): "php" inside the recognizable oval PHP logo, and "8.6" below it. These are the ONLY allowed text. No other letters, words, numbers, code, labels, captions, watermarks, UI, or decorative pseudo-writing anywhere. The stopwatch must have no numbers. No article title. No people. Landscape 16:9.

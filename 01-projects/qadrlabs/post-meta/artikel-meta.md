@@ -34,3 +34,10 @@
 **Short description:** Explore Laravel MCP 1.0, from modern protocol support and OAuth improvements to registration testing, client caching, and what existing apps should review. (155 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-mcp, mcp, ai-agents, oauth
+
+## 2026-09-18 - PHP 8.6 preview
+**File:** 01-projects/qadrlabs/post/01-draft/whats-new-in-php-8-6.md
+**Title:** What's New in PHP 8.6
+**Short description:** Explore PHP 8.6 features, including partial function application, readonly defaults, Duration, library updates, and key deprecations before its release. (152 chars)
+**Category:** PHP
+**Tags:** php, php-8-6, partial-function-application, readonly, deprecations
