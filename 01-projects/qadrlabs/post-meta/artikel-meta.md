@@ -41,3 +41,10 @@
 **Short description:** Explore PHP 8.6 features, including partial function application, readonly defaults, Duration, library updates, and key deprecations before its release. (152 chars)
 **Category:** PHP
 **Tags:** php, php-8-6, partial-function-application, readonly, deprecations
+
+## 2026-09-19 - Git tags
+**File:** 01-projects/qadrlabs/post/01-draft/git-tags-explained-annotated-vs-lightweight-and-remote-tags.md
+**Title:** Git Tags Explained: Annotated vs Lightweight, Versioning, and Remote Tags
+**Short description:** Create annotated and lightweight Git tags in a runnable demo repo, push and delete them on a real remote, branch a hotfix from a tag, and keep versions stable. (159 chars)
+**Category:** Git
+**Tags:** git, git-tag, annotated-tag, lightweight-tag, semantic-versioning, git-refs, version-control, release, git-describe
