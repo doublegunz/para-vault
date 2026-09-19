@@ -25,11 +25,14 @@
 
 ### Kondisi saat ini
 
-[Jelaskan perilaku saat ini, masalah, pengguna yang terdampak, dan bukti atau contoh kejadian.]
+Pendaftaran KP didesign hanya untuk dilakukan oleh perseorangan, namun saat ini kegiatan kp dilaksanakan secara berkelompok yang disebabkan adanya kebijakan baru di program studi teknik informatika UMMI. Sehingga terdapat beberapa kendala pada saat mengelola kegiatan. Terutama pada saat penjadwalan untuk kegiatan sidang kp, karena harus scroll dan menemukan anggota satu kelompok satu per satu, lalu dijadwalkan satu persatu dengan penguji yang sama, tempat yang sama dan waktu yang sama. sehingga melakukan dua kali pekerjaan yang sama.
+
+Secara garis besar dari mulai pendaftaran sampai akhir itu masih dapat digunakan. Fitur pada project ini masih dapat digunakan dengan baik.
 
 ### Perubahan yang diminta
-
-[Jelaskan perilaku yang diharapkan. Sertakan contoh sebelum dan sesudah bila membantu.]
+Perlu memperbaharui atau menambahkan dukungan untuk kegiatan pelaksanaan KP secara berkelompok dimulai dari
+1. Modul pendaftaran: sebelum masuk ke halaman pendaftaran perlu ada opsi untuk kegiatan secara mandiri/perseorangan atau kelompok. dan apabila memilih kelompok perlu membuat kelompok atau tim terlebih dahulu. di titik ini ada kendala, karena spec server menggunakan shared hosting jadi ada beberapa kendala untuk integrasi secara real time dengan database teknik informatika (untuk pengingat data user yang diambil (data dosen, data mahasiswa) dibuat dengan cara mengambil data pada saat login lalu ditambahkan ke masing-masing table terkait.), sehingga perlu memastikan mahasiswa sudah terdaftar pada database kp. untuk itu kedua mahasiswa atau lebih perlu dipastikan sudah masuk ke sistem supaya terdaftar. Pada saat membuat kelompok atau tim, mahasiswa A dan mahasiswa B sudah login dan akses project. misal mahasiswa A membuat kelompok, mahasiswa A mencari nim mahasiswa B, mahasiswa A menambahkan mahasiswa B dalam kelompoknya, mahasiswa B menerima invite kelompok masuk ke kelompok yang dibuat mahasiswa A (status invitations berubah menjadi diterima). Mahasiswa A melakukan pendaftaran kp (isian form sama) dengan mengisi nim, nama, ipk, judul kegiatan, kategori kegiatan, tempat kegiatan, pimpinan tempat kp, alamat tempat kp (untuk form input field nim, nama, ipk dibuat berdasarkan jumlah mahasiswa dalam kelompok), ketika mahasiswa tekan tombol 'Daftar & Upload Dokumen' untuk submit pendaftaran, maka proses pendaftaran langsung sesuai dengan jumlah mahasiswa pada tim tersebut dan menambahkan relasi ke tim yang mendaftar. ketika sudah mendaftar, anggota tim tidak dapat ditambahkan ke anggota tim yang lainnya dalam periode pendaftaran yang sama. selanjutnya pada upload dokumen, form untuk upload dokumen disesuaikan dengan jumlah mahasiswanya.
+2. Managemen Pendaftaran: Perlu ada halaman khusus yang menangani pendaftaran kp secara tim, termasuk untuk penugasan pembimbing. 
 
 ### Tujuan dan manfaat
 
