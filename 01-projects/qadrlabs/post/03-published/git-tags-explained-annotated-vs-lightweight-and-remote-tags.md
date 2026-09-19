@@ -40,9 +40,9 @@ mkdir git-tag-demo
 cd git-tag-demo
 git init -b main
 ```
-
+Output:
 ```text
-Initialized empty Git repository in /home/gun-gun-priatna/obsidian-vault/sandbox/git-tag-demo/.git/
+Initialized empty Git repository in /home/sandbox/git-tag-demo/.git/
 ```
 
 The `-b main` option names the initial branch explicitly, so the branch name does not depend on your Git configuration. The path in the output is the location used for this test run.
@@ -65,7 +65,7 @@ EOF
 git add README.md
 git commit -m "add project readme"
 ```
-
+Output:
 ```text
 [main (root-commit) 6f91c7e] add project readme
  1 file changed, 3 insertions(+)
@@ -87,7 +87,7 @@ EOF
 git add CHANGELOG.md
 git commit -m "add changelog for the 0.9.0 preview"
 ```
-
+Output:
 ```text
 [main dffd78e] add changelog for the 0.9.0 preview
  1 file changed, 5 insertions(+)
@@ -108,7 +108,7 @@ EOF
 git add export.md
 git commit -m "document the supported export formats"
 ```
-
+Output:
 ```text
 [main 3c74c64] document the supported export formats
  1 file changed, 4 insertions(+)
@@ -130,7 +130,7 @@ EOF
 git add CHANGELOG.md
 git commit -m "record the 1.0.0 release in the changelog"
 ```
-
+Output:
 ```text
 [main 77a03f2] record the 1.0.0 release in the changelog
  1 file changed, 4 insertions(+)
@@ -144,7 +144,7 @@ Confirm the history and the current tag list:
 git log --oneline
 git tag
 ```
-
+Output:
 ```text
 77a03f2 record the 1.0.0 release in the changelog
 3c74c64 document the supported export formats
@@ -167,7 +167,7 @@ The `-a` flag asks for an annotated tag and `-m` supplies its message, exactly l
 ```bash
 git tag
 ```
-
+Output:
 ```text
 v1.0.0
 ```
@@ -177,7 +177,7 @@ The tag now exists locally. Note that tagging did not create a commit and did no
 ```bash
 git show v1.0.0
 ```
-
+Output:
 ```text
 tag v1.0.0
 Tagger: Tutorial Developer <developer@example.com>
@@ -222,7 +222,7 @@ This creates a lightweight tag on the same commit. The name ends in `-lw` only s
 ```bash
 git tag
 ```
-
+Output:
 ```text
 v1.0.0
 v1.0.0-lw
@@ -234,7 +234,7 @@ Both names appear in the listing, which is the point: from the outside, a lightw
 git cat-file -t v1.0.0
 git cat-file -t v1.0.0-lw
 ```
-
+Output:
 ```text
 tag
 commit
@@ -245,7 +245,7 @@ commit
 ```bash
 git show v1.0.0-lw | head -12
 ```
-
+Output:
 ```text
 commit 77a03f2dc48a2840740930e835cb7505424dd430
 Author: Tutorial Developer <developer@example.com>
@@ -272,7 +272,7 @@ First find the commit you want to name:
 ```bash
 git log --oneline
 ```
-
+Output:
 ```text
 77a03f2 record the 1.0.0 release in the changelog
 3c74c64 document the supported export formats
@@ -292,7 +292,7 @@ Passing a commit hash after the tag name tells Git where to attach the tag. With
 git tag
 git log --oneline --decorate
 ```
-
+Output:
 ```text
 v0.9.0
 v1.0.0
@@ -315,7 +315,7 @@ A real project accumulates dozens or hundreds of tags, so plain `git tag` stops 
 ```bash
 git tag -l "v1.*"
 ```
-
+Output:
 ```text
 v1.0.0
 v1.0.0-lw
@@ -326,7 +326,7 @@ The `-l` option filters by a shell style pattern, which is how you pull one rele
 ```bash
 git tag --sort=-v:refname
 ```
-
+Output:
 ```text
 v1.0.0-lw
 v1.0.0
@@ -338,7 +338,7 @@ By default Git sorts tags alphabetically, which puts `v1.10.0` before `v1.9.0` a
 ```bash
 git tag -n
 ```
-
+Output:
 ```text
 v0.9.0          Release 0.9.0: first exporter preview
 v1.0.0          Release 1.0.0: stable Markdown and HTML export
@@ -350,7 +350,7 @@ v1.0.0-lw       record the 1.0.0 release in the changelog
 ```bash
 git show v0.9.0 --stat
 ```
-
+Output:
 ```text
 tag v0.9.0
 Tagger: Tutorial Developer <developer@example.com>
@@ -379,9 +379,9 @@ cd ..
 git init --bare -b main git-tag-demo-origin.git
 cd git-tag-demo
 ```
-
+Output:
 ```text
-Initialized empty Git repository in /home/gun-gun-priatna/obsidian-vault/sandbox/git-tag-demo-origin.git/
+Initialized empty Git repository in /home/sandbox/git-tag-demo-origin.git/
 ```
 
 The `--bare` flag creates the repository without a checkout, and `-b main` sets its initial branch name so it matches your project. Everything you do against this repository behaves like a real remote, including rejections and forced updates.
@@ -390,7 +390,7 @@ The `--bare` flag creates the repository without a checkout, and `-b main` sets 
 git remote add origin ../git-tag-demo-origin.git
 git push -u origin main
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  * [new branch]      main -> main
@@ -408,7 +408,7 @@ This command prints nothing. `git ls-remote` asks the remote which refs it has, 
 ```bash
 git push origin v1.0.0
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  * [new tag]         v1.0.0 -> v1.0.0
@@ -419,7 +419,7 @@ Pushing a single tag by name is the safest habit, because you publish exactly th
 ```bash
 git ls-remote --tags origin
 ```
-
+Output:
 ```text
 5caa4e373bee1eddfce1fb9c1e09e640ffa47518	refs/tags/v1.0.0
 77a03f2dc48a2840740930e835cb7505424dd430	refs/tags/v1.0.0^{}
@@ -430,7 +430,7 @@ The annotated tag produces two lines. The first is the hash of the tag object it
 ```bash
 git push --tags origin
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  * [new tag]         v0.9.0 -> v0.9.0
@@ -442,7 +442,7 @@ To ../git-tag-demo-origin.git
 ```bash
 git ls-remote --tags origin
 ```
-
+Output:
 ```text
 442fd5d38f8c708655e57211e8df922613fd893c	refs/tags/v0.9.0
 dffd78ecd0c218868e41db15a680d20c27ae7419	refs/tags/v0.9.0^{}
@@ -460,7 +460,7 @@ The experiment tag does not belong on the remote, so remove it. Deleting a tag i
 ```bash
 git tag -d v1.0.0-lw
 ```
-
+Output:
 ```text
 Deleted tag 'v1.0.0-lw' (was 77a03f2)
 ```
@@ -471,7 +471,7 @@ The `-d` flag deletes the local tag and reports the commit it pointed at, which 
 git tag
 git ls-remote --tags origin
 ```
-
+Output:
 ```text
 v0.9.0
 v1.0.0
@@ -491,7 +491,7 @@ The tag is gone locally but still present on the remote, and anyone who clones o
 git push origin --delete v1.0.0-lw
 git ls-remote --tags origin
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  - [deleted]         v1.0.0-lw
@@ -509,7 +509,7 @@ Now both sides agree. Next, see what happens when you try to reuse a tag name th
 ```bash
 git tag -a v1.0.0 -m "Release 1.0.0 again"
 ```
-
+Output:
 ```text
 fatal: tag 'v1.0.0' already exists
 ```
@@ -522,7 +522,7 @@ Some projects still need a moving tag, for example a `latest` marker that always
 git tag latest dffd78e
 git push origin latest
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  * [new tag]         latest -> latest
@@ -533,7 +533,7 @@ This lightweight tag now points at the 0.9.0 commit on both sides. Move it to th
 ```bash
 git tag -f latest
 ```
-
+Output:
 ```text
 Updated tag 'latest' (was dffd78e)
 ```
@@ -543,7 +543,7 @@ The `-f` flag overwrites an existing tag locally, and Git reports the commit it 
 ```bash
 git push origin latest
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  ! [rejected]        latest -> latest (already exists)
@@ -557,7 +557,7 @@ The remote rejects it. Unlike branches, tags are not fast forwarded automaticall
 git push --force origin latest
 git ls-remote --tags origin
 ```
-
+Output:
 ```text
 To ../git-tag-demo-origin.git
  + dffd78e...77a03f2 latest -> latest (forced update)
@@ -580,7 +580,7 @@ This is the payoff for tagging at all: going back to a released version without 
 ```bash
 git checkout v0.9.0
 ```
-
+Output:
 ```text
 Note: switching to 'v0.9.0'.
 
@@ -608,7 +608,7 @@ That long message is not an error. A tag names a commit rather than a branch, so
 git status
 ls
 ```
-
+Output:
 ```text
 HEAD detached at v0.9.0
 nothing to commit, working tree clean
@@ -627,7 +627,7 @@ In detached HEAD state any commit you make belongs to no branch, so if you need 
 git switch -c hotfix/0.9.1 v0.9.0
 git status
 ```
-
+Output:
 ```text
 Switched to a new branch 'hotfix/0.9.1'
 ```
@@ -643,7 +643,7 @@ nothing to commit, working tree clean
 git switch main
 ls
 ```
-
+Output:
 ```text
 Switched to branch 'main'
 Your branch is up to date with 'origin/main'.
@@ -668,7 +668,7 @@ EOF
 git add export.md
 git commit -m "add csv to the export formats"
 ```
-
+Output:
 ```text
 [main a247c02] add csv to the export formats
  1 file changed, 1 insertion(+)
@@ -681,7 +681,7 @@ The `>>` operator appends to the existing file instead of replacing it, which ke
 ```bash
 git describe --tags
 ```
-
+Output:
 ```text
 v1.0.0-1-ga247c02
 ```
@@ -693,7 +693,7 @@ Read the answer in three parts: the most recent tag reachable from `HEAD` is `v1
 ```bash
 git log v0.9.0..v1.0.0 --oneline
 ```
-
+Output:
 ```text
 77a03f2 record the 1.0.0 release in the changelog
 3c74c64 document the supported export formats
@@ -704,7 +704,7 @@ The `v0.9.0..v1.0.0` range means the commits reachable from `v1.0.0` but not fro
 ```bash
 git diff --stat v0.9.0 v1.0.0
 ```
-
+Output:
 ```text
  CHANGELOG.md | 4 ++++
  export.md    | 4 ++++
@@ -721,11 +721,13 @@ Publish the new commit, then clone the bare repository into a separate directory
 git push origin main
 ```
 
+Output:
 ```text
 To ../git-tag-demo-origin.git
    77a03f2..a247c02  main -> main
 ```
 
+Run following command:
 ```bash
 cd ..
 git clone git-tag-demo-origin.git git-tag-demo-clone
@@ -733,11 +735,13 @@ cd git-tag-demo-clone
 git tag
 ```
 
+Output:
 ```text
 Cloning into 'git-tag-demo-clone'...
 done.
 ```
 
+Output:
 ```text
 latest
 v0.9.0
@@ -749,7 +753,7 @@ A clone downloads every tag the remote has, without any extra flag. The tag `v1.
 ```bash
 git describe --tags
 ```
-
+Output:
 ```text
 v1.0.0-1-ga247c02
 ```
@@ -764,7 +768,7 @@ Tags feel special, but their storage is plain. Return to your working repository
 cd ../git-tag-demo
 git show-ref --tags
 ```
-
+Output:
 ```text
 77a03f2dc48a2840740930e835cb7505424dd430 refs/tags/latest
 442fd5d38f8c708655e57211e8df922613fd893c refs/tags/v0.9.0
@@ -776,7 +780,7 @@ Every tag is a ref under `refs/tags/`, in the same way that every branch is a re
 ```bash
 git cat-file -p v1.0.0
 ```
-
+Output:
 ```text
 object 77a03f2dc48a2840740930e835cb7505424dd430
 type commit
@@ -791,7 +795,7 @@ Release 1.0.0: stable Markdown and HTML export
 ```bash
 git cat-file -p latest | head -5
 ```
-
+Output:
 ```text
 tree 65fb658e41cf61ad1fd221483d97334b1756b5fa
 parent 3c74c64454a3f6b8af7b332af5ef210701c9c14d
@@ -818,7 +822,7 @@ Tag names are free text, which means the discipline has to come from you. Semant
 git tag -a v1.1.0-rc.1 -m "Release candidate for 1.1.0"
 git tag --sort=-v:refname
 ```
-
+Output:
 ```text
 v1.1.0-rc.1
 v1.0.0
@@ -831,7 +835,7 @@ The version sort understands the numeric parts and places the release candidate 
 ```bash
 git tag -l "v1.1.*"
 ```
-
+Output:
 ```text
 v1.1.0-rc.1
 ```
@@ -846,7 +850,7 @@ Step 7 showed that a forced push can move a tag on the remote. What it could not
 git tag -f latest
 git push --force origin latest
 ```
-
+Output:
 ```text
 Updated tag 'latest' (was 77a03f2)
 ```
@@ -861,7 +865,7 @@ The tag moves from the 1.0.0 commit to the newest commit, locally and then on th
 ```bash
 git rev-parse latest
 ```
-
+Output:
 ```text
 a247c0201df28ee3f2439347b8b1ca83e8b29766
 ```
@@ -872,7 +876,7 @@ a247c0201df28ee3f2439347b8b1ca83e8b29766
 cd ../git-tag-demo-clone
 git rev-parse latest
 ```
-
+Output:
 ```text
 77a03f2dc48a2840740930e835cb7505424dd430
 ```
@@ -883,9 +887,9 @@ The clone still resolves `latest` to the old commit. Nothing is broken there and
 git fetch --tags
 git rev-parse latest
 ```
-
+Output:
 ```text
-From /home/gun-gun-priatna/obsidian-vault/sandbox/git-tag-demo-origin
+From /home/sandbox/git-tag-demo-origin
  ! [rejected]        latest     -> latest  (would clobber existing tag)
 ```
 
@@ -899,9 +903,9 @@ Even an explicit `git fetch --tags` refuses to update it. Git protects local tag
 git fetch --tags --force
 git rev-parse latest
 ```
-
+Ooutput
 ```text
-From /home/gun-gun-priatna/obsidian-vault/sandbox/git-tag-demo-origin
+From /home/sandbox/git-tag-demo-origin
  t [tag update]      latest     -> latest
 ```
 

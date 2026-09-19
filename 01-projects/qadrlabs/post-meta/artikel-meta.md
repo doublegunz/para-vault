@@ -47,4 +47,4 @@
 **Title:** Git Tags Explained: Annotated vs Lightweight, Versioning, and Remote Tags
 **Short description:** Create annotated and lightweight Git tags in a runnable demo repo, push and delete them on a real remote, branch a hotfix from a tag, and keep versions stable. (159 chars)
 **Category:** Git
-**Tags:** git, git-tag, annotated-tag, lightweight-tag, semantic-versioning, git-refs, version-control, release, git-describe
+**Tags:** git, Git Tag, annotated-tag, lightweight-tag, semantic-versioning, git-refs, Version Control, release, git-describe
