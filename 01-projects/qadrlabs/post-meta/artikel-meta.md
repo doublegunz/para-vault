@@ -55,3 +55,10 @@
 **Short description:** Build an interactive Laravel 13 Artisan command with Laravel Prompts, validated input, hidden passwords, SQLite, and Pest tests. (128 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, artisan, laravel-prompts, laravel-installer, php, pest, sqlite
+
+## 2026-09-22 - Laravel 14 preview
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-14-what-we-know-so-far-and-how-to-get-ready.md
+**Title:** Laravel 14: What We Know So Far and How to Get Ready
+**Short description:** What is confirmed about Laravel 14 so far: the Q1 2027 window, the PHP 8.4 floor from Symfony 8, master branch features, breaking changes, and how to prepare. (158 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-14, laravel-13, php-8-4, symfony-8, upgrade, release-cycle, support-policy
