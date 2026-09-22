@@ -48,3 +48,10 @@
 **Short description:** Create annotated and lightweight Git tags in a runnable demo repo, push and delete them on a real remote, branch a hotfix from a tag, and keep versions stable. (159 chars)
 **Category:** Git
 **Tags:** git, Git Tag, annotated-tag, lightweight-tag, semantic-versioning, git-refs, Version Control, release, git-describe
+
+## 2026-09-21 - Laravel Prompts custom Artisan command
+**File:** 01-projects/qadrlabs/post/03-published/Laravel/build-a-custom-artisan-command-with-laravel-prompts-in-laravel-13.md
+**Title:** Build a Custom Artisan Command with Laravel Prompts in Laravel 13
+**Short description:** Build an interactive Laravel 13 Artisan command with Laravel Prompts, validated input, hidden passwords, SQLite, and Pest tests. (128 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, artisan, laravel-prompts, laravel-installer, php, pest, sqlite

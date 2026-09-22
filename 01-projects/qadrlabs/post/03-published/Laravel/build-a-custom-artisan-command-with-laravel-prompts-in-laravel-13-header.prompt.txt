@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: wide landscape editorial header illustration for a technical article about building an interactive Artisan command with Laravel Prompts in Laravel 13.
+Primary request: communicate interactive terminal input creating a user account securely, entirely without text.
+Scene and subject: a beautifully composed isometric terminal window as the dominant focal point, showing three simple abstract input rows represented ONLY by geometric strokes and round dots, with the password row formed from masked dots and a small padlock symbol. A user profile silhouette on a small card emerges alongside the terminal, connected by a subtle clean path to a compact database cylinder. One small successful validation checkmark. Include an accurate recognizable red Laravel geometric line logo as an integrated accent on the terminal frame, without its wordmark.
+Style: sophisticated editorial 3D illustration, restrained geometric forms, softly beveled surfaces, matte materials, crisp silhouettes, polished soft shadows. Dark charcoal and slate terminal, warm off-white background, Laravel vermilion accents, subtle green validation accent.
+Composition: wide 16:9 landscape, generous clear breathing room, one coherent centered visual group, strong readability at thumbnail size, all key objects safely inside margins.
+Lighting: soft studio light, refined ambient occlusion, professional and calm.
+Constraints: absolutely no text, letters, words, numbers, code, headings, labels, captions, watermarks, or typography anywhere. No pseudo-code or fake glyphs. Laravel symbol only is allowed. Avoid clutter, unrelated objects, people, hands, and excessive neon. Create one final high-quality image.
