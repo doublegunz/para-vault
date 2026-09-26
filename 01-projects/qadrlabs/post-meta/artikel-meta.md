@@ -62,3 +62,10 @@
 **Short description:** What is confirmed about Laravel 14 so far: the Q1 2027 window, the PHP 8.4 floor from Symfony 8, master branch features, breaking changes, and how to prepare. (158 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-14, laravel-13, php-8-4, symfony-8, upgrade, release-cycle, support-policy
+
+## 2026-09-26 - Protect projects from malicious packages
+**File:** 01-projects/qadrlabs/post/01-draft/3-simple-actions-to-protect-your-project-from-malicious-packages.md
+**Title:** 3 Simple Actions to Protect Your Project from Malicious Packages
+**Short description:** Protect your project from malicious packages with three simple actions: a release age cooldown, a GitHub security audit with Moat, and dependency vetting. (154 chars)
+**Category:** Security
+**Tags:** supply-chain-security, npm, pnpm, composer, laravel-vet, laravel-moat, github-security, dependency-audit
