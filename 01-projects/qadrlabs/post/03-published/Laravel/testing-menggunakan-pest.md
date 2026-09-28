@@ -51,11 +51,17 @@ Dengan menggunakan Pest, kita dapat menulis test yang lebih bersih, lebih mudah 
 
 ## Overview{#overview}
 
-Tutorial ini akan membahas implementasi testing menggunakan Pest PHP di aplikasi Laravel 11. Pest adalah framework testing yang dibangun di atas PHPUnit dengan sintaks yang lebih sederhana dan ekspresif, membuatnya lebih mudah dibaca dan dipelihara.
+Tutorial ini akan membahas implementasi testing menggunakan Pest PHP di aplikasi Laravel 13. Pest adalah framework testing yang dibangun di atas PHPUnit dengan sintaks yang lebih sederhana dan ekspresif, membuatnya lebih mudah dibaca dan dipelihara.
+
+> Pada saat publish pertama, tutorial ini menggunakan demo project crud laravel 11, namun Laravel versi 11 sudah memasuki **end of life** berdasarkan dokumentasi resmi laravel [^1] dengan support bug fixes sampai tanggal 3 September 2025 dan security fixes sampai tanggal 12 Maret 2026. Selain itu ketika create project menggunakan laravel versi 11 akan tampil error seperti yang dituliskan pada catatan [step 1](https://qadrlabs.com/member/post/percobaan-development-crud-app-sederhana-menggunakan-laravel-11#step-1), sehingga laravel versi 11 sudah tidak bisa diinstall dan sangat direkomendasikan untuk menggunakan laravel versi terbaru.
+
+> Berdasarkan uji coba per **tanggal 28 September 2026**, tutorial ini masih dapat digunakan dan diimplementasi menggunakan Laravel versi 13.
+
+> Apabila tertarik mempelajari Laravel secara bertahap, kamu dapat mencoba course [Learn Laravel For Beginner](https://qadrlabs.com/course/learn-laravel-for-beginners).
 
 ### Apa yang akan dipelajari:
 
-- Instalasi dan konfigurasi Pest di project Laravel 11
+- Instalasi dan konfigurasi Pest di project Laravel 13
 - Migrasi dari PHPUnit ke Pest menggunakan `pest-plugin-drift`
 - Studi kasus penulisan test case untuk fitur CRUD menggunakan sintaks Pest
 - Eksekusi dan verifikasi hasil testing
@@ -69,7 +75,7 @@ Tutorial ini akan membahas implementasi testing menggunakan Pest PHP di aplikasi
 
 ### Prasyarat:
 
-- Sudah memiliki project Laravel 11 dengan fitur CRUD user dari [Tutorial Laravel 11: Development Sample Aplikasi CRUD](https://qadrlabs.com/post/percobaan-development-crud-app-sederhana-menggunakan-laravel-11)
+- Sudah memiliki project Laravel 13 dengan fitur CRUD user dari [Repositori Demo Tutorial Pest](https://github.com/qadrLabs/demo-pest-tutorial)
 - Pemahaman dasar tentang Laravel framework
 - Pemahaman dasar tentang konsep software testing
 
@@ -77,7 +83,7 @@ Di akhir tutorial ini, anda akan memiliki suite testing yang komprehensif untuk 
 
 ## Persiapan Studi Kasus {#persiapan}
 
-Pada studi kasus testing menggunakan Pest ini kita akan gunakan sample project dari [Tutorial Laravel 11: Development Sample Aplikasi CRUD](https://qadrlabs.com/post/percobaan-development-crud-app-sederhana-menggunakan-laravel-11). Untuk bisa mengikuti tutorial ini, silakan teman-teman selesaikan terlebih dahulu project di tutorial tersebut. Sebagai alternatif teman-teman dapat clone sample project dari [repositori project crud laravel 11](https://github.com/qadrLabs/crud-laravel-11), lalu ikuti langkah-langkah setup project yang ada di `README`.
+Pada studi kasus testing menggunakan Pest ini kita akan gunakan sample project dari [Tutorial Laravel 11: Development Sample Aplikasi CRUD](https://qadrlabs.com/post/percobaan-development-crud-app-sederhana-menggunakan-laravel-11). Namun seperti yang sudah disebutkan sebelumnya laravel 11 sudah End of life jadi sebagai pengganti kita gunakan laravel 13 dengan codebase yang sama dengan coding pada tutorial tersebut. Sebagai alternatif teman-teman dapat clone sample project dari [repositori project untuk demo tutorial pest](https://github.com/qadrLabs/demo-pest-tutorial) ini, lalu ikuti langkah-langkah setup project yang ada di `README`.
 
 ## Step 1: Install dan Setup Pest {#step-1-install-pest-package}
 
@@ -223,7 +229,7 @@ test('that true is true', function () {
 Selanjutnya kita bisa run test kembali menggunakan command berikut ini.
 
 ```
-/vendor/bin/pest
+./vendor/bin/pest
 ```
 
 Output yang ditampilkan
@@ -423,3 +429,6 @@ Dalam tutorial ini, kita telah mempelajari langkah-langkah implementasi testing 
 Dari hasil testing yang dijalankan, semua test berhasil dieksekusi dengan total 8 test passed dan 22 assertions. Ini menunjukkan bahwa fitur CRUD yang diimplementasikan berfungsi sesuai dengan yang diharapkan.
 
 Pest menawarkan sintaks yang lebih sederhana dan mudah dibaca dibandingkan PHPUnit, sambil tetap mempertahankan fungsionalitas testing yang powerful. Dengan menggunakan Pest, developer dapat menulis dan mengelola test case dengan lebih efisien sambil memastikan kualitas kode aplikasi Laravel mereka.
+
+
+[^1]: Release Note pada Dokumentasi Resmi Laravel versi 11 @ [https://laravel.com/docs/11.x/releases](https://laravel.com/docs/11.x/releases)
