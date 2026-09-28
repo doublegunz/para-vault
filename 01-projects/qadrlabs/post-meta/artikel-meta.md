@@ -76,3 +76,10 @@
 **Short description:** Explore Hacktoberfest 2026, its shift to open-source AI events, how to participate, and what to expect from T-shirts and online swag. (133 chars)
 **Category:** Git
 **Tags:** hacktoberfest, Hacktoberfest 2026, open-source, ai, community
+
+## 2026-09-28 - MySQL binlog data recovery
+**File:** 01-projects/qadrlabs/post/01-draft/recover-deleted-production-data-with-mysql-binary-log.md
+**Title:** How to Recover Deleted Production Data with MySQL Binary Log
+**Short description:** Recover deleted production data with MySQL binary log: a case study of an AI agent wiping a table, then restoring it with mysqldump and point-in-time replay. (157 chars)
+**Category:** Database
+**Tags:** mysql, binary-log, mysqlbinlog, mysqldump, point-in-time-recovery, backup, ai-agent, vibe-coding
