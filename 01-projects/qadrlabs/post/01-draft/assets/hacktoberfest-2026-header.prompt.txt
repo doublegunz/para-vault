@@ -1,0 +1,8 @@
+Use case: illustration-story
+Asset type: wide 16:9 editorial header illustration for a qadrlabs article titled Hacktoberfest 2026: From Pull Requests to Open Source AI.
+Primary request: Visually communicate a welcoming developer community learning and building open-source AI together at a local Hacktoberfest gathering.
+Scene and subjects: A small diverse group of developers collaborating around a shared table with laptops, exchanging ideas and looking at a shared, luminous visualization of interconnected model nodes and modular agent components. Natural, engaged body language. The open network visually connects their contributions into one shared creation. Laptop displays show only abstract shapes and node connections, without any written code or letters.
+Style: polished contemporary editorial illustration, crisp expressive shapes, subtle tactile grain, carefully controlled depth and soft lighting. Warm, curious, optimistic atmosphere; readable at thumbnail size.
+Composition: landscape 16:9, strong single focal scene, generous breathing room, restrained background details, balanced visual hierarchy. Keep important content within safe margins for header cropping. The illustration should dominate, with a modest integrated event heading.
+Text (verbatim): "Hacktoberfest 2026". Render this phrase once, accurately, in clean legible typography.
+Constraints: Absolutely no other text, letters, numbers, slogans, labels, watermarks, signatures, fake code, or tiny illegible writing anywhere. Do not include a PR scoreboard, progress counters, trophies, or a robot replacing people. Logo symbols are allowed but optional; do not invent sponsor logos. Focus on collaborative learning and open AI experimentation, with human participants as the main subjects.

@@ -69,3 +69,10 @@
 **Short description:** Protect your project from malicious packages with three simple actions: a release age cooldown, a GitHub security audit with Moat, and dependency vetting. (154 chars)
 **Category:** Security
 **Tags:** supply-chain-security, npm, pnpm, composer, laravel-vet, laravel-moat, github-security, dependency-audit
+
+## 2026-09-28 - Hacktoberfest 2026
+**File:** 01-projects/qadrlabs/post/01-draft/hacktoberfest-2026-from-pull-requests-to-open-source-ai.md
+**Title:** Hacktoberfest 2026: From Pull Requests to Open Source AI
+**Short description:** Explore Hacktoberfest 2026, its shift to open-source AI events, how to participate, and what to expect from T-shirts and online swag. (133 chars)
+**Category:** Git
+**Tags:** hacktoberfest, Hacktoberfest 2026, open-source, ai, community
