@@ -83,3 +83,10 @@
 **Short description:** Recover deleted production data with MySQL binary log: a case study of an AI agent wiping a table, then restoring it with mysqldump and point-in-time replay. (157 chars)
 **Category:** Database
 **Tags:** mysql, binary-log, mysqlbinlog, mysqldump, point-in-time-recovery, backup, ai-agent, vibe-coding
+
+## 2026-09-29 - Laravel 13.34.0 release
+**File:** 01-projects/qadrlabs/post/01-draft/whats-new-in-laravel-13-34-0.md
+**Title:** What's New in Laravel 13.34.0: Job Duration, Timeout Warnings, IAM Disks, and More
+**Short description:** Laravel 13.34.0 adds job duration to JobProcessed, timeout warnings for interruptible jobs, keyless S3 disks via IAM, Schema::getColumn(), and more. (148 chars)
+**Category:** Laravel
+**Tags:** laravel, laravel-13, release-notes, queue, jobs, s3, iam, eloquent, schema, pest

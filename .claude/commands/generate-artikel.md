@@ -17,6 +17,13 @@ Gunakan salah satu dari dua pendekatan:
 - **Problem-Agitate-Solution (PAS)**: buka dengan problem nyata yang dialami developer, agitate konsekuensinya, lalu tawarkan solusinya.
 - **Pengantar yang menghubungkan ke tutorial sebelumnya** (jika artikel adalah bagian dari series atau lanjutan dari tutorial lain): sebutkan konteks artikel sebelumnya secara eksplisit dengan link.
 
+**Sudut pandang pembuka (wajib):** tulis pembuka dari sudut pandang masalah atau sistemnya (the queue, the job, the app, a team, a developer), bukan menyapa pembaca terus-menerus.
+- Maksimal **satu** kata "you/your" di seluruh paragraf pembuka, dan jangan memulai kalimat dengan "You".
+- Hindari pola berulang seperti "You open the page... You scroll... You decide... You write...".
+- Contoh buruk: *"You open the release notes, you scroll through forty entries, and you close the tab."*
+- Contoh baik: *"A queue can look healthy on a dashboard while one of its jobs gets slower every week."*
+- Aturan ini khusus paragraf pembuka; bagian body artikel boleh memakai "you" secara wajar.
+
 ### Section Overview
 Wajib ada dan berisi tiga subsection:
 - **What You'll Build**: deskripsi konkret hasil akhir yang akan dibuat pembaca.
@@ -66,7 +73,7 @@ Wajib ada. Berisi **key takeaways dalam format bullet points**. Setiap bullet di
 ### Writing Style
 - Write in English, explanatory and conversational
 - **NEVER use em dashes (—) or en dashes (–)** — restructure sentences instead. Use "to", "is", colons, periods, or "which" to connect ideas
-- Use PAS opening paragraph (Problem, Agitate, Solution)
+- Use PAS opening paragraph (Problem, Agitate, Solution), written from the problem's or system's point of view. Use "you/your" at most once across the opening paragraphs and never start a sentence with "You".
 - Prose over bullets, but use bullets for lists of items/features
 - No "This tutorial has not been fully tested" disclaimers
 
@@ -126,6 +133,7 @@ Sebelum menyusun artikel, selalu ikuti urutan berikut:
 - Menulis `---` sebagai pemisah antar section.
 - Menggunakan label "Step N" untuk section yang tidak sekuensial.
 - Langsung masuk ke H3 setelah H2 tanpa narasi pembuka.
+- Paragraf pembuka yang berulang kali menyapa pembaca dengan "you ... you ... you".
 - Mengubah output terminal yang merupakan hasil uji coba nyata.
 - Membuat artikel referensi yang hanya berisi snippet ilustrasi tanpa contoh yang bisa dijalankan.
 - Menyebutkan library atau tool eksternal secara negatif jika konteks artikel tidak memerlukannya.
