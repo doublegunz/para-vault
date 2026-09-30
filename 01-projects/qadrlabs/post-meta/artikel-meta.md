@@ -90,3 +90,10 @@
 **Short description:** Laravel 13.34.0 adds job duration to JobProcessed, timeout warnings for interruptible jobs, keyless S3 disks via IAM, Schema::getColumn(), and more. (148 chars)
 **Category:** Laravel
 **Tags:** laravel, laravel-13, release-notes, queue, jobs, s3, iam, eloquent, schema, pest
+
+## 2026-09-29 - Python knowledge base without AI
+**File:** 01-projects/qadrlabs/post/01-draft/build-searchable-knowledge-base-python-sqlite-without-ai.md
+**Title:** Build a Searchable Knowledge Base with Python and SQLite, Without AI
+**Short description:** Build a local knowledge base with Python, Flask, and SQLite FTS5. Search Markdown files, rank passages, and open source citations without AI. (141 chars)
+**Category:** Python
+**Tags:** python, flask, sqlite, full-text-search, knowledge-base, information-retrieval
