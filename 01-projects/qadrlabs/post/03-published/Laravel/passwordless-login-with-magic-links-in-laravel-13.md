@@ -162,19 +162,58 @@ Verify the table was created correctly by checking it in Tinker:
 php artisan tinker
 ```
 
+Next, let's check if there is a `login_tokens` table by entering the following code in Tinker, then press `Enter`.
+```
+Schema::hasTable('login_tokens');
+```
+Output:
+```
+true
+```
+
+Next, let’s check which columns are in the `login_tokens` table by typing the following code, then press `Enter`.
+```
+Schema::getColumnListing('login_tokens')
+```
+Output:
+```
+[
+    "id",
+    "user_id",
+    "token",
+    "expires_at",
+    "consumed_at",
+    "created_at",
+    "updated_at",
+  ]
+```
+
+Now let's exit Tinker by typing the following command and pressing `Enter`.
+
+Output:
 ```php
->>> Schema::hasTable('login_tokens');
-=> true
->>> Schema::getColumnListing('login_tokens');
-=> [
-     "id",
-     "user_id",
-     "token",
-     "expires_at",
-     "consumed_at",
-     "created_at",
-     "updated_at",
-   ]
+✗ php artisan tinker
+Psy Shell v0.12.24 (PHP 8.5.6 — cli) by Justin Hileman
+New PHP manual is available (latest: 3.0.5). Update with `doc --update-manual`
+> Schema::hasTable('login_tokens');
+
+= true
+
+> Schema::getColumnListing('login_tokens');
+
+= [
+    "id",
+    "user_id",
+    "token",
+    "expires_at",
+    "consumed_at",
+    "created_at",
+    "updated_at",
+  ]
+
+> exit
+
+   INFO  Goodbye.
 ```
 
 ## Step 3: Add the Relationship and sendMagicLink to User {#step-3-update-user-model}
@@ -545,11 +584,33 @@ You also need at least one user in the database. Create one in Tinker:
 php artisan tinker
 ```
 
+Next, let’s create a new user in Tinker by typing the following code, then press `Enter`.
 ```php
 >>> User::factory()->create(['email' => 'dev@example.com', 'name' => 'Dev User']);
 ```
+Output:
+```
+✗ php artisan tinker
+Psy Shell v0.12.24 (PHP 8.5.6 — cli) by Justin Hileman
+New PHP manual is available (latest: 3.0.5). Update with `doc --update-manual`
+> User::factory()->create(['email' => 'dev@example.com', 'name' => 'Dev User']);
 
-Start the development server:
+[!] Aliasing 'User' to 'App\Models\User' for this Tinker session.
+= App\Models\User {#7552
+    name: "Dev User",
+    email: "dev@example.com",
+    email_verified_at: "2026-10-01 04:45:23",
+    #password: "\$2y\$12\$uQ87x.3W2lL.h.RyboQ9rO/imOddCuiYSlcZzg7qfeZbURkgDf3uO",
+    #remember_token: "VvFQ88svgS",
+    updated_at: "2026-10-01 04:45:23",
+    created_at: "2026-10-01 04:45:23",
+    id: 1,
+  }
+```
+
+After you've finished creating a new user, type `exit`, then press `enter` to exit Tinker.
+
+Now, start the development server:
 
 ```bash
 php artisan serve
@@ -590,7 +651,9 @@ Open `tests/Pest.php` and confirm it contains the following line (the `--init` c
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-uses(Tests\TestCase::class, RefreshDatabase::class)->in('Feature');
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Feature');
 ```
 
 Without `RefreshDatabase`, every test that tries to create a user will fail with `no such table: users` because the in-memory database is empty.
