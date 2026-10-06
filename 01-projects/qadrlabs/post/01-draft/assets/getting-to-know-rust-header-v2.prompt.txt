@@ -1,0 +1,10 @@
+Generation mode: built-in image_gen
+Asset: getting-to-know-rust-header-v2.png
+Style reference: user-provided nvxkThuCmu86oBd4KT9iSyi0pkub44CwQrkZAsXj.webp
+
+Use case: stylized-concept.
+Asset type: 16:9 wide header for "Getting to Know Rust: A First Look with Ubuntu and Hello World".
+Input image 1: STYLE REFERENCE ONLY. Create a new Rust illustration matching its soft isometric 3D editorial style, pale icy blue background, blue/cyan/lavender palette, frosted white surfaces, rounded beveled edges, soft ambient shadows, luminous flowing connections, and airy polished composition.
+Subject: a beginner Rust development workspace on Ubuntu. A recognizable large Rust gear emblem with its characteristic R floats above a small luminous platform, connected by a few floating source-file cards to a clean white desk with an open laptop and one elevated monitor. The monitor shows an abstract source-to-build-to-run flow using only geometric cards and lines. The laptop shows a dark Ubuntu-inspired terminal with abstract colored bars and a small Ubuntu emblem, no readable characters. A compact play icon and cyan success check illustrate a first program running successfully.
+Composition: cohesive spacious isometric scene, consistent perspective, broad landscape framing with safe margins, clear Rust logo focal point. Use a restrained warm orange accent on the Rust emblem within the predominantly cool reference palette. Refined 3D illustration, soft gradients and gentle glow as in reference, not heavy outlines or flat clipart.
+Constraints: the reference robot represents AI and must NOT appear; this article is about Rust, not AI. No people. No text, title, labels, numbers, readable code, watermarks, or wordmarks. The ONLY allowed letter is the R within the Rust logo. Keyboard keys blank. Opaque light background.

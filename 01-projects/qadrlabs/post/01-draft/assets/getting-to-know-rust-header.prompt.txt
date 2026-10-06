@@ -1,0 +1,12 @@
+Generation mode: built-in image_gen
+Article: ../getting-to-know-rust-ubuntu-hello-world.md
+Asset: getting-to-know-rust-header.png
+
+Use case: stylized-concept.
+Asset type: wide landscape editorial header illustration for an introductory article about Rust, installing its toolchain on Ubuntu, and compiling and running a first Hello World program.
+Primary request: a polished vector-style isometric illustration, absolutely no text except the R that belongs to the Rust gear logo.
+Scene: a clean spacious background and a cohesive isometric developer workstation. An open laptop with an Ubuntu-inspired desktop and a terminal represented exclusively by short abstract colored horizontal bars, no actual characters. A large recognizable Rust gear emblem with its R is the visual focal point beside the laptop. A small source-file tile connects through the Rust gear to a compact executable tile with a play triangle and a success checkmark, subtly communicating source to compiler to running program.
+Style: precise flat vector-like geometric shapes, consistent isometric perspective, crisp edges, restrained layered depth and soft simple shadows, contemporary technical editorial illustration, not photorealistic, not glossy 3D.
+Composition: wide 16:9 header, balanced unified scene centered with generous safe margins for cropping, strong hierarchy, readable at thumbnail size, few carefully chosen objects.
+Color: Rust-associated warm orange accents and Ubuntu-inspired aubergine on light neutral background, limited coordinated colors.
+Constraints: no title, no captions, no labels, no words, no numbers, no readable code, no terminal prompt characters, no watermark. Only permitted letter is R inside the Rust gear logo. No people, no decorative clutter. Opaque background.

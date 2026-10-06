@@ -97,3 +97,10 @@
 **Short description:** Build a local knowledge base with Python, Flask, and SQLite FTS5. Search Markdown files, rank passages, and open source citations without AI. (141 chars)
 **Category:** Python
 **Tags:** python, flask, sqlite, full-text-search, knowledge-base, information-retrieval
+
+## 2026-10-06 - Introduction to Rust
+**File:** 01-projects/qadrlabs/post/01-draft/getting-to-know-rust-ubuntu-hello-world.md
+**Title:** Getting to Know Rust: A First Look with Ubuntu and Hello World
+**Short description:** Get to know Rust, install its toolchain on Ubuntu, and run Hello World while exploring compilation, Cargo, ownership, and borrowing. (132 chars)
+**Category:** Rust
+**Tags:** rust, ubuntu, rustup, cargo, hello-world, ownership, programming
