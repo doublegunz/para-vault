@@ -6,7 +6,7 @@ Struktur qadrlabs: **course -> module -> lesson**. Skill ini selalu memakai **ga
 
 Output file memetakan langsung ke tabel di app qadrlabs (`courses` -> `modules` -> `module_lessons`):
 
-- `tentang-course.md` -> row `courses`: frontmatter `title`/`slug`/`status`; `## Deskripsi` = kolom `description` (maks 255 karakter); `## Konten` = kolom `content` (overview lengkap); `## Daftar Modul` = outline modul + lesson.
+- `tentang-course.md` -> row `courses`: frontmatter `title`/`slug`/`status`; `## Deskripsi` = kolom `description` (maks 255 karakter); `## Konten` = kolom `content` (overview lengkap); `## Daftar Modul` = outline modul + lesson. User menyalin tiap nilai field ke app secara manual, jadi semua nilai dibungkus code block (lihat **Format Copy-Friendly** di bawah).
 - Folder `module-N-<slug>/` -> row `modules` (punya `title`, `description`, `slug`). Kolom `description` bertipe **varchar**, jadi tiap modul wajib punya short description **maks 255 karakter** (idealnya 1 kalimat singkat). Ditulis di `## Daftar Modul` (lihat format Fase 2).
 - File `lesson-N-<slug>.md` -> row `module_lessons` (kontennya jadi kolom `content`).
 
@@ -35,7 +35,7 @@ Tanyakan / konfirmasi dulu: topik course, target level (pemula / menengah / lanj
 
 Setelah itu buat `tentang-course.md` dengan struktur:
 
-```markdown
+````markdown
 ---
 title: "Course Title in English"
 slug: "course-slug-kebab-case"
@@ -45,9 +45,14 @@ status: "draft"
 # Course Title in English
 
 ## Deskripsi
+```
 Satu paragraf singkat (maks 255 karakter). Ini jadi kolom `description` di database.
+```
+
 
 ## Konten
+
+```
 Paragraf intro yang menjelaskan course dan pendekatannya.
 
 **Prerequisites:**
@@ -57,31 +62,67 @@ Paragraf intro yang menjelaskan course dan pendekatannya.
 **By the end, you will have:**
 - Hasil 1
 - Hasil 2
+```
 
 ## Daftar Modul
-```
+````
+
+#### Format Copy-Friendly
+
+User memindahkan isi `tentang-course.md` ke app qadrlabs dengan copy paste per field, jadi **setiap nilai field dibungkus code block** (tiga backtick) agar bisa disalin utuh dengan sekali klik:
+
+- `## Deskripsi`: teks deskripsi di dalam satu code block.
+- `## Konten`: seluruh konten (paragraf, Prerequisites, By the end) di dalam satu code block. Markdown di dalamnya tetap ditulis apa adanya.
+- Judul modul dibungkus backtick inline, dan short description modul di dalam code block.
+- Tiap lesson punya short description sendiri dalam code block berindentasi 4 spasi (lihat format Fase 2).
+
+Jangan menambahkan teks lain di dalam code block selain nilai field-nya.
 
 `status` selalu mulai dari `"draft"`. Biarkan `## Daftar Modul` kosong sampai Fase 2. **Berhenti dan minta konfirmasi user** sebelum lanjut ke Fase 2.
 
 ### Fase 2: Susun Silabus
 
-Usulkan pembagian modul beserta lesson di tiap modul. Tiap modul juga butuh **short description** (1 kalimat, **maks 255 karakter**, karena kolom `description` di tabel `modules` bertipe varchar). Setelah disetujui, tuliskan ke section `## Daftar Modul` di `tentang-course.md` dengan format berikut:
+Usulkan pembagian modul beserta lesson di tiap modul. Tiap modul juga butuh **short description** (1 kalimat, **maks 255 karakter**, karena kolom `description` di tabel `modules` bertipe varchar). Tiap lesson juga butuh **lesson short description** (1 kalimat, **maks 255 karakter**) yang merangkum apa yang dipelajari di lesson itu. Setelah disetujui, tuliskan ke section `## Daftar Modul` di `tentang-course.md` dengan format copy-friendly berikut:
 
-```markdown
-### 1. Module 1 — <Title>
+````markdown
+## Daftar Modul
+
+### 1. `Module 1 - <Title>`
+
+```
 <Short description modul, maks 255 karakter, idealnya 1 kalimat>
-
-- Lesson 1 — <Title>
-- Lesson 2 — <Title>
-
-### 2. Module 2 — <Title>
-<Short description modul, maks 255 karakter, idealnya 1 kalimat>
-
-- Lesson 3 — <Title>
-- Lesson 4 — <Title>
 ```
 
-Short description ditaruh tepat di bawah judul modul, sebelum daftar lesson, dan jadi kolom `description` modul di database. Jaga benar batas 255 karakter dan jangan pakai em dash. Nomor lesson berlanjut menerus lintas modul. Buat folder modul kosong `module-N-<kebab-title>/` untuk tiap modul. **Berhenti dan minta konfirmasi user** atas keseluruhan silabus sebelum menyusun lesson apa pun.
+
+- Lesson 1 - <Title>
+    lesson short description
+    ```
+    <Short description lesson, maks 255 karakter, 1 kalimat>
+    
+    ```
+- Lesson 2 - <Title>
+    lesson short description
+    ```
+    <Short description lesson, maks 255 karakter, 1 kalimat>
+    
+    ```
+
+### 2. `Module 2 - <Title>`
+
+```
+<Short description modul, maks 255 karakter, idealnya 1 kalimat>
+```
+
+
+- Lesson 3 - <Title>
+    lesson short description
+    ```
+    <Short description lesson, maks 255 karakter, 1 kalimat>
+    
+    ```
+````
+
+Aturan format: judul modul ditulis `` ### N. `Module N - <Title>` `` (backtick inline, pemisah tanda hubung `-`, bukan em dash). Short description modul ditaruh di code block tepat di bawah judul, sebelum daftar lesson, dan jadi kolom `description` modul di database. Tiap lesson ditulis `- Lesson N - <Title>`, diikuti baris label `lesson short description` dan code block, keduanya berindentasi **4 spasi** (bukan tab); di dalam code block ada teks deskripsi lalu satu baris kosong. Contoh acuan: `01-projects/qadrlabs/courses/learn-rust-for-beginners/tentang-course.md`. Jaga benar batas 255 karakter untuk short description modul dan lesson, dan jangan pakai em dash. Nomor lesson berlanjut menerus lintas modul. Buat folder modul kosong `module-N-<kebab-title>/` untuk tiap modul. **Berhenti dan minta konfirmasi user** atas keseluruhan silabus sebelum menyusun lesson apa pun.
 
 Jika silabus sudah ada (user langsung minta menyusun lesson), lewati Fase 1 dan 2 dan langsung ke Fase 3.
 
@@ -207,6 +248,7 @@ Catatan struktur:
 
 - Menggunakan em dash (`—`) atau en dash (`–`) dalam bentuk apa pun.
 - Menulis `---` sebagai pemisah di luar pemisah antar section H2 file lesson.
+- Menulis nilai field `tentang-course.md` (Deskripsi, Konten, short description modul dan lesson) tanpa wrapper code block.
 - Menambahkan frontmatter pada file lesson.
 - Memakai anchor slug `{#...}` pada heading file lesson gaya beyond.
 - Memakai label "Step N" untuk section yang tidak sekuensial / konseptual.
@@ -220,5 +262,5 @@ Catatan struktur:
 Sesuai fase yang dijalankan:
 
 **Fase 1:** File `tentang-course.md` + path lengkapnya.
-**Fase 2:** `## Daftar Modul` terisi di `tentang-course.md` (tiap modul punya short description maks 255 karakter + daftar lesson) + daftar folder modul yang dibuat.
+**Fase 2:** `## Daftar Modul` terisi di `tentang-course.md` (format copy-friendly: tiap modul punya short description maks 255 karakter dalam code block, tiap lesson punya lesson short description maks 255 karakter dalam code block berindentasi) + daftar folder modul yang dibuat.
 **Fase 3:** Untuk tiap lesson: file markdown lengkap (tanpa frontmatter) + path lengkap output yang disarankan.
