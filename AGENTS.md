@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository is an Obsidian vault organized with the PARA method. Content is Markdown-first and should remain easy to browse in Obsidian.
+This repository is an Obsidian vault organized with the PARA method (Projects, Areas, Resources, Archives). It is a personal knowledge management system; content is Markdown-first and should remain easy to browse in Obsidian.
 
 - `00-inbox/`: quick captures, drafts, and unprocessed notes.
 - `01-projects/`: active work with goals, deadlines, or deliverables.
@@ -28,7 +28,7 @@ Use `sandbox/` for hands-on tutorial validation, throwaway projects, generated f
 
 ## Coding Style & Naming Conventions
 
-Write notes in standard Markdown compatible with Obsidian. Use `[[Note Name]]` for internal links, `#tag` for tags, and YAML frontmatter only when metadata is useful. Prefer concise headings, short paragraphs, and fenced code blocks with a language label, for example ` ```bash `.
+Write notes in standard Markdown compatible with Obsidian. Use `[[Note Name]]` for internal links (Obsidian tracks these as bidirectional backlinks), `#tag` for tags, and YAML frontmatter (between `---` delimiters) only when metadata is useful. Prefer concise headings, short paragraphs, and fenced code blocks with a language label, for example ` ```bash `.
 
 Use descriptive filenames. Existing files are mixed, but prefer lowercase words separated by hyphens for new notes, such as `laravel-deployment-checklist.md`. Keep project-specific config files under the relevant project folder, for example `01-projects/qadrlabs/`.
 
@@ -46,6 +46,6 @@ Pull requests should describe the changed notes, explain any folder moves, and c
 
 Do not reorganize the PARA folders without a clear request. Avoid changing `.obsidian/workspace.json`. Preserve personal notes and Indonesian-language content unless editing for an explicit task.
 
-Agents may create, read, modify, and delete files inside `sandbox/` while testing tutorials. Keep secrets out of this folder; use example credentials or `.env.example` patterns instead of real `.env` values.
+Agents may create, read, modify, and delete files inside `sandbox/` while testing tutorials. Keep secrets out of this folder; use example credentials, placeholder values, or `.env.example` patterns instead of real `.env` values.
 
 For qadrlabs.com article work, follow `.claude/commands/generate-artikel.md` as the project-local article guide. It defines the required English writing style, Laravel 13 conventions, article structure, testing expectations, and surgical-edit workflow.
