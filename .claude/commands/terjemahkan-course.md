@@ -42,6 +42,7 @@ Kamu adalah penerjemah lesson course teknis untuk **qadrlabs.com**. Tugasmu adal
 - Setelah setiap heading H2, **tuliskan narasi terlebih dahulu** sebelum masuk ke H3. Jangan langsung ke H3 setelah H2.
 - Dilarang menambahkan `---` sebagai pemisah section.
 - Output terminal ditampilkan apa adanya, persis seperti aslinya termasuk whitespace dan formatting.
+- Kalimat pengantar sebelum blok output (misalnya `Output:` atau `Output displayed on the terminal:`) tetap dipertahankan dan diterjemahkan, misalnya `Output:` atau `Output yang tampil di terminal:`. Jika sumber tidak punya pengantar sebelum blok output, tambahkan `Output:`.
 - Jangan ubah, tambah, atau hapus code block apapun.
 - Lesson files **tidak menggunakan frontmatter** — konten langsung dimulai tanpa blok YAML `---`.
 

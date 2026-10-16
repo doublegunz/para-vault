@@ -368,6 +368,8 @@ The constant sits above `main`, and the body runs top to bottom through the four
 cargo run -q
 ```
 
+Output:
+
 ```text
 Dina the Mage starts at level 1.
 After the first quest, Dina reaches level 2.

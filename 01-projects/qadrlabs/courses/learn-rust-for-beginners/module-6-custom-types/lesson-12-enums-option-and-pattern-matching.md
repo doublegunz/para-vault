@@ -402,6 +402,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Status: Pending (waiting for payment)
 Status: Paid (paid, being packed)

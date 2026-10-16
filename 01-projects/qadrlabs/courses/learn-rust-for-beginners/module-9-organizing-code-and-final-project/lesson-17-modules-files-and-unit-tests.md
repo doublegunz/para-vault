@@ -376,6 +376,8 @@ fn main() -> Result<(), String> {
 cargo run -q
 ```
 
+Output:
+
 ```text
 Skipping line 3: 'abc' is not a valid score
 Skipping line 6: 105 is above the maximum of 100
@@ -392,6 +394,8 @@ Three lines were skipped, each with the reason and the correct line number; the 
 ```bash
 cat report.txt
 ```
+
+Output displayed on the terminal:
 
 ```text
 Dina    85  B

@@ -277,6 +277,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 'The Rust Programming Language' has 29 bytes.
 Two readers: The Rust Programming Language / The Rust Programming Language

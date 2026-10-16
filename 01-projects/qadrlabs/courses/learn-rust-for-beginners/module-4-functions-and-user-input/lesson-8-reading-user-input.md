@@ -75,6 +75,8 @@ Run the program, type `Dina`, and press Enter:
 cargo run -q
 ```
 
+Output:
+
 ```text
 What is your name?
 Dina
@@ -337,6 +339,8 @@ Run the program and type the inputs shown after each prompt: `Dina`, `19`, `50`,
 cargo run -q
 ```
 
+Output:
+
 ```text
 What is your name? Dina
 Nice to meet you, Dina!
@@ -508,6 +512,8 @@ Operator (+, -, *, /): *
 Second number: 4
 12.5 * 4 = 50
 ```
+
+Second run:
 
 ```text
 First number: 10

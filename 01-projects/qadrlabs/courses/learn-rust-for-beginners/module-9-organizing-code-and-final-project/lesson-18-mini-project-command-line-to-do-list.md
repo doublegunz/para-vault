@@ -534,6 +534,8 @@ Make sure there is no `tasks.txt` in the project folder yet, then start the prog
 cargo run -q
 ```
 
+Output:
+
 ```text
 Rust To-Do List: 0 task(s) loaded.
 Type 'help' to see the commands.
@@ -582,6 +584,8 @@ Every command did what it should, and every mistake (a task number that does not
 cat tasks.txt
 ```
 
+Output displayed on the terminal:
+
 ```text
 0|Buy milk
 1|Finish the Rust course
@@ -592,6 +596,8 @@ The file uses exactly the format planned in Section 2. Finally, start the progra
 ```bash
 cargo run -q
 ```
+
+Output:
 
 ```text
 Rust To-Do List: 2 task(s) loaded.

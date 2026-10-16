@@ -191,6 +191,8 @@ Run the complete program:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Connecting... attempt 1
 Connecting... attempt 2

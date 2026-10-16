@@ -159,7 +159,7 @@ Paragraf narasi pembuka section.
 
 ### Step 1: <Action>
 
-Penjelasan, lalu code block, lalu penjelasan baris demi baris (apa yang dilakukan dan mengapa).
+Penjelasan, lalu code block **lengkap yang bisa langsung dijalankan**, lalu penjelasan baris demi baris (apa yang dilakukan dan mengapa), lalu command untuk menjalankan, kalimat pengantar `Output:`, dan blok output.
 
 ### Step 2: <Action>
 
@@ -175,7 +175,7 @@ Penjelasan, lalu code block, lalu penjelasan baris demi baris (apa yang dilakuka
 
 ## (K). Run and Test
 
-Jalankan server, cek di browser, cek validasi, dan opsional cek lewat Tinker. Tampilkan output yang diharapkan.
+Jalankan server, cek di browser, cek validasi, dan opsional cek lewat Tinker. Tampilkan output yang diharapkan, selalu didahului kalimat pengantar seperti `Output:`.
 
 ---
 
@@ -227,6 +227,35 @@ Catatan struktur:
 - **Jangan menulis `---` sebagai pemisah** di luar pemisah antar section H2 di file lesson.
 - Heading H2 di file lesson **tidak memakai anchor slug** (`{#...}`); cukup judul bernomor seperti `## 2. Create the Comments Migration`.
 - **Jangan ubah, edit, atau hapus output terminal** hasil uji coba nyata. Tampilkan apa adanya termasuk whitespace dan formatting. Jangan mengarang output.
+- **Setiap blok output wajib didahului kalimat pengantar** di baris tersendiri, misalnya `Output:` atau `Output displayed on the terminal:` (bebas, tapi wajib ada). Jangan menaruh blok command dan blok output berdempetan tanpa pengantar, karena pembaca tidak tahu blok kedua adalah hasil command.
+
+  Salah:
+
+  ````markdown
+  ```bash
+  ./main
+  ```
+
+  ```text
+  Hello, world!
+  ```
+  ````
+
+  Benar:
+
+  ````markdown
+  ```bash
+  ./main
+  ```
+
+  Output:
+
+  ```text
+  Hello, world!
+  ```
+  ````
+
+- **Kode tiap Step harus bite-size dan bisa langsung dijalankan.** Setiap code block di sebuah Step adalah program/file lengkap yang bisa di-compile dan di-run sendiri: blok yang dibuka di Step itu (`fn main() {`, `impl`, dsb.) juga ditutup di Step itu. **Jangan memecah satu fungsi atau satu blok kurung kurawal ke beberapa Step** (misalnya `fn main() {` dibuka di Step 2 lalu `}` baru muncul di Step 3), karena pemula harus mengetik panjang dan mudah lupa kurung penutup. Untuk membangun bertahap, tiap Step menampilkan versi lengkap file yang sudah diperbarui atau mengganti isi `main` dengan contoh baru yang lengkap, lalu langsung diikuti command run + `Output:`. Jika contoh terlalu panjang, pecah menjadi beberapa contoh kecil atau fungsi terpisah, bukan potongan kode yang tidak lengkap.
 - **Saat uji coba kode lesson, jika perlu mengunduh sesuatu (dataset, bobot model pretrained, dependency/paket, atau file contoh), KONFIRMASI dulu ke user sebelum mengunduh. Jangan langsung download.** Sebutkan apa yang akan diunduh beserta perkiraan ukurannya, lalu tunggu persetujuan user. Untuk unduhan yang besar atau lambat, sarankan agar uji coba dilakukan langsung di lingkungan target (mis. Google Colab) daripada mengunduh ke lokal.
 - File lesson **tanpa frontmatter**. Hanya `tentang-course.md` yang punya frontmatter.
 
@@ -254,6 +283,8 @@ Catatan struktur:
 - Memakai label "Step N" untuk section yang tidak sekuensial / konseptual.
 - Langsung masuk ke `### Step` setelah H2 tanpa narasi pembuka.
 - Mengubah atau mengarang output terminal.
+- Menulis blok output tanpa kalimat pengantar (`Output:` atau sejenisnya) sebelumnya.
+- Memecah kode menjadi potongan yang tidak bisa dijalankan sendiri, termasuk kurung kurawal buka dan tutup yang terpisah di Step berbeda.
 - Mengunduh dataset, bobot model, dependency, atau file apa pun saat uji coba tanpa konfirmasi user lebih dulu.
 - Generate seluruh course sekaligus tanpa konfirmasi silabus lebih dulu.
 

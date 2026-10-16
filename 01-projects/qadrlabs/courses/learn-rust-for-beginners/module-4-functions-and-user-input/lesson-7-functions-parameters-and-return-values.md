@@ -325,6 +325,8 @@ Read `main` on its own and notice how it now reads like a summary of the program
 cargo run -q
 ```
 
+Output:
+
 ```text
 === Functions Demo ===
 Hello, Dina! Welcome to the store.

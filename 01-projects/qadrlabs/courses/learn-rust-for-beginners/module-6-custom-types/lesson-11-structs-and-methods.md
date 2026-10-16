@@ -326,6 +326,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Title: The Silent Forest
 Pages: 529

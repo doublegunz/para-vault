@@ -200,6 +200,8 @@ Your complete program reads from top to bottom like a series of decisions. Run i
 cargo run -q
 ```
 
+Output:
+
 ```text
 Score 83: passed.
 Great job!

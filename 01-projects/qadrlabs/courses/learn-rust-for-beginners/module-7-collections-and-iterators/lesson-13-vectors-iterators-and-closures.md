@@ -308,6 +308,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Cart: ["rice", "eggs", "milk"] (3 items)
 First item: rice

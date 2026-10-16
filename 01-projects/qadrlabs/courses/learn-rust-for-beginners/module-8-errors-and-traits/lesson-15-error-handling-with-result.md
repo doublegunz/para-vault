@@ -60,6 +60,8 @@ The `panic!` macro stops the program and prints the message you give it. Here th
 cargo run -q
 ```
 
+Output:
+
 ```text
 
 thread 'main' (60386) panicked at src/main.rs:4:9:
@@ -352,6 +354,8 @@ Run it:
 ```bash
 cargo run -q
 ```
+
+Output:
 
 ```text
 Ok(42)

@@ -298,6 +298,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Rust is fun! / Rust & friends
 Trimmed: [Learning Rust, One Lesson at a Time]

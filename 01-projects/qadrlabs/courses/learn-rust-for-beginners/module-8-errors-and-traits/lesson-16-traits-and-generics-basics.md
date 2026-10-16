@@ -378,6 +378,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Morning Coffee by Budi Santoso, 96 pages
 [NEW] Morning Coffee by Budi Santoso, 96 pages

@@ -229,6 +229,8 @@ List everything in the project folder, including hidden files:
 ls -a
 ```
 
+Output displayed on the terminal:
+
 ```text
 .
 ..

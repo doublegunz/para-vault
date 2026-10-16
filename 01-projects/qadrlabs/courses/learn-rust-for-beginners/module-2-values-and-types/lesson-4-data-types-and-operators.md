@@ -229,6 +229,8 @@ Run the complete program:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Students: 27, temperature: -3, age: 19
 World population: 8100000000

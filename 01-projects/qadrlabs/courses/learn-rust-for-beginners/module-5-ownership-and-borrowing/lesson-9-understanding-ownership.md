@@ -294,6 +294,8 @@ Run it:
 cargo run -q
 ```
 
+Output:
+
 ```text
 Inside the block: Hello
 The block has ended.
