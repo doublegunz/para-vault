@@ -171,6 +171,7 @@ If the code is correct, `rustc` prints nothing at all. In the world of command-l
 ```bash
 ls
 ```
+Output displayed on the terminal:
 
 ```text
 main
@@ -182,7 +183,7 @@ There are now two files. `main.rs` is your source code. `main` is the executable
 ```bash
 ./main
 ```
-
+Output:
 ```text
 Hello, world!
 ```
@@ -231,13 +232,11 @@ ls -a
 ```text
 .
 ..
-.git
-.gitignore
 Cargo.toml
 src
 ```
 
-`.` and `..` are shortcuts for the current and parent folder and appear in every `ls -a` listing. `.git` and `.gitignore` show that Cargo also initialized a Git repository so you can track changes; you do not need Git for this course, so you can ignore them. (If you create the project inside a folder that is already a Git repository, Cargo skips this step.) The two files that matter are `Cargo.toml` and the `src` folder.
+`.` and `..` are shortcuts for the current and parent folder and appear in every `ls -a` listing.  The two files that matter are `Cargo.toml` and the `src` folder.
 
 Open `Cargo.toml`:
 
@@ -269,14 +268,22 @@ Build the project:
 ```bash
 cargo build
 ```
+Output:
+```
+courses@qadrlabs:~/rust-basics/hello_cargo$ cargo build
+   Compiling hello_cargo v0.1.0 (/home/courses/rust-basics/hello_cargo)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
 
+```
 Cargo prints a `Compiling hello_cargo v0.1.0 (...)` line showing the project name, version, and folder, followed by a `Finished` line that names the build profile and how long it took. Cargo called `rustc` for you and placed the executable in a new `target/debug` folder. Run it directly:
 
 ```bash
 ./target/debug/hello_cargo
 ```
 
+Output:
 ```text
+$ ./target/debug/hello_cargo
 Hello, world!
 ```
 
@@ -285,6 +292,13 @@ Typing that path every time would be tedious, so Cargo combines both steps into 
 ```bash
 cargo run
 ```
+Output:
+```
+$ cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
+     Running `target/debug/hello_cargo`
+Hello, world!
+```
 
 `cargo run` builds the project if anything changed and then runs the executable. When you run it right after `cargo build`, there is nothing new to compile, so Cargo prints only a `Finished` line, then ``Running `target/debug/hello_cargo` ``, then your program's output:
 
@@ -292,12 +306,26 @@ cargo run
 Hello, world!
 ```
 
+Below is the complete output displayed on the terminal
+```
+courses@qadrlabs:~/rust-basics/hello_cargo$ cargo build
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+courses@qadrlabs:~/rust-basics/hello_cargo$ cargo run
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target/debug/hello_cargo`
+Hello, world!
+courses@qadrlabs:~/rust-basics/hello_cargo$ target/debug/hello_cargo
+Hello, world!
+
+```
+
+
 The lines that start with `Compiling`, `Finished`, and `Running` come from Cargo, not from your program. They are useful for seeing what Cargo did. When you only want to see the program's output, add `--quiet` (or its short form `-q`):
 
 ```bash
 cargo run -q
 ```
-
+Output:
 ```text
 Hello, world!
 ```
@@ -308,6 +336,13 @@ As programs grow, compiling takes longer. When you only want to know whether you
 
 ```bash
 cargo check
+```
+Output:
+```
+courses@qadrlabs:~/rust-basics/hello_cargo$ cargo check
+    Checking hello_cargo v0.1.0 (/home/gun-gun-priatna/rust-basics/hello_cargo)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s
+
 ```
 
 `cargo check` runs all of the compiler's checks but skips producing an executable, so it is faster than `cargo build`. Cargo reports `Checking hello_cargo v0.1.0 (...)` instead of `Compiling`, followed by a `Finished` line. Many Rust programmers run `cargo check` frequently while writing code and `cargo run` when they want to see the result.
@@ -330,7 +365,7 @@ The second `println!` adds a new line of output. Statements inside `main` run fr
 ```bash
 cargo run -q
 ```
-
+Output:
 ```text
 Hello, world!
 My Rust toolchain works.
@@ -352,7 +387,7 @@ rust-basics/
     └── target/
 ```
 
-`hello_cargo` also contains `Cargo.lock`, created by the first build to record exact dependency versions, plus the hidden Git files. Every lesson from now on creates a new Cargo project next to these.
+`hello_cargo` also contains `Cargo.lock`, created by the first build to record exact dependency versions. Every lesson from now on creates a new Cargo project next to these.
 
 ---
 
@@ -364,6 +399,14 @@ When a program is ready to share or measure, build it in release mode:
 
 ```bash
 cargo build --release
+```
+
+Output:
+```
+$ cargo build --release
+   Compiling hello_cargo v0.1.0 (/home/gun-gun-priatna/rust-basics/hello_cargo)
+    Finished `release` profile [optimized] target(s) in 0.07s
+
 ```
 
 Cargo now uses the `release` profile, described as `[optimized]`, and places the executable in `target/release` instead of `target/debug`. The compiler spends more time optimizing the code, so release builds take longer to compile but run faster. For learning, the default debug build is the right choice; you will not need release builds in this course, but it is useful to know why there are two folders inside `target`.

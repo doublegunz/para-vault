@@ -40,7 +40,16 @@ cd ~/rust-basics
 cargo new variables
 cd variables
 ```
+Output:
+```
+$ cd ~/rust-basics
+cargo new variables
+cd variables
 
+    Creating binary (application) `variables` package
+note: see more `Cargo.toml` keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+```
 `cargo new variables` creates a project folder named `variables` with a `Cargo.toml` file and a `src/main.rs` file, exactly like `hello_cargo` in Lesson 2. The `cd` command moves into the project so the Cargo commands you run next apply to it. Open the folder in your editor.
 
 ### Step 2: Create Your First Variables
@@ -72,6 +81,15 @@ Run the project:
 cargo run
 ```
 
+Output:
+```
+$ cargo run
+   Compiling variables v0.1.0 (/home/username/rust-basics/variables)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.12s
+     Running `target/debug/variables`
+Dina the Mage starts at level 1.
+
+```
 After Cargo's `Compiling`, `Finished`, and `Running` messages, the program prints:
 
 ```text
@@ -93,9 +111,54 @@ Before fixing anything, it helps to see what Rust does when you break the rule. 
 ```rust
     level = 2;
 ```
+the entire line of code:
+```
+fn main() {
+    // Immutable variables: set once, never changed.
+    let player = "Dina";
+    let class = "Mage";
+    let level = 1;
+
+    println!("{player} the {class} starts at level {level}.");
+    
+    level = 2;
+}
+```
+
 
 This line tries to assign a new value to `level`. Run `cargo run`, and the compiler refuses:
+```
+$ cargo run
+   Compiling variables v0.1.0 (/home/username/rust-basics/variables)
+error[E0384]: cannot assign twice to immutable variable `level`
+ --> src/main.rs:9:5
+  |
+5 |     let level = 1;
+  |         ----- first assignment to `level`
+...
+9 |     level = 2;
+  |     ^^^^^^^^^ cannot assign twice to immutable variable
+  |
+help: consider making this binding mutable
+  |
+5 |     let mut level = 1;
+  |         +++
 
+warning: value assigned to `level` is never read
+ --> src/main.rs:9:5
+  |
+9 |     level = 2;
+  |     ^^^^^^^^^
+  |
+  = help: maybe it is overwritten before being read?
+  = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+For more information about this error, try `rustc --explain E0384`.
+warning: `variables` (bin "variables") generated 1 warning
+error: could not compile `variables` (bin "variables") due to 1 previous error; 1 warning emitted
+```
+
+We can focus on the following error messages
 ```text
 error[E0384]: cannot assign twice to immutable variable `level`
 ```
