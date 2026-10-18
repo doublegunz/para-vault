@@ -98,19 +98,57 @@ The new keyword is `pub`, short for public. Everything in a module is private by
 
 ### Step 3: Declare and Use the Module in main.rs
 
-Replace the contents of `src/main.rs` with the first lines of the program:
+Replace the contents of `src/main.rs` with this complete program, which tries the module on a few lines written in the code:
 
 ```rust
 mod grades;
 
-use std::fs;
-
 use grades::{Student, average, letter, parse_line};
+
+fn main() {
+    let mut students: Vec<Student> = Vec::new();
+    for line in ["Dina,85", "Raka,92", "Sari,abc"] {
+        match parse_line(line) {
+            Ok(student) => students.push(student),
+            Err(message) => println!("Skipping: {message}"),
+        }
+    }
+
+    for student in &students {
+        println!(
+            "{} scored {}: {}",
+            student.name,
+            student.score,
+            letter(student.score)
+        );
+    }
+    match average(&students) {
+        Some(value) => println!("Average: {value:.1}"),
+        None => println!("No valid scores."),
+    }
+}
 ```
 
 `mod grades;` declares a module named `grades`. When Rust sees a `mod` declaration ending in a semicolon, it looks for the module's code in `src/grades.rs`. Without this line, `grades.rs` is just a file on disk that the compiler ignores.
 
-`use std::fs;` brings the standard library's file system module into scope, as `use std::io;` did in Lesson 8. `use grades::{...};` brings four items from your module into scope at once; the curly braces list several items from the same module. After this line, you can write `parse_line(line)` instead of `grades::parse_line(line)`. Both forms work; `use` just saves typing. The rest of `main.rs` follows in Section 3.
+`use grades::{...};` brings four items from your module into scope at once; the curly braces list several items from the same module. After this line, you can write `parse_line(line)` instead of `grades::parse_line(line)`. Both forms work; `use` just saves typing.
+
+`main` parses three lines written directly in the code, keeps the valid students in a vector, prints each one with its letter grade, and prints the average. It uses every public item from `grades`, so you can check that the module works before reading real files. Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Skipping: 'abc' is not a valid score
+Dina scored 85: B
+Raka scored 92: A
+Average: 88.5
+```
+
+`Sari,abc` was rejected with the message from `parse_line`, and the two valid students were printed with their grades. In Section 3 you will replace this temporary `main` with one that reads the lines from a file.
 
 ---
 
@@ -136,9 +174,15 @@ The file contains three valid lines and several problems on purpose: a score tha
 
 ### Step 2: Read and Parse the File
 
-Add the `main` function below the `use` lines:
+Replace the contents of `src/main.rs` with this complete program:
 
 ```rust
+mod grades;
+
+use std::fs;
+
+use grades::{Student, average, letter, parse_line};
+
 fn main() -> Result<(), String> {
     let content = fs::read_to_string("scores.txt")
         .map_err(|error| format!("could not read scores.txt: {error}"))?;
@@ -153,17 +197,73 @@ fn main() -> Result<(), String> {
             Err(message) => println!("Skipping line {}: {message}", index + 1),
         }
     }
+
+    for student in &students {
+        println!(
+            "{} {} {}",
+            student.name,
+            student.score,
+            letter(student.score)
+        );
+    }
+    match average(&students) {
+        Some(value) => println!("Average: {value:.1}"),
+        None => println!("No valid scores."),
+    }
+    Ok(())
+}
 ```
 
-`fs::read_to_string("scores.txt")` opens the file, reads its entire contents into a `String`, and closes it again. It returns a `Result`: `Ok` with the text, or `Err` with an `io::Error` describing what went wrong. `map_err` converts that error into a `String` message that includes the original error, and `?` returns it from `main` if reading failed. That is why `main` returns `Result<(), String>`, as in Lesson 15.
+`use std::fs;` brings the standard library's file system module into scope, as `use std::io;` did in Lesson 8.
 
-`content.lines()` splits the text into lines without their newline characters, and `enumerate` adds a position to each one (Lesson 13). Empty lines are skipped with `continue`. Every other line goes through `parse_line`. Valid students are pushed into the vector, and invalid lines produce a message with a human friendly line number (`index + 1`) instead of stopping the whole program. One bad line should not prevent the report for everyone else.
+`fs::read_to_string("scores.txt")` opens the file, reads its entire contents into a `String`, and closes it again. It returns a `Result`: `Ok` with the text, or `Err` with an `io::Error` describing what went wrong. `map_err` converts that error into a `String` message that includes the original error, and `?` returns it from `main` if reading failed. That is why `main` returns `Result<(), String>`, as in Lesson 15, and ends with `Ok(())`.
+
+`content.lines()` splits the text into lines without their newline characters, and `enumerate` adds a position to each one (Lesson 13). Empty lines are skipped with `continue`. Every other line goes through `parse_line`. Valid students are pushed into the vector, and invalid lines produce a message with a human friendly line number (`index + 1`) instead of stopping the whole program. One bad line should not prevent the report for everyone else. The last part prints each student and the average, as in Section 2. Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Skipping line 3: 'abc' is not a valid score
+Skipping line 6: 105 is above the maximum of 100
+Skipping line 7: 'Tono' should look like 'name,score'
+Dina 85 B
+Raka 92 A
+Budi 74 C
+Average: 83.7
+```
+
+Three lines were skipped, each with the reason and the correct line number; the empty line 4 was skipped silently. `Raka, 92` was accepted because `parse_line` trims the score.
 
 ### Step 3: Build the Report and Write It to a File
 
-Add the rest of `main`:
+Printing works, but the report should also be saved to a file. Replace the contents of `src/main.rs` with the complete final version:
 
 ```rust
+mod grades;
+
+use std::fs;
+
+use grades::{Student, average, letter, parse_line};
+
+fn main() -> Result<(), String> {
+    let content = fs::read_to_string("scores.txt")
+        .map_err(|error| format!("could not read scores.txt: {error}"))?;
+
+    let mut students: Vec<Student> = Vec::new();
+    for (index, line) in content.lines().enumerate() {
+        if line.trim().is_empty() {
+            continue;
+        }
+        match parse_line(line) {
+            Ok(student) => students.push(student),
+            Err(message) => println!("Skipping line {}: {message}", index + 1),
+        }
+    }
+
     let mut report = String::new();
     for student in &students {
         let row = format!(
@@ -187,9 +287,28 @@ Add the rest of `main`:
 }
 ```
 
-The report is built as a single `String`, one formatted row per student, followed by the average. Each row ends with `\n`, a newline, because the text will be written to a file as well as printed. Building the text once and using it twice keeps the screen output and the file identical.
+The reading and parsing part is unchanged. Instead of printing each row directly, the program now builds the report as a single `String`, one formatted row per student, followed by the average. Each row ends with `\n`, a newline, because the text will be written to a file as well as printed. Building the text once and using it twice keeps the screen output and the file identical. `{:<6}` pads the name to six characters and `{:>3}` right aligns the score, so the columns line up.
 
-`print!("{report}")` prints the report; `print!` is used because the text already ends with a newline. `fs::write("report.txt", &report)` creates the file (or replaces it if it exists) and writes the text into it. It also returns a `Result`, handled the same way as the read. `Ok(())` signals that `main` finished successfully.
+`print!("{report}")` prints the report; `print!` is used because the text already ends with a newline. `fs::write("report.txt", &report)` creates the file (or replaces it if it exists) and writes the text into it. It also returns a `Result`, handled the same way as the read. Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Skipping line 3: 'abc' is not a valid score
+Skipping line 6: 105 is above the maximum of 100
+Skipping line 7: 'Tono' should look like 'name,score'
+Dina    85  B
+Raka    92  A
+Budi    74  C
+Average: 83.7
+Report saved to report.txt
+```
+
+The report rows are now aligned in columns, and the last line confirms the file was saved. The average of 85, 92, and 74 is 83.7.
 
 ---
 
@@ -323,73 +442,7 @@ The failing test is marked `FAILED`, and the `failures` section shows exactly wh
 
 ## 5. Run and Test
 
-Your complete `src/main.rs` should look like this:
-
-```rust
-mod grades;
-
-use std::fs;
-
-use grades::{Student, average, letter, parse_line};
-
-fn main() -> Result<(), String> {
-    let content = fs::read_to_string("scores.txt")
-        .map_err(|error| format!("could not read scores.txt: {error}"))?;
-
-    let mut students: Vec<Student> = Vec::new();
-    for (index, line) in content.lines().enumerate() {
-        if line.trim().is_empty() {
-            continue;
-        }
-        match parse_line(line) {
-            Ok(student) => students.push(student),
-            Err(message) => println!("Skipping line {}: {message}", index + 1),
-        }
-    }
-
-    let mut report = String::new();
-    for student in &students {
-        let row = format!(
-            "{:<6} {:>3}  {}\n",
-            student.name,
-            student.score,
-            letter(student.score)
-        );
-        report.push_str(&row);
-    }
-    match average(&students) {
-        Some(value) => report.push_str(&format!("Average: {value:.1}\n")),
-        None => report.push_str("No valid scores.\n"),
-    }
-
-    print!("{report}");
-    fs::write("report.txt", &report)
-        .map_err(|error| format!("could not write report.txt: {error}"))?;
-    println!("Report saved to report.txt");
-    Ok(())
-}
-```
-
-`src/grades.rs` contains the struct, the three functions from Section 2, and the test module from Section 4. Run the program from the project's root folder:
-
-```bash
-cargo run -q
-```
-
-Output:
-
-```text
-Skipping line 3: 'abc' is not a valid score
-Skipping line 6: 105 is above the maximum of 100
-Skipping line 7: 'Tono' should look like 'name,score'
-Dina    85  B
-Raka    92  A
-Budi    74  C
-Average: 83.7
-Report saved to report.txt
-```
-
-Three lines were skipped, each with the reason and the correct line number; the empty line 4 was skipped silently. `Raka, 92` was accepted because `parse_line` trims the score. The average of 85, 92, and 74 is 83.7. Now look at the saved file:
+Your `src/main.rs` is the final version from Section 3, and `src/grades.rs` contains the struct, the three functions from Section 2, and the test module from Section 4. You already ran the program at the end of Section 3. Now look at the saved file:
 
 ```bash
 cat report.txt

@@ -104,3 +104,17 @@
 **Short description:** Get to know Rust, install its toolchain on Ubuntu, and run Hello World while exploring compilation, Cargo, ownership, and borrowing. (132 chars)
 **Category:** Rust
 **Tags:** rust, ubuntu, rustup, cargo, hello-world, ownership, programming
+
+## 2026-10-16 - Ubuntu 26.10 release
+**File:** 01-projects/qadrlabs/post/01-draft/whats-new-in-ubuntu-26-10-stonking-stingray.md
+**Title:** What's New in Ubuntu 26.10 "Stonking Stingray": Rust Coreutils, GNOME 51, and Linux 7.3
+**Short description:** Ubuntu 26.10 Stonking Stingray ships Linux 7.3, GNOME 51, Rust coreutils, and PHP 8.5. See what changed, what broke, and whether to upgrade from 26.04 LTS. (155 chars)
+**Category:** Linux
+**Tags:** ubuntu, ubuntu-26-10, linux, gnome, rust, coreutils, kernel, Release Notes
+
+## 2026-10-16 - Computational thinking in the AI era
+**File:** 01-projects/qadrlabs/post/01-draft/computational-thinking-still-matters-when-ai-writes-the-code.md
+**Title:** Computational Thinking Still Matters When AI Writes the Code
+**Short description:** Is computational thinking still relevant when AI writes code? Learn its four pillars with a Python example: vague prompts, precise specs, and tests. (148 chars)
+**Category:** Programming
+**Tags:** computational-thinking, ai-coding, problem-solving, python, beginners, testing, prompt-engineering

@@ -56,7 +56,7 @@ cargo new ownership
 cd ownership
 ```
 
-These commands create the `ownership` project. You will build `src/main.rs` in parts, adding helper functions below `main` at the end.
+These commands create the `ownership` project. In every step of this lesson you will replace the contents of `src/main.rs` with a short, complete program and run it right away, so each example works on its own.
 
 ### Step 2: Watch a Value Go Out of Scope
 
@@ -70,25 +70,53 @@ fn main() {
         println!("Inside the block: {greeting}");
     } // greeting is dropped here
     println!("The block has ended.");
+}
 ```
 
 `String::from("Hello")` creates a `String` from a text literal: it requests heap memory and copies the characters into it. You can put a block in curly braces anywhere inside a function, and it creates a new scope. A scope is the region of code where a variable is valid. `greeting` is valid from the line where it is declared until the closing brace of its block.
 
 When a variable that owns heap memory goes out of scope, Rust automatically calls a special function named `drop`, which frees the memory. This happens at the closing brace, exactly where the comment says. You never write `drop` yourself and you can never forget it. If you tried to use `greeting` after the block, the compiler would reject it, because the variable no longer exists (you will see this error in Section 7).
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Inside the block: Hello
+The block has ended.
+```
+
 ### Step 3: Grow a String
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // A String can grow at runtime.
     let mut message = String::from("Learning");
     message.push_str(" Rust");
     message.push('!');
     println!("{message} ({} bytes)", message.len());
+}
 ```
 
 Because the text of a `String` lives on the heap, it can change size. `push_str` appends a piece of text, and `push` appends a single `char`. Both change the string, so `message` must be `mut`. `len()` returns the length in bytes: "Learning Rust!" is 14 bytes.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Learning Rust! (14 bytes)
+```
 
 A text literal like `"Learning"` cannot do this. Its characters are stored directly inside the compiled program, they never change, and its type is `&str`: a reference to text stored somewhere else. You will learn what references are in Lesson 10. For now, the rule of thumb is: use `&str` for fixed text you write in your code, and `String` for text that is built, changed, or read at runtime, such as user input.
 
@@ -106,31 +134,59 @@ You have already seen rule 3 in action. Rule 2 has a surprising consequence that
 
 ### Step 1: Copy a Number
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Copy types: simple values are copied.
     let a = 10;
     let b = a;
     println!("a = {a}, b = {b}");
+}
 ```
 
 `let b = a;` copies the value 10 into `b`. Both variables are usable afterward, and each has its own 10. This works because an `i32` lives entirely on the stack and copying four bytes is trivial. Types that are copied like this have a property called `Copy`. All integer and float types, `bool`, `char`, and tuples or arrays made only of `Copy` types are `Copy`.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+a = 10, b = 10
+```
+
 ### Step 2: Move a String
 
-Now do the same with a `String`:
+Now do the same with a `String`. Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Move: ownership of a String moves to the new variable.
     let original = String::from("notebook");
     let moved = original;
     println!("moved = {moved}");
+}
 ```
 
 You might expect `let moved = original;` to copy the text, but it does not. Copying the heap data could be expensive for long strings, so Rust copies only the small stack record (pointer, length, capacity). Now two variables would point to the same heap memory. If both were still valid, both would try to free that memory when they went out of scope, a bug called a double free.
 
-Rust prevents this by applying rule 2: there can only be one owner. After `let moved = original;`, ownership has moved to `moved`, and `original` is no longer valid. This is called a move. Using `moved` is fine. Try adding `println!("original = {original}");` after the move and run `cargo run`:
+Rust prevents this by applying rule 2: there can only be one owner. After `let moved = original;`, ownership has moved to `moved`, and `original` is no longer valid. This is called a move. Using `moved` is fine. Run the program first:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+moved = notebook
+```
+
+Now try adding `println!("original = {original}");` after the move and run `cargo run` again. The first line of the error is:
 
 ```text
 error[E0382]: borrow of moved value: `original`
@@ -140,16 +196,30 @@ The full message labels three places: where `original` was declared (with the ex
 
 ### Step 3: Clone When You Need a Real Copy
 
-If you really want two independent strings, ask for a deep copy explicitly:
+If you really want two independent strings, ask for a deep copy explicitly. Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Clone: make a real copy of the heap data.
     let first = String::from("pencil");
     let second = first.clone();
     println!("first = {first}, second = {second}");
+}
 ```
 
 `first.clone()` allocates new heap memory and copies all the characters into it. `first` and `second` now own separate heap data, so both are valid and each is dropped independently. Cloning has a cost proportional to the size of the data, which is why Rust never does it silently. When you see `.clone()` in code, you know a copy is being made on purpose.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+first = pencil, second = pencil
+```
 
 ---
 
@@ -159,9 +229,10 @@ Passing a value to a function works exactly like assigning it to a variable: `Co
 
 ### Step 1: Move a Value into a Function
 
-Add these lines to `main`:
+Replace the contents of `src/main.rs` with a program that has `main` and two helper functions below it:
 
 ```rust
+fn main() {
     // Ownership and functions.
     let item = String::from("eraser");
     take_ownership(item);
@@ -169,11 +240,8 @@ Add these lines to `main`:
     let count = 3;
     make_copy(count);
     println!("count is still usable: {count}");
-```
+}
 
-Then add the two functions below `main` (after its closing brace, which you will add in Step 2):
-
-```rust
 fn take_ownership(text: String) {
     println!("take_ownership got: {text}");
 } // text is dropped here
@@ -187,11 +255,26 @@ When `main` calls `take_ownership(item)`, ownership of the `String` moves into t
 
 `make_copy(count)` behaves differently because `i32` is a `Copy` type. The function receives a copy of 3, and `count` in `main` stays valid, which is why the `println!` after the call works.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+take_ownership got: eraser
+make_copy got: 3
+count is still usable: 3
+```
+
 ### Step 2: Get Ownership Back from a Function
 
-Add these lines to the end of `main`, and close `main` with its brace:
+Replace the contents of `src/main.rs` with a program that gets values back from functions:
 
 ```rust
+fn main() {
     let created = give_ownership();
     println!("Received: {created}");
 
@@ -199,11 +282,7 @@ Add these lines to the end of `main`, and close `main` with its brace:
     let label = add_price_tag(label);
     println!("After the function: {label}");
 }
-```
 
-Add the two new functions below the others:
-
-```rust
 fn give_ownership() -> String {
     String::from("stapler")
 }
@@ -218,76 +297,6 @@ fn add_price_tag(mut text: String) -> String {
 
 `add_price_tag` takes ownership of a string, changes it, and returns it. The parameter is declared `mut text: String` because the function modifies it; `mut` on a parameter works just like `mut` on a `let`. In `main`, `let label = add_price_tag(label);` moves the string in and receives it back, using shadowing to reuse the name `label`. This "take it and give it back" pattern works, but it gets tedious, especially when a function needs to return another value too. Lesson 10 introduces borrowing, which lets functions use a value without taking it at all.
 
----
-
-## 6. Run and Test
-
-Your complete `src/main.rs` should look like this:
-
-```rust
-fn main() {
-    // Scope: a variable lives until the end of its block.
-    {
-        let greeting = String::from("Hello");
-        println!("Inside the block: {greeting}");
-    } // greeting is dropped here
-    println!("The block has ended.");
-
-    // A String can grow at runtime.
-    let mut message = String::from("Learning");
-    message.push_str(" Rust");
-    message.push('!');
-    println!("{message} ({} bytes)", message.len());
-
-    // Copy types: simple values are copied.
-    let a = 10;
-    let b = a;
-    println!("a = {a}, b = {b}");
-
-    // Move: ownership of a String moves to the new variable.
-    let original = String::from("notebook");
-    let moved = original;
-    println!("moved = {moved}");
-
-    // Clone: make a real copy of the heap data.
-    let first = String::from("pencil");
-    let second = first.clone();
-    println!("first = {first}, second = {second}");
-
-    // Ownership and functions.
-    let item = String::from("eraser");
-    take_ownership(item);
-
-    let count = 3;
-    make_copy(count);
-    println!("count is still usable: {count}");
-
-    let created = give_ownership();
-    println!("Received: {created}");
-
-    let label = String::from("ruler");
-    let label = add_price_tag(label);
-    println!("After the function: {label}");
-}
-
-fn take_ownership(text: String) {
-    println!("take_ownership got: {text}");
-} // text is dropped here
-
-fn make_copy(number: i32) {
-    println!("make_copy got: {number}");
-}
-
-fn give_ownership() -> String {
-    String::from("stapler")
-}
-
-fn add_price_tag(mut text: String) -> String {
-    text.push_str(" (Rp5000)");
-    text
-}
-```
-
 Run it:
 
 ```bash
@@ -297,24 +306,19 @@ cargo run -q
 Output:
 
 ```text
-Inside the block: Hello
-The block has ended.
-Learning Rust! (14 bytes)
-a = 10, b = 10
-moved = notebook
-first = pencil, second = pencil
-take_ownership got: eraser
-make_copy got: 3
-count is still usable: 3
 Received: stapler
 After the function: ruler (Rp5000)
 ```
 
-The output looks unremarkable, and that is the point: ownership is checked entirely at compile time and adds no visible work at runtime. The interesting part is what the compiler *refused* to compile. Try each of these experiments, read the error, and then undo the change:
+---
 
-- Add `println!("{item}");` right after `take_ownership(item);`.
-- Change `let second = first.clone();` to `let second = first;` while keeping the `println!` that prints both.
-- Change `let a = 10;` to `let a = String::from("10");` and see which line fails.
+## 6. Run and Test
+
+You have already run every program in this lesson. The output of each one looks unremarkable, and that is the point: ownership is checked entirely at compile time and adds no visible work at runtime. The interesting part is what the compiler *refused* to compile. Put each program back into `src/main.rs`, try one of these experiments, read the error, and then undo the change:
+
+- In the program from Section 5, Step 1, add `println!("{item}");` right after `take_ownership(item);`.
+- In the program from Section 4, Step 3, change `let second = first.clone();` to `let second = first;` while keeping the `println!` that prints both.
+- In the program from Section 4, Step 1, change `let a = 10;` to `let a = String::from("10");` and see which line fails.
 
 Each experiment produces `error[E0382]: borrow of moved value`, pointing at the exact move. Learning to see moves in your head is the core skill of this module.
 

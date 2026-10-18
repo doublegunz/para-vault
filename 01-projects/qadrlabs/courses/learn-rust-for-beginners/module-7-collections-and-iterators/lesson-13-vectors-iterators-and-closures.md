@@ -38,7 +38,7 @@ cargo new vectors
 cd vectors
 ```
 
-These commands create the `vectors` project. The whole program lives in `main` this time, built up section by section.
+These commands create the `vectors` project. In every step you will replace the contents of `src/main.rs` with a short, complete program and run it right away. Section 5 then combines everything into one file.
 
 ### Step 2: Create a Vector and Push Items
 
@@ -52,43 +52,97 @@ fn main() {
     cart.push(String::from("eggs"));
     cart.push(String::from("milk"));
     println!("Cart: {:?} ({} items)", cart, cart.len());
+}
 ```
 
 `Vec::new()` creates an empty vector. Because it is empty, Rust cannot guess what type of elements it will hold, so the annotation `Vec<String>` says "a vector of `String` values." The angle brackets hold the element type, just as with `Option<u32>` in Lesson 12.
 
 `push` adds an element to the end of the vector. It changes the vector, so `cart` must be `mut`. Each `String` is moved into the vector, which becomes its owner. `len()` returns the number of elements, and `{:?}` prints the whole vector, just like an array.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Cart: ["rice", "eggs", "milk"] (3 items)
+```
+
 ### Step 3: Read Items Safely
 
-Add these lines:
+Replace the contents of `src/main.rs` with a program that builds the same cart and then reads from it:
 
 ```rust
+fn main() {
+    let mut cart: Vec<String> = Vec::new();
+    cart.push(String::from("rice"));
+    cart.push(String::from("eggs"));
+    cart.push(String::from("milk"));
+
     // Read items by index and with get.
     println!("First item: {}", cart[0]);
     match cart.get(5) {
         Some(item) => println!("Item 5: {item}"),
         None => println!("There is no item 5."),
     }
+}
 ```
 
 There are two ways to read an element. Indexing with `cart[0]` works like arrays: it returns the element at that position, and panics if the position does not exist. Because a vector's length changes at runtime, the compiler usually cannot check indexes in advance.
 
 `get(5)` is the safe alternative. It returns an `Option`: `Some(&element)` if the index exists and `None` if it does not. The cart has three items, so position 5 does not exist and the `None` arm runs. Use `get` whenever the index comes from somewhere you do not fully control, such as user input.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+First item: rice
+There is no item 5.
+```
+
 ### Step 4: Remove Items
 
-Add these lines:
+Replace the contents of `src/main.rs` with a program that builds the cart and then removes items:
 
 ```rust
+fn main() {
+    let mut cart: Vec<String> = Vec::new();
+    cart.push(String::from("rice"));
+    cart.push(String::from("eggs"));
+    cart.push(String::from("milk"));
+
     // Remove items.
     let last = cart.pop();
     println!("Removed with pop: {:?}", last);
     let first = cart.remove(0);
     println!("Removed with remove(0): {first}");
     println!("Cart now: {:?}", cart);
+}
 ```
 
 `pop()` removes the last element and returns it wrapped in an `Option`, because the vector might be empty. Here it returns `Some("milk")`, and ownership of that `String` moves out of the vector into `last`. `remove(0)` removes the element at a given position, shifts the following elements one place to the left, and returns the removed element directly (it panics if the index is out of bounds). After both removals, only `"eggs"` is left.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Removed with pop: Some("milk")
+Removed with remove(0): rice
+Cart now: ["eggs"]
+```
 
 ---
 
@@ -98,46 +152,93 @@ Looping over a vector works just like looping over an array, with one important 
 
 ### Step 1: Create a Vector with vec! and Loop over It
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
-    // vec! macro, loops, and changing items.
-    let mut scores = vec![72, 88, 95, 64, 81];
+fn main() {
+    // vec! macro and loops.
+    let scores = vec![72, 88, 95, 64, 81];
     for score in &scores {
         print!("{score} ");
     }
     println!();
+}
 ```
 
 The `vec!` macro creates a vector with initial values, using the same syntax as an array literal. Rust infers the type `Vec<i32>` from the values, so no annotation is needed.
 
 `for score in &scores` borrows the vector, and each `score` is a `&i32` reference. The vector is still usable after the loop. Writing `for score in scores` without `&` would move the vector into the loop, and `scores` could not be used afterward (see Section 6).
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+72 88 95 64 81 
+```
+
 ### Step 2: Change Every Element
 
-Add a bonus of five points to every score:
+Replace the contents of `src/main.rs` with a program that adds a bonus of five points to every score. The vector must be `mut` now, because the loop changes it:
 
 ```rust
+fn main() {
+    let mut scores = vec![72, 88, 95, 64, 81];
+
     for score in &mut scores {
         *score += 5;
     }
     println!("After bonus: {:?}", scores);
+}
 ```
 
 `for score in &mut scores` borrows the vector mutably, so each `score` is a `&mut i32`: a mutable reference to one element. To change the value it points to, you dereference it with `*`, as you learned in Lesson 10. `*score += 5` adds five to the element itself, inside the vector.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+After bonus: [77, 93, 100, 69, 86]
+```
+
 ### Step 3: Sort and Search
 
-Add these lines:
+Replace the contents of `src/main.rs` with a program that starts from the scores after the bonus:
 
 ```rust
+fn main() {
+    let mut scores = vec![77, 93, 100, 69, 86];
+
     scores.push(70);
     scores.sort();
     println!("Sorted: {:?}", scores);
     println!("Contains 100? {}", scores.contains(&100));
+}
 ```
 
 After adding one more score, `sort()` arranges the elements from smallest to largest, changing the vector in place. `contains(&100)` returns `true` if any element equals 100. It takes a reference to the value to look for, which is why the argument is `&100`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Sorted: [69, 70, 77, 86, 93, 100]
+Contains 100? true
+```
 
 ---
 
@@ -147,16 +248,22 @@ The loops above are fine, but a lot of everyday code follows the same few patter
 
 An iterator is something that produces a sequence of values, one at a time. `scores.iter()` creates an iterator that produces a reference to each element of `scores`, in order. Every `for` loop you have written already used an iterator behind the scenes. Iterator methods let you build a pipeline of steps on top of it.
 
+Every program in this section starts from the sorted scores you ended Section 3 with, `[69, 70, 77, 86, 93, 100]`, so the results are easy to check.
+
 ### Step 1: Sum, Count, and Find the Maximum
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
+    let scores = vec![69, 70, 77, 86, 93, 100];
+
     // Iterators with closures.
     let total: i32 = scores.iter().sum();
     let passed = scores.iter().filter(|s| **s >= 75).count();
     let highest = scores.iter().max();
     println!("Total: {total}, passed: {passed}, highest: {:?}", highest);
+}
 ```
 
 `scores.iter().sum()` adds up every element. The annotation `: i32` tells `sum` what type the result should be, because it could sum into several different numeric types.
@@ -167,55 +274,122 @@ Why two stars? `iter()` produces references to the elements (`&i32`), and `filte
 
 `max()` returns the largest element. It returns an `Option`, because an empty vector has no maximum, so the output shows `Some(100)`. `min()` works the same way for the smallest element.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Total: 495, passed: 4, highest: Some(100)
+```
+
 ### Step 2: Transform Elements and Collect a New Vector
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
+    let scores = vec![69, 70, 77, 86, 93, 100];
+
     let doubled: Vec<i32> = scores.iter().map(|s| s * 2).collect();
     println!("Doubled: {:?}", doubled);
 
     let high_scores: Vec<i32> = scores.iter().filter(|s| **s >= 85).copied().collect();
     println!("Scores 85 and above: {:?}", high_scores);
+}
 ```
 
 `map` transforms each element by passing it to a closure and producing the closure's result. `|s| s * 2` doubles each score; arithmetic works directly on references to numbers, so no `*` is needed. Iterators are lazy: `map` alone does not do anything until something consumes the results. `collect()` is the consumer here. It gathers everything the iterator produces into a new collection, and the annotation `Vec<i32>` tells it which kind of collection to build. The original `scores` vector is untouched.
 
 The second line combines `filter` and `collect`. After `filter`, the items are still references (`&i32`), but the target is a `Vec<i32>` of plain numbers. `copied()` turns each `&i32` into an `i32` by copying it, which works for `Copy` types such as numbers.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Doubled: [138, 140, 154, 172, 186, 200]
+Scores 85 and above: [86, 93, 100]
+```
+
 ### Step 3: Number Items with enumerate
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
+    let scores = vec![69, 70, 77, 86, 93, 100];
+
     for (position, score) in scores.iter().enumerate() {
         println!("#{} -> {score}", position + 1);
     }
+}
 ```
 
 `enumerate` pairs each item with its position, producing tuples `(index, item)`. The `for` loop destructures each tuple, as `first_word` did with `char_indices` in Lesson 10. Positions start at zero, so the output adds 1 to show human friendly numbers starting at 1. This is the idiomatic replacement for `for i in 0..scores.len()` whenever you need both the position and the value.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+#1 -> 69
+#2 -> 70
+#3 -> 77
+#4 -> 86
+#5 -> 93
+#6 -> 100
+```
+
 ### Step 4: Use Variables from the Surrounding Code in a Closure
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
+    let scores = vec![69, 70, 77, 86, 93, 100];
+
     // Closures can use variables from their surroundings.
     let passing_grade = 80;
     let is_passing = |score: &i32| *score >= passing_grade;
     let passing_count = scores.iter().filter(|s| is_passing(s)).count();
     println!("Passing with grade {passing_grade}: {passing_count}");
+}
 ```
 
 Closures can be stored in variables and called like functions. `is_passing` is a closure that takes a `&i32` (here the parameter type is written out, which is optional when Rust can infer it). Its body uses `passing_grade`, a variable that is not a parameter but comes from the surrounding code. This is called capturing, and it is the key difference between closures and regular `fn` functions, which cannot see the local variables of the function that calls them. Change `passing_grade` to 90 and the closure follows automatically.
 
 Inside `filter`, the closure `|s| is_passing(s)` calls the stored closure. `s` is a `&&i32`, and Rust automatically removes the extra reference layer when passing it to a parameter that expects `&i32`.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Passing with grade 80: 3
+```
+
 ### Step 5: Chain Several Steps
 
-Add the final lines and close `main`:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // A chain: keep even numbers, square them, add them up.
     let numbers = vec![1, 2, 3, 4, 5, 6];
     let result: i32 = numbers.iter().filter(|n| *n % 2 == 0).map(|n| n * n).sum();
@@ -227,11 +401,23 @@ This one line reads almost like the comment above it. `filter` keeps 2, 4, and 6
 
 In the `filter` closure, `*n % 2` uses a single `*`: the `%` operator works on a `&i32` directly, so removing one layer is enough. As a rule of thumb, if the compiler complains about comparing or calculating with references, add or remove a `*` as its message suggests.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Sum of squares of even numbers: 56
+```
+
 ---
 
 ## 5. Run and Test
 
-Your complete `src/main.rs` should look like this:
+Each step ran as its own small program. To see everything working together, replace the contents of `src/main.rs` with this complete program that combines all the steps:
 
 ```rust
 fn main() {

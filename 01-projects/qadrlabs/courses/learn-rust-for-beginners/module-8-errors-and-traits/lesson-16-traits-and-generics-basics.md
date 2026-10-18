@@ -38,15 +38,13 @@ cargo new traits
 cd traits
 ```
 
-These commands create the `traits` project. The file will contain a trait, two structs, several `impl` blocks, three functions, and `main` at the bottom.
+These commands create the `traits` project. You will grow `src/main.rs` step by step: each step adds complete items (a trait, a struct, an `impl` block, or a function) and gives you a complete `main` to use, so the program runs after every step.
 
 ### Step 2: Define the Summary Trait
 
-Replace the contents of `src/main.rs` with:
+Replace the contents of `src/main.rs` with a program that defines the trait, implements it for a `Book` struct, and calls its methods:
 
 ```rust
-use std::fmt;
-
 // A trait describes shared behavior.
 trait Summary {
     fn summary(&self) -> String;
@@ -55,17 +53,7 @@ trait Summary {
         format!("[NEW] {}", self.summary())
     }
 }
-```
 
-The `use std::fmt;` line imports the formatting module, which you will need for `Display` in Section 3.
-
-`trait Summary { ... }` defines a trait with two methods. The first, `summary`, ends with a semicolon instead of a body: it is a required method, a signature that every implementing type must fill in. The second, `headline`, has a body: it is a default method. Types get it for free, and they can replace it with their own version if they want. Notice that the default `headline` calls `self.summary()`. A default method can use the required methods, even though it does not know yet which type it will run on.
-
-### Step 3: Implement the Trait for Two Types
-
-Add two structs and implement the trait for each:
-
-```rust
 #[derive(Debug, Clone, PartialEq)]
 struct Book {
     title: String,
@@ -73,16 +61,52 @@ struct Book {
     pages: u32,
 }
 
-#[derive(Debug, Clone, PartialEq)]
-struct Movie {
-    title: String,
-    minutes: u32,
-}
-
 impl Summary for Book {
     fn summary(&self) -> String {
         format!("{} by {}, {} pages", self.title, self.author, self.pages)
     }
+}
+
+fn main() {
+    let book = Book {
+        title: String::from("Morning Coffee"),
+        author: String::from("Budi Santoso"),
+        pages: 96,
+    };
+
+    println!("{}", book.summary());
+    println!("{}", book.headline());
+}
+```
+
+`trait Summary { ... }` defines a trait with two methods. The first, `summary`, ends with a semicolon instead of a body: it is a required method, a signature that every implementing type must fill in. The second, `headline`, has a body: it is a default method. Types get it for free, and they can replace it with their own version if they want. Notice that the default `headline` calls `self.summary()`. A default method can use the required methods, even though it does not know yet which type it will run on.
+
+The struct derives three traits, which Section 3 explains. The interesting part is `impl Summary for Book`. This is like the `impl Book` blocks from Lesson 11, but it says "implement the `Summary` trait for `Book`." Inside, `Book` provides the required `summary` method. It does not write `headline`, so it uses the default.
+
+Trait methods are called with dot notation, exactly like regular methods. `book.headline()` runs the default method, which calls `Book`'s `summary`. The trait must be in scope for its methods to be callable; it is defined in the same file here, so it is. That is also why `flush` needed `use std::io::Write;` in Lesson 8: `flush` is a method of the `Write` trait.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso, 96 pages
+[NEW] Morning Coffee by Budi Santoso, 96 pages
+```
+
+### Step 3: Implement the Trait for a Second Type
+
+Add a `Movie` struct and its `impl` block below the `impl Summary for Book` block:
+
+```rust
+#[derive(Debug, Clone, PartialEq)]
+struct Movie {
+    title: String,
+    minutes: u32,
 }
 
 impl Summary for Movie {
@@ -96,13 +120,9 @@ impl Summary for Movie {
 }
 ```
 
-The structs derive three traits, which Section 3 explains. The interesting part is `impl Summary for Book`. This is like the `impl Book` blocks from Lesson 11, but it says "implement the `Summary` trait for `Book`." Inside, `Book` provides the required `summary` method. It does not write `headline`, so it uses the default.
-
 `Movie` implements `summary` differently, because a movie has minutes instead of an author and pages. It also overrides `headline` with its own version. The trait guarantees that both types *have* these methods; each type decides *how* they work.
 
-### Step 4: Call Trait Methods
-
-Add the start of `main`:
+Then replace the `main` function with:
 
 ```rust
 fn main() {
@@ -120,9 +140,24 @@ fn main() {
     println!("{}", book.summary());
     println!("{}", book.headline());
     println!("{}", movie.headline());
+}
 ```
 
-Trait methods are called with dot notation, exactly like regular methods. `book.headline()` runs the default method, which calls `Book`'s `summary`. `movie.headline()` runs `Movie`'s overriding version. The trait must be in scope for its methods to be callable; it is defined in the same file here, so it is. That is also why `flush` needed `use std::io::Write;` in Lesson 8: `flush` is a method of the `Write` trait.
+`movie.headline()` runs `Movie`'s overriding version, while `book.headline()` still uses the default.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso, 96 pages
+[NEW] Morning Coffee by Budi Santoso, 96 pages
+[NOW SHOWING] Rivers of Java (112 minutes)
+```
 
 ---
 
@@ -132,24 +167,58 @@ The standard library defines many traits that the rest of Rust relies on. Implem
 
 ### Step 1: Derive Debug, Clone, and PartialEq
 
-Add these lines to `main`:
+Replace the `main` function with this version. The new lines start at the `// Derived traits` comment:
 
 ```rust
+fn main() {
+    let book = Book {
+        title: String::from("Morning Coffee"),
+        author: String::from("Budi Santoso"),
+        pages: 96,
+    };
+    let movie = Movie {
+        title: String::from("Rivers of Java"),
+        minutes: 112,
+    };
+
+    // Trait methods and default methods.
+    println!("{}", book.summary());
+    println!("{}", book.headline());
+    println!("{}", movie.headline());
+
     // Derived traits: Debug, Clone, PartialEq.
     let copy = book.clone();
     println!("{:?}", copy);
     println!("Same book? {}", book == copy);
     let other = Book { pages: 120, ..book.clone() };
     println!("Same as the new edition? {}", book == other);
+}
 ```
 
 `#[derive(Debug, Clone, PartialEq)]` asks the compiler to generate implementations of three traits based on the struct's fields. `Debug` prints every field, as you have seen since Lesson 11. `Clone` provides `.clone()`, which clones every field to make an independent copy. `PartialEq` provides `==` and `!=`, which compare every field. Deriving works only when every field's type implements the trait too, which is true for `String` and `u32`.
 
 `book == copy` is `true`, because every field matches. The next line uses the struct update syntax: `Book { pages: 120, ..book.clone() }` creates a new `Book` with `pages` set to 120 and every other field taken from `book.clone()`. The clone is needed because the update syntax moves the remaining fields, and without it the `String`s would be moved out of `book`. The new edition has different pages, so the comparison is `false`.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso, 96 pages
+[NEW] Morning Coffee by Budi Santoso, 96 pages
+[NOW SHOWING] Rivers of Java (112 minutes)
+Book { title: "Morning Coffee", author: "Budi Santoso", pages: 96 }
+Same book? true
+Same as the new edition? false
+```
+
 ### Step 2: Implement Display by Hand
 
-`Debug` output is meant for programmers. To print a type for users with plain `{}`, you implement `Display` yourself, because only you know how your type should look. Add this block below the `impl Summary for Movie` block:
+`Debug` output is meant for programmers. To print a type for users with plain `{}`, you implement `Display` yourself, because only you know how your type should look. Add `use std::fmt;` as the first line of the file, then add this block below the `impl Summary for Movie` block:
 
 ```rust
 impl fmt::Display for Book {
@@ -159,18 +228,61 @@ impl fmt::Display for Book {
 }
 ```
 
-`impl fmt::Display for Book` implements the standard `Display` trait, which lives in the `fmt` module you imported. The trait has one required method, `fmt`, and its signature must match the trait exactly. `f` is a formatter, the destination the text is written to, and `fmt::Result` is a `Result` type that reports whether writing succeeded.
+The `use std::fmt;` line imports the formatting module, which contains the `Display` trait. `impl fmt::Display for Book` implements the standard `Display` trait, which lives in the `fmt` module you imported. The trait has one required method, `fmt`, and its signature must match the trait exactly. `f` is a formatter, the destination the text is written to, and `fmt::Result` is a `Result` type that reports whether writing succeeded.
 
-`write!` works like `format!`, but writes into `f` instead of creating a `String`, and it returns the `fmt::Result`, which becomes the method's return value. `\"` is an escaped double quote, so the title is printed inside quotes. Now add these lines to `main`:
+`write!` works like `format!`, but writes into `f` instead of creating a `String`, and it returns the `fmt::Result`, which becomes the method's return value. `\"` is an escaped double quote, so the title is printed inside quotes. Now replace the `main` function with this version, which adds the `// Display` lines at the end:
 
 ```rust
+fn main() {
+    let book = Book {
+        title: String::from("Morning Coffee"),
+        author: String::from("Budi Santoso"),
+        pages: 96,
+    };
+    let movie = Movie {
+        title: String::from("Rivers of Java"),
+        minutes: 112,
+    };
+
+    // Trait methods and default methods.
+    println!("{}", book.summary());
+    println!("{}", book.headline());
+    println!("{}", movie.headline());
+
+    // Derived traits: Debug, Clone, PartialEq.
+    let copy = book.clone();
+    println!("{:?}", copy);
+    println!("Same book? {}", book == copy);
+    let other = Book { pages: 120, ..book.clone() };
+    println!("Same as the new edition? {}", book == other);
+
     // Display: our type works with {}.
     println!("Display: {book}");
     let line = format!("Reading {book} today");
     println!("{line}");
+}
 ```
 
 Once `Display` is implemented, `Book` works anywhere `{}` does: in `println!`, inline placeholders, and `format!`. Implementing `Display` also gives you a `to_string()` method for free.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso, 96 pages
+[NEW] Morning Coffee by Budi Santoso, 96 pages
+[NOW SHOWING] Rivers of Java (112 minutes)
+Book { title: "Morning Coffee", author: "Budi Santoso", pages: 96 }
+Same book? true
+Same as the new edition? false
+Display: "Morning Coffee" (Budi Santoso)
+Reading "Morning Coffee" (Budi Santoso) today
+```
 
 ---
 
@@ -197,9 +309,37 @@ fn print_all<T: Summary>(items: &[T]) {
 
 The parameter type `&impl Summary` means "a reference to some type that implements `Summary`." Inside the function, you can call any `Summary` method on `item`, and nothing else, because that is all the function knows about it. When you call `announce(&book)`, Rust uses `Book`'s methods; for `announce(&movie)`, it uses `Movie`'s.
 
-`print_all` shows the longer form of the same idea. `<T: Summary>` after the function name declares a type parameter named `T` with a trait bound: `T` can be any type, as long as it implements `Summary`. The parameter `&[T]` is then a slice of that type. The longer form is needed here because the type appears inside another type (a slice), and it guarantees that all items in the slice are the *same* type. Add these lines to `main`:
+`print_all` shows the longer form of the same idea. `<T: Summary>` after the function name declares a type parameter named `T` with a trait bound: `T` can be any type, as long as it implements `Summary`. The parameter `&[T]` is then a slice of that type. The longer form is needed here because the type appears inside another type (a slice), and it guarantees that all items in the slice are the *same* type. Then replace the `main` function with this version, which adds the `// Trait as a parameter` lines at the end:
 
 ```rust
+fn main() {
+    let book = Book {
+        title: String::from("Morning Coffee"),
+        author: String::from("Budi Santoso"),
+        pages: 96,
+    };
+    let movie = Movie {
+        title: String::from("Rivers of Java"),
+        minutes: 112,
+    };
+
+    // Trait methods and default methods.
+    println!("{}", book.summary());
+    println!("{}", book.headline());
+    println!("{}", movie.headline());
+
+    // Derived traits: Debug, Clone, PartialEq.
+    let copy = book.clone();
+    println!("{:?}", copy);
+    println!("Same book? {}", book == copy);
+    let other = Book { pages: 120, ..book.clone() };
+    println!("Same as the new edition? {}", book == other);
+
+    // Display: our type works with {}.
+    println!("Display: {book}");
+    let line = format!("Reading {book} today");
+    println!("{line}");
+
     // Trait as a parameter.
     announce(&book);
     announce(&movie);
@@ -209,9 +349,33 @@ The parameter type `&impl Summary` means "a reference to some type that implemen
         Movie { title: String::from("Coding at Dawn"), minutes: 128 },
     ];
     print_all(&movies);
+}
 ```
 
 The same `announce` function handles a `Book` and a `Movie`. `print_all(&movies)` passes a vector of movies as a slice, so `T` is `Movie` for this call. If you tried to pass a type that does not implement `Summary`, the compiler would reject the call (see Section 6).
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso, 96 pages
+[NEW] Morning Coffee by Budi Santoso, 96 pages
+[NOW SHOWING] Rivers of Java (112 minutes)
+Book { title: "Morning Coffee", author: "Budi Santoso", pages: 96 }
+Same book? true
+Same as the new edition? false
+Display: "Morning Coffee" (Budi Santoso)
+Reading "Morning Coffee" (Budi Santoso) today
+[NEW] Morning Coffee by Budi Santoso, 96 pages
+[NOW SHOWING] Rivers of Java (112 minutes)
+- Small Steps (95 minutes)
+- Coding at Dawn (128 minutes)
+```
 
 ---
 
@@ -236,13 +400,51 @@ fn largest<T: PartialOrd + Copy>(values: &[T]) -> T {
 }
 ```
 
-`largest<T: ...>` declares a type parameter `T`, and the function takes a slice of `T` and returns a `T`. The body is the same algorithm as before, but it says nothing about which concrete type `T` is. That is why it needs bounds. To compare values with `>`, the type must implement `PartialOrd`, the trait for ordering. To copy values out of the slice with `values[0]` and `*value`, the type must implement `Copy`. `PartialOrd + Copy` requires both. Numbers and `char` implement both traits, so they all qualify.
+`largest<T: ...>` declares a type parameter `T`, and the function takes a slice of `T` and returns a `T`. The body is the same algorithm as before, but it says nothing about which concrete type `T` is. That is why it needs bounds. To compare values with `>`, the type must implement `PartialOrd`, the trait for ordering. To copy values out of the slice with `values[0]` and `*value`, the type must implement `Copy`. `PartialOrd + Copy` requires both. Numbers and `char` implement both traits, so they all qualify. You will call `largest` in the next step.
 
 ### Step 2: Call It with Different Types
 
-Add the last lines and close `main`:
+Replace the `main` function with the final version, which adds the `// Generics` lines at the end:
 
 ```rust
+fn main() {
+    let book = Book {
+        title: String::from("Morning Coffee"),
+        author: String::from("Budi Santoso"),
+        pages: 96,
+    };
+    let movie = Movie {
+        title: String::from("Rivers of Java"),
+        minutes: 112,
+    };
+
+    // Trait methods and default methods.
+    println!("{}", book.summary());
+    println!("{}", book.headline());
+    println!("{}", movie.headline());
+
+    // Derived traits: Debug, Clone, PartialEq.
+    let copy = book.clone();
+    println!("{:?}", copy);
+    println!("Same book? {}", book == copy);
+    let other = Book { pages: 120, ..book.clone() };
+    println!("Same as the new edition? {}", book == other);
+
+    // Display: our type works with {}.
+    println!("Display: {book}");
+    let line = format!("Reading {book} today");
+    println!("{line}");
+
+    // Trait as a parameter.
+    announce(&book);
+    announce(&movie);
+
+    let movies = vec![
+        Movie { title: String::from("Small Steps"), minutes: 95 },
+        Movie { title: String::from("Coding at Dawn"), minutes: 128 },
+    ];
+    print_all(&movies);
+
     // Generics.
     println!("Largest number: {}", largest(&[34, 50, 25, 100, 65]));
     println!("Largest price: {}", largest(&[12.5, 3.75, 18.0]));
@@ -250,7 +452,7 @@ Add the last lines and close `main`:
 }
 ```
 
-The same function is called with an array of integers, an array of floats, and an array of characters. Rust works out `T` from the argument each time and checks that the type meets the bounds. Behind the scenes, the compiler generates a separate, fully optimized copy of `largest` for each type it is used with, so generic code is just as fast as code written for one type. You have been using generic types all along: `Vec<T>`, `Option<T>`, `Result<T, E>`, and `HashMap<K, V>` are all generic.
+The same function is called with an array of integers, an array of floats, and an array of characters. Rust works out `T` from the argument each time and checks that the type meets the bounds. Behind the scenes, the compiler generates a separate, fully optimized copy of `largest` for each type it is used with, so generic code is just as fast as code written for one type. You have been using generic types all along: `Vec<T>`, `Option<T>`, `Result<T, E>`, and `HashMap<K, V>` are all generic. You will run the finished program in the next section.
 
 ---
 

@@ -37,7 +37,7 @@ cargo new loops
 cd loops
 ```
 
-These commands create the `loops` project and move into it. You will build up `src/main.rs` block by block and close `main` at the end.
+These commands create the `loops` project and move into it. In every step of this lesson you will replace the contents of `src/main.rs` with a short, complete program and run it right away, so each example works on its own.
 
 ### Step 2: Loop Until a Condition Is Met
 
@@ -55,137 +55,12 @@ fn main() {
             break;
         }
     }
+}
 ```
 
 This simulates a program that keeps trying to connect to a server. `attempts` starts at 0 and must be mutable because the loop changes it. Each pass through the block is called an iteration. In every iteration, `attempts += 1` increases the counter, the `println!` reports the attempt, and the `if` checks whether this is the third attempt. On the third iteration the condition is true, so the program prints `Connected!` and `break` exits the loop. The program then continues with whatever comes after the loop's closing brace.
 
-If you forgot the `break`, or wrote a condition that never becomes true, the loop would run forever. If that ever happens while you are experimenting, press `Ctrl` + `C` in the terminal to stop the program.
-
-### Step 3: Return a Value from a Loop
-
-`loop` is an expression, just like `if` and `match`, so it can produce a value. You give the value to `break`. Add this block:
-
-```rust
-    // loop that returns a value with break
-    let mut savings = 0;
-    let mut weeks = 0;
-    let weeks_needed = loop {
-        savings += 75_000;
-        weeks += 1;
-        if savings >= 300_000 {
-            break weeks;
-        }
-    };
-    println!("Weeks needed to save Rp300000: {weeks_needed}");
-```
-
-Someone saves Rp75,000 every week and wants to know how long it takes to reach Rp300,000. Each iteration adds one week of savings and counts the week. When the savings reach the goal, `break weeks;` exits the loop *and* hands back the value of `weeks`. That value becomes the value of the whole `loop` expression and is stored in `weeks_needed`. The semicolon after the loop's closing brace ends the `let` statement. After four weeks the savings are exactly Rp300,000, so `weeks_needed` is 4.
-
----
-
-## 3. Repeat While a Condition Is True with while
-
-Many loops have the form "check a condition; if it is true, run the block; repeat." You could write that with `loop`, `if`, and `break`, but `while` expresses it directly and is easier to read.
-
-### Step 1: Count Down
-
-Add the countdown:
-
-```rust
-    // while: repeat while a condition is true
-    let mut countdown = 5;
-    while countdown > 0 {
-        print!("{countdown}... ");
-        countdown -= 1;
-    }
-    println!("Liftoff!");
-```
-
-`while countdown > 0` checks the condition *before* each iteration. While it is true, Rust runs the block: it prints the current number without a newline (using `print!` from Lesson 3) and then decreases `countdown` by 1. When `countdown` reaches 0, the condition becomes false, the loop ends, and `println!("Liftoff!")` finishes the line.
-
-The `countdown -= 1;` line is what eventually makes the condition false. Every `while` loop needs something inside it that moves toward the end; without it, the condition stays true forever. Also notice that if `countdown` started at 0, the condition would be false immediately and the block would never run at all. A `while` loop can run zero times; a `loop` always runs at least once.
-
----
-
-## 4. Iterate over Ranges and Arrays with for
-
-The `for` loop is the one you will use most. It runs its block once for each item in a sequence, such as a range of numbers or the elements of an array, and it handles the counting for you. There is no counter to forget to increase and no index that can go out of bounds.
-
-### Step 1: Loop over a Range
-
-Add a multiplication table:
-
-```rust
-    // for with a range
-    for number in 1..=5 {
-        println!("{number} x 3 = {}", number * 3);
-    }
-```
-
-`1..=5` is an inclusive range: the numbers 1, 2, 3, 4, and 5. (You used the same syntax as a pattern in `match` in Lesson 5.) `for number in 1..=5` runs the block five times, and on each iteration the variable `number` holds the next value from the range. `number` exists only inside the loop's block; it is created fresh on each iteration and does not need `mut`.
-
-Rust also has an exclusive range, written `1..5`, which stops *before* the last number and produces 1, 2, 3, and 4. Exclusive ranges are handy for positions, because `0..5` gives exactly the five valid indexes of a five element array. When you want to include the end, use `..=`.
-
-### Step 2: Loop over an Array with a Running Total
-
-Now replace the hand written sum from Lesson 4 with a loop:
-
-```rust
-    // for over an array, with a running total
-    let scores = [80, 92, 67, 75, 88];
-    let mut total = 0;
-    for score in scores {
-        total += score;
-    }
-    println!("Total: {total}, average: {:.1}", total as f64 / scores.len() as f64);
-```
-
-`for score in scores` goes through the array's elements in order, and on each iteration `score` holds one of them: first 80, then 92, and so on. This is the running total pattern: a mutable variable starts at zero before the loop, and each iteration adds the current element to it. When the loop ends, `total` holds the sum of all elements. The `println!` then divides by the length, converting both to `f64` as in Lesson 4, to get the average.
-
-The great advantage over `scores[0] + scores[1] + ...` is that this loop does not care how many elements the array has. Add or remove scores, and the code still works without changes.
-
-### Step 3: Skip with continue and Exit with break
-
-`continue` and `break` work in every kind of loop. Add this block:
-
-```rust
-    // continue and break inside for
-    for number in 1..=10 {
-        if number % 2 == 0 {
-            continue;
-        }
-        if number > 7 {
-            break;
-        }
-        print!("{number} ");
-    }
-    println!();
-```
-
-`continue` skips the rest of the current iteration and jumps straight to the next one. Here it skips even numbers, so the `print!` line only runs for odd numbers. `break` ends the loop entirely: once an odd number above 7 appears (that is, 9), the loop stops, even though the range goes up to 10. The result is the odd numbers 1, 3, 5, and 7. The empty `println!()` after the loop prints just a newline, finishing the line that `print!` started.
-
-### Step 4: Nest Loops
-
-A loop can contain another loop. Add a small multiplication grid and close `main`:
-
-```rust
-    // nested loops
-    for row in 1..=3 {
-        for col in 1..=4 {
-            print!("{:>4}", row * col);
-        }
-        println!();
-    }
-}
-```
-
-The outer loop runs three times, once per row. For *each* of those iterations, the inner loop runs four times, once per column, so the `print!` line runs 3 times 4, or 12 times in total. `{:>4}` right aligns each product in a space four characters wide (Lesson 3), which keeps the columns tidy. After the inner loop finishes a row, `println!()` moves to the next line. Nested loops are the natural way to work with anything that has rows and columns, such as tables, grids, and game boards.
-
----
-
-## 5. Run and Test
-
-Run the complete program:
+Run it:
 
 ```bash
 cargo run -q
@@ -198,23 +73,238 @@ Connecting... attempt 1
 Connecting... attempt 2
 Connecting... attempt 3
 Connected!
+```
+
+If you forgot the `break`, or wrote a condition that never becomes true, the loop would run forever. If that ever happens while you are experimenting, press `Ctrl` + `C` in the terminal to stop the program.
+
+### Step 3: Return a Value from a Loop
+
+`loop` is an expression, just like `if` and `match`, so it can produce a value. You give the value to `break`. Replace the contents of `src/main.rs` with:
+
+```rust
+fn main() {
+    // loop that returns a value with break
+    let mut savings = 0;
+    let mut weeks = 0;
+    let weeks_needed = loop {
+        savings += 75_000;
+        weeks += 1;
+        if savings >= 300_000 {
+            break weeks;
+        }
+    };
+    println!("Weeks needed to save Rp300000: {weeks_needed}");
+}
+```
+
+Someone saves Rp75,000 every week and wants to know how long it takes to reach Rp300,000. Each iteration adds one week of savings and counts the week. When the savings reach the goal, `break weeks;` exits the loop *and* hands back the value of `weeks`. That value becomes the value of the whole `loop` expression and is stored in `weeks_needed`. The semicolon after the loop's closing brace ends the `let` statement. After four weeks the savings are exactly Rp300,000, so `weeks_needed` is 4.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 Weeks needed to save Rp300000: 4
+```
+
+---
+
+## 3. Repeat While a Condition Is True with while
+
+Many loops have the form "check a condition; if it is true, run the block; repeat." You could write that with `loop`, `if`, and `break`, but `while` expresses it directly and is easier to read.
+
+### Step 1: Count Down
+
+Replace the contents of `src/main.rs` with the countdown:
+
+```rust
+fn main() {
+    // while: repeat while a condition is true
+    let mut countdown = 5;
+    while countdown > 0 {
+        print!("{countdown}... ");
+        countdown -= 1;
+    }
+    println!("Liftoff!");
+}
+```
+
+`while countdown > 0` checks the condition *before* each iteration. While it is true, Rust runs the block: it prints the current number without a newline (using `print!` from Lesson 3) and then decreases `countdown` by 1. When `countdown` reaches 0, the condition becomes false, the loop ends, and `println!("Liftoff!")` finishes the line.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 5... 4... 3... 2... 1... Liftoff!
+```
+
+The `countdown -= 1;` line is what eventually makes the condition false. Every `while` loop needs something inside it that moves toward the end; without it, the condition stays true forever. Also notice that if `countdown` started at 0, the condition would be false immediately and the block would never run at all. A `while` loop can run zero times; a `loop` always runs at least once.
+
+---
+
+## 4. Iterate over Ranges and Arrays with for
+
+The `for` loop is the one you will use most. It runs its block once for each item in a sequence, such as a range of numbers or the elements of an array, and it handles the counting for you. There is no counter to forget to increase and no index that can go out of bounds.
+
+### Step 1: Loop over a Range
+
+Replace the contents of `src/main.rs` with a multiplication table:
+
+```rust
+fn main() {
+    // for with a range
+    for number in 1..=5 {
+        println!("{number} x 3 = {}", number * 3);
+    }
+}
+```
+
+`1..=5` is an inclusive range: the numbers 1, 2, 3, 4, and 5. (You used the same syntax as a pattern in `match` in Lesson 5.) `for number in 1..=5` runs the block five times, and on each iteration the variable `number` holds the next value from the range. `number` exists only inside the loop's block; it is created fresh on each iteration and does not need `mut`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 1 x 3 = 3
 2 x 3 = 6
 3 x 3 = 9
 4 x 3 = 12
 5 x 3 = 15
+```
+
+Rust also has an exclusive range, written `1..5`, which stops *before* the last number and produces 1, 2, 3, and 4. Exclusive ranges are handy for positions, because `0..5` gives exactly the five valid indexes of a five element array. When you want to include the end, use `..=`.
+
+### Step 2: Loop over an Array with a Running Total
+
+Now replace the hand written sum from Lesson 4 with a loop. Replace the contents of `src/main.rs` with:
+
+```rust
+fn main() {
+    // for over an array, with a running total
+    let scores = [80, 92, 67, 75, 88];
+    let mut total = 0;
+    for score in scores {
+        total += score;
+    }
+    println!("Total: {total}, average: {:.1}", total as f64 / scores.len() as f64);
+}
+```
+
+`for score in scores` goes through the array's elements in order, and on each iteration `score` holds one of them: first 80, then 92, and so on. This is the running total pattern: a mutable variable starts at zero before the loop, and each iteration adds the current element to it. When the loop ends, `total` holds the sum of all elements. The `println!` then divides by the length, converting both to `f64` as in Lesson 4, to get the average.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 Total: 402, average: 80.4
+```
+
+The great advantage over `scores[0] + scores[1] + ...` is that this loop does not care how many elements the array has. Add or remove scores, and the code still works without changes.
+
+### Step 3: Skip with continue and Exit with break
+
+`continue` and `break` work in every kind of loop. Replace the contents of `src/main.rs` with:
+
+```rust
+fn main() {
+    // continue and break inside for
+    for number in 1..=10 {
+        if number % 2 == 0 {
+            continue;
+        }
+        if number > 7 {
+            break;
+        }
+        print!("{number} ");
+    }
+    println!();
+}
+```
+
+`continue` skips the rest of the current iteration and jumps straight to the next one. Here it skips even numbers, so the `print!` line only runs for odd numbers. `break` ends the loop entirely: once an odd number above 7 appears (that is, 9), the loop stops, even though the range goes up to 10. The result is the odd numbers 1, 3, 5, and 7. The empty `println!()` after the loop prints just a newline, finishing the line that `print!` started.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 1 3 5 7 
+```
+
+### Step 4: Nest Loops
+
+A loop can contain another loop. Replace the contents of `src/main.rs` with a small multiplication grid:
+
+```rust
+fn main() {
+    // nested loops
+    for row in 1..=3 {
+        for col in 1..=4 {
+            print!("{:>4}", row * col);
+        }
+        println!();
+    }
+}
+```
+
+The outer loop runs three times, once per row. For *each* of those iterations, the inner loop runs four times, once per column, so the `print!` line runs 3 times 4, or 12 times in total. `{:>4}` right aligns each product in a space four characters wide (Lesson 3), which keeps the columns tidy. After the inner loop finishes a row, `println!()` moves to the next line. Nested loops are the natural way to work with anything that has rows and columns, such as tables, grids, and game boards.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
    1   2   3   4
    2   4   6   8
    3   6   9  12
 ```
 
-Trace each block. The `loop` ran three times and stopped with `break`. The savings loop returned 4 through `break weeks`. The `while` loop printed five numbers on one line before `Liftoff!`. The range loop printed five lines. The array loop produced the same total and average as the manual calculation in Lesson 4. `continue` removed the even numbers and `break` stopped at 9. The nested loops produced a three by four grid.
+---
 
-Experiment to build intuition. Change the savings per week to `60_000` and predict the new number of weeks. Change the range in the multiplication table to `1..5` and notice which line disappears. Add a sixth score to the array and confirm the average updates without any other change.
+## 5. Run and Test
+
+You have already run every example once. Now test a different value. Put the savings program from Section 2, Step 3 back into `src/main.rs`, change the savings per week from `75_000` to `60_000`, and predict the new number of weeks before you run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Weeks needed to save Rp300000: 5
+```
+
+With Rp60,000 per week, the savings are Rp240,000 after four weeks, which is still below the goal, so the loop runs a fifth time and reaches exactly Rp300,000. `break weeks` then hands back 5.
+
+Experiment to build intuition. Change the range in the multiplication table to `1..5` and notice which line disappears. Add a sixth score to the array in the running total program and confirm the average updates without any other change. Change `attempts == 3` in the connection loop to `attempts == 5` and count the lines before `Connected!`.
 
 ---
 

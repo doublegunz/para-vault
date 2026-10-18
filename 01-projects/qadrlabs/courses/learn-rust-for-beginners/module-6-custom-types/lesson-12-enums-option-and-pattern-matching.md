@@ -37,7 +37,7 @@ cargo new enums
 cd enums
 ```
 
-These commands create the `enums` project. The file will contain two enums, their `impl` blocks, two helper functions, and `main` at the bottom.
+These commands create the `enums` project. In every step you will replace the contents of `src/main.rs` with a short, complete program and run it right away. Section 5 then combines everything into one file.
 
 ### Step 2: Define the OrderStatus Enum
 
@@ -51,17 +51,47 @@ enum OrderStatus {
     Shipped,
     Delivered,
 }
+
+fn main() {
+    let stages = [
+        OrderStatus::Pending,
+        OrderStatus::Paid,
+        OrderStatus::Shipped,
+        OrderStatus::Delivered,
+    ];
+    println!("All stages: {:?}", stages);
+}
 ```
 
 `enum OrderStatus` declares a new type, named in `UpperCamelCase` like a struct. Inside the braces are its four variants, also in `UpperCamelCase`, separated by commas. An `OrderStatus` value is always exactly one of `Pending`, `Paid`, `Shipped`, or `Delivered`; there is no fifth possibility and no way to misspell one, because the compiler only accepts these names. `#[derive(Debug)]` lets you print the variant name with `{:?}`, as with structs.
 
-You create a value by naming the enum and the variant, separated by `::`, for example `OrderStatus::Pending`. The variants are namespaced under the enum's name, so a different enum could also have a `Pending` variant without any conflict.
+You create a value by naming the enum and the variant, separated by `::`, for example `OrderStatus::Pending`. The variants are namespaced under the enum's name, so a different enum could also have a `Pending` variant without any conflict. The `main` function puts all four variants in an array and prints it with `{:?}`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+All stages: [Pending, Paid, Shipped, Delivered]
+```
 
 ### Step 3: Add Methods to the Enum
 
-Enums can have methods, just like structs. Add this `impl` block below the enum:
+Enums can have methods, just like structs. Replace the contents of `src/main.rs` with the enum, an `impl` block, and a short `main`:
 
 ```rust
+#[derive(Debug)]
+enum OrderStatus {
+    Pending,
+    Paid,
+    Shipped,
+    Delivered,
+}
+
 impl OrderStatus {
     fn description(&self) -> &str {
         match self {
@@ -81,28 +111,93 @@ impl OrderStatus {
         }
     }
 }
+
+fn main() {
+    let status = OrderStatus::Pending;
+    println!("Status: {:?} ({})", status, status.description());
+
+    let next_status = status.next();
+    println!("Next: {:?} ({})", next_status, next_status.description());
+}
 ```
 
 Both methods use `match self`, which compares the current variant against one arm per variant. This is where enums and `match` work together: `match` must be exhaustive (Lesson 5), and since the compiler knows all four variants, it checks that every one is handled. If you add a fifth variant later, such as `Cancelled`, every `match` that forgot it becomes a compile error, so you can never forget to update a part of the program.
 
-`description` returns a text literal for each variant. Its return type is `&str`; the literals live inside the compiled program, so returning them is always valid. `next` returns the following stage of the order as a new `OrderStatus` value. A delivered order stays delivered.
+`description` returns a text literal for each variant. Its return type is `&str`; the literals live inside the compiled program, so returning them is always valid. `next` returns the following stage of the order as a new `OrderStatus` value. A delivered order stays delivered. In `main`, `status.next()` produces `Paid`, which is stored in `next_status` and printed with its own description.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Status: Pending (waiting for payment)
+Next: Paid (paid, being packed)
+```
 
 ### Step 4: Walk an Order Through Its Stages
 
-Add the start of `main` at the bottom of the file:
+Keep the enum and the `impl` block, and replace `main` so the whole file looks like this:
 
 ```rust
+#[derive(Debug)]
+enum OrderStatus {
+    Pending,
+    Paid,
+    Shipped,
+    Delivered,
+}
+
+impl OrderStatus {
+    fn description(&self) -> &str {
+        match self {
+            OrderStatus::Pending => "waiting for payment",
+            OrderStatus::Paid => "paid, being packed",
+            OrderStatus::Shipped => "on the way",
+            OrderStatus::Delivered => "delivered",
+        }
+    }
+
+    fn next(&self) -> OrderStatus {
+        match self {
+            OrderStatus::Pending => OrderStatus::Paid,
+            OrderStatus::Paid => OrderStatus::Shipped,
+            OrderStatus::Shipped => OrderStatus::Delivered,
+            OrderStatus::Delivered => OrderStatus::Delivered,
+        }
+    }
+}
+
 fn main() {
-    // A simple enum and its methods.
     let mut status = OrderStatus::Pending;
     println!("Status: {:?} ({})", status, status.description());
     for _ in 0..4 {
         status = status.next();
         println!("Status: {:?} ({})", status, status.description());
     }
+}
 ```
 
 `status` starts as `OrderStatus::Pending` and is mutable because it is replaced in the loop. Each iteration calls `next` to get the following stage and assigns it back to `status`, then prints the variant name (with `{:?}`) and its description. The loop runs four times, which is one more than needed to reach `Delivered`, to show that `next` keeps a delivered order delivered.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Status: Pending (waiting for payment)
+Status: Paid (paid, being packed)
+Status: Shipped (on the way)
+Status: Delivered (delivered)
+Status: Delivered (delivered)
+```
 
 ---
 
@@ -112,7 +207,7 @@ The variants of `OrderStatus` carry no extra information. Many choices need some
 
 ### Step 1: Define an Enum with Data
 
-Add this enum below `OrderStatus` (above `impl OrderStatus` or below it; the order of items in a file does not matter):
+Replace the contents of `src/main.rs` with a new program:
 
 ```rust
 enum Payment {
@@ -120,15 +215,60 @@ enum Payment {
     Transfer { bank: String },
     EWallet(String),
 }
+
+impl Payment {
+    fn label(&self) -> String {
+        match self {
+            Payment::Cash => String::from("cash"),
+            Payment::Transfer { bank } => format!("transfer via {bank}"),
+            Payment::EWallet(name) => format!("e-wallet {name}"),
+        }
+    }
+}
+
+fn main() {
+    let payments = [
+        Payment::Cash,
+        Payment::Transfer { bank: String::from("Bank Kita") },
+        Payment::EWallet(String::from("DompetKu")),
+    ];
+    for payment in &payments {
+        println!("Pay by {}", payment.label());
+    }
+}
 ```
 
 This enum shows the three shapes a variant can take. `Cash` holds no data. `Transfer { bank: String }` holds named fields in curly braces, just like a struct. `EWallet(String)` holds unnamed values in parentheses, like a tuple. A `Payment` value is one of these three variants together with whatever data that variant carries. Compared with three separate structs, the enum makes it clear that these are alternatives of a single concept.
 
-### Step 2: Extract the Data with match
+A `match` pattern can do more than recognize a variant: it can also pull the data out of it. In `Payment::Transfer { bank } => ...`, the pattern matches a transfer and binds its `bank` field to a variable named `bank` for use in that arm. In `Payment::EWallet(name) => ...`, the value inside the parentheses is bound to `name`. Because `self` is a reference, these bindings are references too (`&String`), so nothing is moved out of the payment. `label` builds a user friendly description with `format!` from Lesson 11.
 
-Add an `impl` block for `Payment`:
+You create a variant with data by supplying the data in the same shape as the definition: braces with field names for `Transfer`, parentheses for `EWallet`. All three values have the same type, `Payment`, so they fit in one array even though they carry different data. The loop borrows the array and calls `label` on each payment.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Pay by cash
+Pay by transfer via Bank Kita
+Pay by e-wallet DompetKu
+```
+
+### Step 2: Use the Data to Calculate a Fee
+
+Add a `fee` method to the `impl` block and print it in `main`. The complete file now looks like this:
 
 ```rust
+enum Payment {
+    Cash,
+    Transfer { bank: String },
+    EWallet(String),
+}
+
 impl Payment {
     fn label(&self) -> String {
         match self {
@@ -152,18 +292,8 @@ impl Payment {
         }
     }
 }
-```
 
-A `match` pattern can do more than recognize a variant: it can also pull the data out of it. In `Payment::Transfer { bank } => ...`, the pattern matches a transfer and binds its `bank` field to a variable named `bank` for use in that arm. In `Payment::EWallet(name) => ...`, the value inside the parentheses is bound to `name`. Because `self` is a reference, these bindings are references too (`&String`), so nothing is moved out of the payment.
-
-`label` builds a user friendly description with `format!` from Lesson 11. `fee` charges nothing for cash, nothing for transfers to the shop's own bank and Rp6,500 for other banks, and Rp1,000 for any e-wallet. In the e-wallet arm, the name is not needed, so the pattern uses `_` to ignore it.
-
-### Step 3: Loop over Different Payments
-
-Add these lines to `main`:
-
-```rust
-    // Enum variants that hold data.
+fn main() {
     let payments = [
         Payment::Cash,
         Payment::Transfer { bank: String::from("Bank Kita") },
@@ -173,9 +303,25 @@ Add these lines to `main`:
     for payment in &payments {
         println!("Pay by {}: fee Rp{}", payment.label(), payment.fee());
     }
+}
 ```
 
-You create a variant with data by supplying the data in the same shape as the definition: braces with field names for `Transfer`, parentheses for `EWallet`. All four values have the same type, `Payment`, so they fit in one array even though they carry different data. The loop borrows the array and calls both methods on each payment.
+`fee` charges nothing for cash, nothing for transfers to the shop's own bank and Rp6,500 for other banks, and Rp1,000 for any e-wallet. In the e-wallet arm, the name is not needed, so the pattern uses `_` to ignore it. The array in `main` now has a second transfer to a different bank, so you can see both transfer fees.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Pay by cash: fee Rp0
+Pay by transfer via Bank Kita: fee Rp0
+Pay by transfer via Other Bank: fee Rp6500
+Pay by e-wallet DompetKu: fee Rp1000
+```
 
 ---
 
@@ -196,7 +342,7 @@ enum Option<T> {
 
 You do not write this yourself; it is always available. `Some(T)` holds a value of some type `T`, and `None` holds nothing. The `<T>` means `Option` works with any type: `Option<u32>` is "maybe a `u32`," and `Option<String>` is "maybe a `String`." (You will learn about this kind of type parameter, called generics, in Lesson 16.) `Option`, `Some`, and `None` are so common that you can use them without the `Option::` prefix.
 
-Add two functions above `main`:
+Replace the contents of `src/main.rs` with two functions and a short `main`:
 
 ```rust
 fn find_price(item: &str) -> Option<u32> {
@@ -216,44 +362,129 @@ fn first_even(numbers: &[i32]) -> Option<i32> {
     }
     None
 }
+
+fn main() {
+    println!("Coffee: {:?}", find_price("coffee"));
+    println!("Pizza: {:?}", find_price("pizza"));
+    println!("First even in [1, 4, 6]: {:?}", first_even(&[1, 4, 6]));
+}
 ```
 
-`find_price` matches the item name against text patterns. For known items it returns the price wrapped in `Some`; for anything else it returns `None`. The return type `Option<u32>` tells every caller, right in the signature, that a price might be missing. `first_even` uses an early `return` to hand back the first even number it finds, wrapped in `Some`. If the loop finishes without finding one, the tail expression `None` is returned. Compare this with the `days == 0` trick in Lesson 5's Exercise 3, which used a special number to mean "no answer"; `Option` makes that meaning explicit and impossible to confuse with a real value.
+`find_price` matches the item name against text patterns. For known items it returns the price wrapped in `Some`; for anything else it returns `None`. The return type `Option<u32>` tells every caller, right in the signature, that a price might be missing. `first_even` uses an early `return` to hand back the first even number it finds, wrapped in `Some`. If the loop finishes without finding one, the tail expression `None` is returned. Compare this with the `days == 0` trick in Lesson 5's Exercise 3, which used a special number to mean "no answer"; `Option` makes that meaning explicit and impossible to confuse with a real value. For now, `main` prints the results with `{:?}` so you can see the `Some` and `None` values directly.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Coffee: Some(18000)
+Pizza: None
+First even in [1, 4, 6]: Some(4)
+```
 
 ### Step 2: Check the Option with match
 
-Add these lines to `main`:
+Replace the contents of `src/main.rs` with `find_price` and a `main` that checks each result:
 
 ```rust
-    // Option: a value that might be missing.
+fn find_price(item: &str) -> Option<u32> {
+    match item {
+        "coffee" => Some(18_000),
+        "tea" => Some(12_000),
+        "cake" => Some(25_000),
+        _ => None,
+    }
+}
+
+fn main() {
     for item in ["coffee", "cake", "pizza"] {
         match find_price(item) {
             Some(price) => println!("{item}: Rp{price}"),
             None => println!("{item}: not on the menu"),
         }
     }
+}
 ```
 
 An `Option<u32>` is not a `u32`. You cannot add it, print it as a price, or compare it with a number until you have checked which variant it is. `match` does exactly that: the `Some(price)` arm runs when there is a value and binds it to `price`, and the `None` arm runs when there is not. Because `match` is exhaustive, the compiler forces you to decide what happens in the `None` case. This is how Rust eliminates null related crashes: "I forgot to check" is a compile error, not a runtime surprise.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+coffee: Rp18000
+cake: Rp25000
+pizza: not on the menu
+```
+
 ### Step 3: Handle One Case with if let
 
-Sometimes you only care about one variant. Add these lines:
+Sometimes you only care about one variant. Replace `main` so the file looks like this:
 
 ```rust
-    // if let: handle just one case.
+fn find_price(item: &str) -> Option<u32> {
+    match item {
+        "coffee" => Some(18_000),
+        "tea" => Some(12_000),
+        "cake" => Some(25_000),
+        _ => None,
+    }
+}
+
+fn main() {
     if let Some(price) = find_price("tea") {
         println!("Tea costs Rp{price}");
     }
+}
 ```
 
 `if let` combines a pattern with an `if`. Read it as "if `find_price("tea")` matches the pattern `Some(price)`, run this block with `price` bound to the value." If the result is `None`, the block is skipped. It is a shorter way to write a `match` with one interesting arm and a `_ => {}` arm that does nothing. You can add an `else` block for the other case if you need one.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Tea costs Rp12000
+```
+
 ### Step 4: Print Options and Supply Defaults
 
-Add the final lines and close `main`:
+Replace the contents of `src/main.rs` with both functions and a new `main`:
 
 ```rust
+fn find_price(item: &str) -> Option<u32> {
+    match item {
+        "coffee" => Some(18_000),
+        "tea" => Some(12_000),
+        "cake" => Some(25_000),
+        _ => None,
+    }
+}
+
+fn first_even(numbers: &[i32]) -> Option<i32> {
+    for number in numbers {
+        if *number % 2 == 0 {
+            return Some(*number);
+        }
+    }
+    None
+}
+
+fn main() {
     let odd_only = [1, 3, 5];
     let mixed = [7, 9, 10, 12];
     println!("First even in {:?}: {:?}", odd_only, first_even(&odd_only));
@@ -269,11 +500,25 @@ Add the final lines and close `main`:
 
 `unwrap_or(0)` is a method on `Option` that returns the value inside `Some`, or the default you provide if the option is `None`. It is a concise alternative to a `match` when a sensible default exists. There is also `unwrap()`, which returns the value inside `Some` but *panics* (stops the program) on `None`. Avoid `unwrap()` unless you are certain the value exists; Section 6 shows what happens when you are wrong.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+First even in [1, 3, 5]: None
+First even in [7, 9, 10, 12]: Some(10)
+Pizza price with default: 0
+```
+
 ---
 
 ## 5. Run and Test
 
-Your complete `src/main.rs` should look like this:
+Each section ran as its own small program. To see everything working together, replace the contents of `src/main.rs` with this complete program that combines all three sections:
 
 ```rust
 #[derive(Debug)]

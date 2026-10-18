@@ -37,7 +37,7 @@ cargo new decisions
 cd decisions
 ```
 
-These commands create the `decisions` project and move into its folder. As in Lesson 4, you will build `src/main.rs` gradually and close `main` at the end.
+These commands create the `decisions` project and move into its folder. In every step of this lesson you will replace the contents of `src/main.rs` with a short, complete program and run it right away, so each example works on its own.
 
 ### Step 2: Write a Simple if and else
 
@@ -45,7 +45,6 @@ Replace the contents of `src/main.rs` with:
 
 ```rust
 fn main() {
-    // if, else if, else
     let score = 83;
 
     if score >= 75 {
@@ -53,17 +52,33 @@ fn main() {
     } else {
         println!("Score {score}: not passed yet.");
     }
+}
 ```
 
 The keyword `if` is followed by a condition, `score >= 75`, and then a block in curly braces. If the condition is `true`, Rust runs that block. If it is `false`, Rust runs the block after `else`. Exactly one of the two `println!` calls runs, never both and never neither.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Score 83: passed.
+```
 
 Unlike some other languages, Rust does not need parentheses around the condition; writing `if (score >= 75)` works but the compiler warns that the parentheses are unnecessary. The curly braces, on the other hand, are always required, even when the block contains a single line. The code inside each block is indented by four spaces to make the structure easy to see.
 
 ### Step 3: Chain Conditions with else if
 
-A pass or fail answer is not always enough. Add a message that depends on how high the score is:
+A pass or fail answer is not always enough. Replace the contents of `src/main.rs` with a program that prints a message based on how high the score is:
 
 ```rust
+fn main() {
+    let score = 83;
+
     if score >= 90 {
         println!("Excellent work!");
     } else if score >= 80 {
@@ -73,26 +88,53 @@ A pass or fail answer is not always enough. Add a message that depends on how hi
     } else {
         println!("Keep practicing.");
     }
+}
 ```
 
 `else if` adds another condition to check when the previous one was false. Rust checks the conditions from top to bottom and runs the first block whose condition is true, then skips the rest of the chain. With a score of 83, the first condition (`83 >= 90`) is false, the second (`83 >= 80`) is true, so Rust prints `Great job!` and ignores the remaining branches, even though `83 >= 75` is also true.
 
 That is why the order matters. If you checked `score >= 75` first, every score from 75 upward would get the same message, and the `>= 90` branch would never run. When conditions overlap, put the most specific one first. The final `else` catches every score that matched none of the conditions.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Great job!
+```
+
 ### Step 4: Combine Conditions
 
-Conditions can be built from several comparisons joined with logical operators. Add this block:
+Conditions can be built from several comparisons joined with logical operators. Replace the contents of `src/main.rs` with:
 
 ```rust
-    // Combining conditions
+fn main() {
     let age = 16;
     let has_permission = true;
+
     if age >= 17 || has_permission {
         println!("Age {age}: you may join the trip.");
     }
+}
 ```
 
 A student may join the trip if they are at least 17 *or* they have permission from a parent. `age >= 17` is false, but `has_permission` is true, so the whole `||` expression is true and the message prints. This `if` has no `else`, which is perfectly valid: when the condition is false, the program simply skips the block and continues. Use `&&` when every part must be true, such as `age >= 17 && has_ticket`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Age 16: you may join the trip.
+```
 
 ---
 
@@ -102,17 +144,32 @@ In Rust, `if` is not only a statement that runs code; it is also an expression, 
 
 ### Step 1: Choose a Value with if
 
-Add the following lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
-    // if as an expression
+fn main() {
+    let score = 83;
+
     let status = if score >= 75 { "PASS" } else { "FAIL" };
     println!("Status: {status}");
+}
 ```
 
 The right side of `let status =` is an entire `if` expression. When the condition is true, the expression's value is the value of the first block, `"PASS"`; otherwise it is `"FAIL"`. That value is stored in `status`. Notice there is no semicolon after `"PASS"` or `"FAIL"` inside the blocks. In Rust, the last expression in a block without a semicolon becomes the block's value. You will see this rule again with `match` below and with functions in Lesson 7.
 
 Because the result goes into a single variable, both branches must produce the same type. Here both are text. If one branch produced text and the other a number, Rust would not know what type `status` has, and the compiler rejects it (you will see this error in Section 6). An `if` used as an expression also needs an `else`, because the variable must get a value in every case.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Status: PASS
+```
 
 ---
 
@@ -122,10 +179,12 @@ A long chain of `else if` comparisons against the same variable works, but it ge
 
 ### Step 1: Match Ranges to Compute a Letter Grade
 
-Add the letter grade calculation:
+Replace the contents of `src/main.rs` with a program that calculates a letter grade:
 
 ```rust
-    // match with ranges
+fn main() {
+    let score = 83;
+
     let letter = match score {
         90..=100 => 'A',
         80..=89 => 'B',
@@ -134,6 +193,7 @@ Add the letter grade calculation:
         _ => 'E',
     };
     println!("Letter grade: {letter}");
+}
 ```
 
 `match score { ... }` takes the value of `score` and compares it with each arm inside the braces. An arm has a pattern on the left, a fat arrow `=>`, and the value or code to run on the right. Arms are separated by commas.
@@ -142,13 +202,26 @@ Add the letter grade calculation:
 
 The last arm, `_`, is a wildcard. It matches anything, so it acts like `else`: every score not covered by the earlier arms (below 60, or above 100) gets `'E'`. The semicolon after the closing brace ends the `let` statement.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Letter grade: B
+```
+
 ### Step 2: Match Exact Values and Several Values
 
-Add the day name example:
+Replace the contents of `src/main.rs` with the day name example:
 
 ```rust
-    // match with exact values and multiple patterns
+fn main() {
     let day = 6;
+
     let day_name = match day {
         1 => "Monday",
         2 => "Tuesday",
@@ -159,17 +232,31 @@ Add the day name example:
         _ => "Unknown day",
     };
     println!("Day {day}: {day_name}");
+}
 ```
 
 A pattern can be a single exact value such as `1`. The `|` symbol, read as "or," joins several patterns into one arm: `6 | 7` matches either 6 or 7. With `day` set to 6, the `match` produces `"Weekend"`. The wildcard arm handles numbers that are not valid days, such as 0 or 12, so the program never ends up without a value.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Day 6: Weekend
+```
+
 ### Step 3: Run Several Lines in a Match Arm
 
-Sometimes an arm needs to do more than produce a value. Add the ticket price calculation, then close `main`:
+Sometimes an arm needs to do more than produce a value. Replace the contents of `src/main.rs` with the ticket price calculation:
 
 ```rust
-    // match arms with blocks
+fn main() {
     let ticket_age = 67;
+
     let price = match ticket_age {
         0..=4 => 0,
         5..=17 => {
@@ -188,13 +275,9 @@ Sometimes an arm needs to do more than produce a value. Add the ticket price cal
 
 An arm's right side can be a block in curly braces containing several lines. The block runs its statements in order, and its last expression, written without a semicolon, becomes the arm's value. For a 67 year old visitor, the `65..` arm matches, prints a message, and produces `20_000` as the price.
 
-`65..` is a range with no upper end: it matches 65 and every number above it. Children under 5 enter free, children from 5 to 17 pay 15,000, seniors pay 20,000, and the `_` arm covers everyone else (ages 18 to 64) with the full price. Arms written as blocks do not need a comma after the closing brace, though adding one is allowed. The final brace closes `main`.
+`65..` is a range with no upper end: it matches 65 and every number above it. Children under 5 enter free, children from 5 to 17 pay 15,000, seniors pay 20,000, and the `_` arm covers everyone else (ages 18 to 64) with the full price. Arms written as blocks do not need a comma after the closing brace, though adding one is allowed.
 
----
-
-## 5. Run and Test
-
-Your complete program reads from top to bottom like a series of decisions. Run it:
+Run it:
 
 ```bash
 cargo run -q
@@ -203,19 +286,30 @@ cargo run -q
 Output:
 
 ```text
-Score 83: passed.
-Great job!
-Age 16: you may join the trip.
-Status: PASS
-Letter grade: B
-Day 6: Weekend
 Senior discount applied.
 Ticket price for age 67: Rp20000
 ```
 
-Each line comes from a different decision. The score of 83 passed, matched the `>= 80` branch, produced `PASS`, and fell into the `80..=89` range for a `B`. The trip check passed because of the permission. Day 6 is part of the weekend. The ticket arm for seniors printed its message before the final price line, because the `match` runs before the `println!` that uses `price`.
+---
 
-Now test the other branches. Change `score` to `95`, then `76`, then `42`, and run the program after each change. Then change `ticket_age` to `3`, `10`, and `30`. Predict the output before running each time; checking your prediction against the real output is one of the best ways to understand control flow.
+## 5. Run and Test
+
+You have already run every example once. Now use the ticket price program, which is still in `src/main.rs`, to test a different branch. Change `ticket_age` to `10` and run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Child ticket applied.
+Ticket price for age 10: Rp15000
+```
+
+The age 10 matches the `5..=17` arm, so the child message prints first and the arm produces `15_000`. The message appears before the price line because the `match` runs before the `println!` that uses `price`.
+
+Now test the other branches. Change `ticket_age` to `3` and `30`. Then go back to the programs from Section 2 and Section 4, change `score` to `95`, then `76`, then `42`, and run the program after each change. Predict the output before running each time; checking your prediction against the real output is one of the best ways to understand control flow.
 
 ---
 

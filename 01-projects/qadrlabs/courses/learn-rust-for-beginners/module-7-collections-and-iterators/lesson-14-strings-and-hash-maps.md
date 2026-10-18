@@ -38,7 +38,7 @@ cargo new text_and_maps
 cd text_and_maps
 ```
 
-These commands create the `text_and_maps` project. The hash map type you will use later needs a `use` statement at the top of the file, which you will add in Section 4.
+These commands create the `text_and_maps` project. In every step you will replace the contents of `src/main.rs` with a short, complete program and run it right away. Section 5 then combines everything into one file.
 
 ### Step 2: Combine Pieces of Text
 
@@ -54,6 +54,7 @@ fn main() {
     built.push_str(&first);
     built.push_str(" & friends");
     println!("{joined} / {built}");
+}
 ```
 
 There are several ways to combine text, and `format!` is usually the clearest. It works like `println!`, but returns the result as a new `String` instead of printing it, and it accepts any mix of `String` and `&str` values. It only borrows its inputs, so `first` is still usable afterward.
@@ -62,11 +63,24 @@ There are several ways to combine text, and `format!` is usually the clearest. I
 
 Rust also supports `+` for joining text, as in `first + " is fun"`, but it has a twist: the left side must be an owned `String`, and it is moved into the result. That makes `+` awkward for beginners, so this course prefers `format!`. Section 6 shows the error you get when both sides are `&str`.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Rust is fun! / Rust & friends
+```
+
 ### Step 3: Inspect and Transform Text
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Inspecting and transforming text.
     let title = "  Learning Rust, One Lesson at a Time  ";
     let clean = title.trim();
@@ -75,40 +89,86 @@ Add these lines:
     println!("Contains 'Rust'? {}", clean.contains("Rust"));
     println!("Starts with 'Learn'? {}", clean.starts_with("Learn"));
     println!("Replaced: {}", clean.replace("Rust", "Programming"));
+}
 ```
 
 `trim` removes whitespace from both ends and returns a `&str` slice of the original text, without copying anything. `to_lowercase` (and its partner `to_uppercase`) creates a new `String`, because changing letters produces different text. `contains` and `starts_with` answer yes or no questions and return a `bool`; `ends_with` also exists. `replace` returns a new `String` in which every occurrence of the first argument is replaced by the second.
 
 None of these methods change `title` or `clean`. Methods that produce modified text return a new `String`, and methods that answer questions return a `bool` or a number. This makes text methods easy to chain and safe to call on borrowed text.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Trimmed: [Learning Rust, One Lesson at a Time]
+Lowercase: learning rust, one lesson at a time
+Contains 'Rust'? true
+Starts with 'Learn'? true
+Replaced: Learning Programming, One Lesson at a Time
+```
+
 ### Step 4: Bytes Versus Characters
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Bytes versus characters.
     let city = "Café Bogor";
     println!("'{city}' has {} bytes and {} characters", city.len(), city.chars().count());
     let initials: String = city.split_whitespace().map(|w| w.chars().next().unwrap()).collect();
     println!("Initials: {initials}");
+}
 ```
 
 Rust stores text as UTF-8, an encoding in which basic English letters take one byte, but accented letters like `é` take two bytes, and many other characters take three or four. `len()` returns the number of bytes, which is 11 here, while `chars()` produces an iterator over the actual characters, and `count()` counts them: 10. When you need "how many letters does this have," use `chars().count()`.
 
 This is also why Rust does not let you write `city[0]` to get the first character: a byte position does not always line up with a character. To work with characters, use `chars()`. The second line splits the city name into words with `split_whitespace` (Step 5 explains splitting), takes the first character of each word with `chars().next()`, and collects them into a new `String`. `next()` returns an `Option<char>`, because a word could be empty; `split_whitespace` never produces empty words, so `unwrap()` is safe here.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+'Café Bogor' has 11 bytes and 10 characters
+Initials: CB
+```
+
 ### Step 5: Split Text into Parts
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Splitting text.
     let csv_line = "Dina,19,Bandung";
     let parts: Vec<&str> = csv_line.split(',').collect();
     println!("Name: {}, age: {}, city: {}", parts[0], parts[1], parts[2]);
+}
 ```
 
 `split(',')` produces an iterator over the pieces of text between commas, and `collect` gathers them into a `Vec<&str>`. Each piece is a slice of the original line, so no text is copied. CSV (comma separated values) files store data exactly like this, one record per line. `split_whitespace`, used in the previous step, splits on any run of spaces, tabs, or newlines, which is what you usually want for words. There is also `lines()`, which splits text into lines; you will use it in Lesson 17 when reading files.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Name: Dina, age: 19, city: Bandung
+```
 
 ---
 
@@ -118,69 +178,159 @@ A hash map, `HashMap<K, V>`, stores pairs of a key of type `K` and a value of ty
 
 ### Step 1: Import HashMap and Create a Map
 
-Add this line at the very top of `src/main.rs`, above `fn main()`:
+Replace the contents of `src/main.rs` with:
 
 ```rust
 use std::collections::HashMap;
-```
 
-Unlike `Vec` and `String`, `HashMap` is not available automatically. It lives in the `std::collections` module of the standard library, so you bring it into scope with `use`, as you did with `std::io` in Lesson 8.
-
-Now add these lines at the end of `main`:
-
-```rust
+fn main() {
     // A hash map of prices.
     let mut prices: HashMap<String, u32> = HashMap::new();
     prices.insert(String::from("coffee"), 18_000);
     prices.insert(String::from("tea"), 12_000);
     prices.insert(String::from("cake"), 25_000);
+    println!("The menu has {} items.", prices.len());
+}
 ```
 
-`HashMap::new()` creates an empty map, and the annotation `HashMap<String, u32>` says keys are `String`s and values are `u32`s. `insert` adds a key and value pair. The map takes ownership of both, just as a vector takes ownership of what you push into it. The map must be `mut` because inserting changes it.
+The first line, `use std::collections::HashMap;`, sits at the very top of the file, above `fn main()`. Unlike `Vec` and `String`, `HashMap` is not available automatically. It lives in the `std::collections` module of the standard library, so you bring it into scope with `use`, as you did with `std::io` in Lesson 8.
+
+`HashMap::new()` creates an empty map, and the annotation `HashMap<String, u32>` says keys are `String`s and values are `u32`s. `insert` adds a key and value pair. The map takes ownership of both, just as a vector takes ownership of what you push into it. The map must be `mut` because inserting changes it. `len()` returns the number of entries, just like on a vector.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+The menu has 3 items.
+```
 
 ### Step 2: Look Up and Check Keys
 
-Add these lines:
+Replace the contents of `src/main.rs` with a program that builds the same map and then looks up keys:
 
 ```rust
+use std::collections::HashMap;
+
+fn main() {
+    // A hash map of prices.
+    let mut prices: HashMap<String, u32> = HashMap::new();
+    prices.insert(String::from("coffee"), 18_000);
+    prices.insert(String::from("tea"), 12_000);
+    prices.insert(String::from("cake"), 25_000);
+
     match prices.get("tea") {
         Some(price) => println!("Tea: Rp{price}"),
         None => println!("Tea is not on the menu"),
     }
     println!("Has pizza? {}", prices.contains_key("pizza"));
+}
 ```
 
 `get` looks up a key and returns an `Option<&V>`: `Some` with a reference to the value if the key exists, or `None` if it does not. This is the same pattern as `Vec::get` from Lesson 13, and you handle it with `match` or `if let`. Even though the keys are `String`s, you can look them up with a `&str` like `"tea"`; the map compares the text, not the type.
 
 `contains_key` returns a `bool` when you only need to know whether a key exists.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Tea: Rp12000
+Has pizza? false
+```
+
 ### Step 3: Update and Remove Entries
 
-Add these lines:
+Replace the contents of `src/main.rs` with a program that builds the map, changes it, and prints the three lookups:
 
 ```rust
+use std::collections::HashMap;
+
+fn main() {
+    // A hash map of prices.
+    let mut prices: HashMap<String, u32> = HashMap::new();
+    prices.insert(String::from("coffee"), 18_000);
+    prices.insert(String::from("tea"), 12_000);
+    prices.insert(String::from("cake"), 25_000);
+
     prices.insert(String::from("tea"), 13_000);
     if let Some(price) = prices.get_mut("coffee") {
         *price += 2_000;
     }
     prices.remove("cake");
+    println!("Tea: {:?}", prices.get("tea"));
+    println!("Coffee: {:?}", prices.get("coffee"));
+    println!("Cake: {:?}", prices.get("cake"));
+}
 ```
 
-Calling `insert` with a key that already exists replaces the old value: tea now costs 13,000. `get_mut` returns an `Option<&mut V>`, a mutable reference to the value, so you can change it in place. As with mutable references in vectors, you dereference it with `*` to modify it: coffee goes up by 2,000. `remove` deletes a key and its value from the map.
+Calling `insert` with a key that already exists replaces the old value: tea now costs 13,000. `get_mut` returns an `Option<&mut V>`, a mutable reference to the value, so you can change it in place. As with mutable references in vectors, you dereference it with `*` to modify it: coffee goes up by 2,000. `remove` deletes a key and its value from the map, so looking up cake now returns `None`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Tea: Some(13000)
+Coffee: Some(20000)
+Cake: None
+```
 
 ### Step 4: Loop over the Map in Order
 
-Add these lines:
+Replace the contents of `src/main.rs` with a program that builds and changes the map, then prints the menu in order:
 
 ```rust
+use std::collections::HashMap;
+
+fn main() {
+    // A hash map of prices.
+    let mut prices: HashMap<String, u32> = HashMap::new();
+    prices.insert(String::from("coffee"), 18_000);
+    prices.insert(String::from("tea"), 12_000);
+    prices.insert(String::from("cake"), 25_000);
+
+    prices.insert(String::from("tea"), 13_000);
+    if let Some(price) = prices.get_mut("coffee") {
+        *price += 2_000;
+    }
+    prices.remove("cake");
+
     let mut menu: Vec<(&String, &u32)> = prices.iter().collect();
     menu.sort();
     for (item, price) in menu {
         println!("{item:<8} Rp{price}");
     }
+}
 ```
 
 `prices.iter()` produces every key and value pair as a tuple of references. There is one important detail: a hash map does not keep its entries in any particular order, and the order can even change between runs of the same program. If you need a predictable order, collect the pairs into a vector and sort it. Tuples sort by their first element, so `menu.sort()` arranges the items alphabetically. Then the loop destructures each tuple into `item` and `price`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+coffee   Rp20000
+tea      Rp13000
+```
 
 ---
 
@@ -190,9 +340,12 @@ Counting is one of the most common uses of a hash map: how many times does each 
 
 ### Step 1: Count Each Word
 
-Add the final lines and close `main`:
+Replace the contents of `src/main.rs` with a new program. It needs the same `use` line at the top:
 
 ```rust
+use std::collections::HashMap;
+
+fn main() {
     // Counting words with the entry API.
     let text = "the cat sat on the mat and the dog sat too";
     let mut counts: HashMap<&str, u32> = HashMap::new();
@@ -213,11 +366,31 @@ This map uses `&str` keys: each word is a slice of `text`, so no text is copied.
 
 Sorting works as in Section 3. The tuple contains references to the keys, and since the keys are already `&str`, the key references are `&&str`; printing follows all the references automatically. `counts.len()` returns the number of entries, which is the number of distinct words.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+and: 1
+cat: 1
+dog: 1
+mat: 1
+on: 1
+sat: 2
+the: 3
+too: 1
+Distinct words: 8
+```
+
 ---
 
 ## 5. Run and Test
 
-Your complete `src/main.rs` should look like this:
+Each step ran as its own small program. To see everything working together, replace the contents of `src/main.rs` with this complete program that combines all the steps:
 
 ```rust
 use std::collections::HashMap;

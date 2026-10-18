@@ -215,27 +215,50 @@ Rust has two more ways to work with named values: constants, for values that are
 
 ### Step 1: Add a Constant
 
-Constants are values that never change and are known before the program runs, such as the maximum level in a game, the number of seconds in a minute, or a tax rate. Add the following line at the very top of `src/main.rs`, above `fn main()`:
+Constants are values that never change and are known before the program runs, such as the maximum level in a game, the number of seconds in a minute, or a tax rate. Replace the contents of `src/main.rs` with this version, which adds a constant above `fn main()` and uses it in the last `println!`:
 
 ```rust
 const MAX_LEVEL: u32 = 50;
+
+fn main() {
+    let player = "Dina";
+    let class = "Mage";
+
+    let mut level = 1;
+    println!("{player} the {class} starts at level {level}.");
+
+    level = level + 1;
+    println!("After the first quest, {player} reaches level {level}.");
+
+    level += 3;
+    println!("After three more quests: level {level} of {MAX_LEVEL}.");
+}
 ```
 
 `const` declares a constant. Three rules make constants different from `let` variables. First, the name is written in `SCREAMING_SNAKE_CASE`: all uppercase with underscores. Second, the type must always be written out; here `: u32` says the constant is an unsigned 32 bit integer, a whole number that cannot be negative. (You will learn about types in detail in Lesson 4.) Third, constants can be declared outside any function, so every function in the file can use them, and they can never be made mutable.
 
-Now change the last `println!` in `main` so it also shows the maximum level:
+Constants are used in placeholders exactly like variables. Giving a fixed number a name such as `MAX_LEVEL` also makes the code self explanatory: `50` alone says nothing, while `MAX_LEVEL` says what the number means.
 
-```rust
-    println!("After three more quests: level {level} of {MAX_LEVEL}.");
+Run it:
+
+```bash
+cargo run -q
 ```
 
-Constants are used in placeholders exactly like variables. Giving a fixed number a name such as `MAX_LEVEL` also makes the code self explanatory: `50` alone says nothing, while `MAX_LEVEL` says what the number means.
+Output:
+
+```text
+Dina the Mage starts at level 1.
+After the first quest, Dina reaches level 2.
+After three more quests: level 5 of 50.
+```
 
 ### Step 2: Shadow a Variable
 
-Shadowing means declaring a new variable with the same name as an existing one, using `let` again. The new variable "shadows" the old one: from that point on, the name refers to the new value. Add these lines inside `main`, after the last `println!`:
+Shadowing means declaring a new variable with the same name as an existing one, using `let` again. The new variable "shadows" the old one: from that point on, the name refers to the new value. Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Shadowing: a new variable that reuses an existing name.
     let gold = 120;
     let gold = gold + 30;
@@ -244,11 +267,25 @@ Shadowing means declaring a new variable with the same name as an existing one, 
     let title = "   Archmage   ";
     let title = title.trim();
     println!("Title: [{title}]");
+}
 ```
 
 The first `let gold = 120;` creates an immutable variable. The second `let gold = gold + 30;` creates a *brand new* variable, also named `gold`, whose value is calculated from the old one: 120 plus 30 equals 150. After this line, `gold` refers to 150. Neither variable is mutable; the second simply replaces the first name.
 
 The `title` example shows why shadowing is useful. The first `title` is text with extra spaces around it. `title.trim()` produces the same text without the leading and trailing spaces. Shadowing lets you keep the meaningful name `title` for the cleaned value instead of inventing names such as `title_trimmed`. The square brackets in the `println!` make the absence of spaces visible in the output.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Gold after selling an item: 150
+Title: [Archmage]
+```
 
 Shadowing and `mut` are not the same. With `mut`, there is one variable whose value changes, and the new value must have the same type as the old one. With shadowing, there are two separate variables, and the new one can even have a different type. You will see that difference again in Lesson 8, when you turn text typed by the user into a number.
 
@@ -260,45 +297,97 @@ So far you have used inline placeholders like `{player}`. `println!` supports se
 
 ### Step 1: Positional and Numbered Placeholders
 
-Add these lines at the end of `main`:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
+    let player = "Dina";
+    let gold = 150;
+    let level = 5;
+
     // Formatting options.
     println!("{} has {} gold and is level {}.", player, gold, level);
     println!("{0} says: {1}! {1}!", player, "Ready");
+}
 ```
 
 In the first line, each empty `{}` is filled by the values listed after the string, in order: the first `{}` gets `player`, the second gets `gold`, and the third gets `level`. This style is useful when the value is not a simple variable name, such as the result of a calculation.
 
 In the second line, the numbers inside the braces refer to positions in the list of values, counting from zero: `{0}` is `player` and `{1}` is the text `"Ready"`. Numbered placeholders let you use the same value more than once without listing it twice.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Dina has 150 gold and is level 5.
+Dina says: Ready! Ready!
+```
+
 ### Step 2: Align Text in Columns
 
-Add a small table:
+Replace the contents of `src/main.rs` with a small table:
 
 ```rust
+fn main() {
+    let player = "Dina";
+    let level = 5;
+
     println!("|{:<10}|{:>6}|", "Name", "Level");
     println!("|{:<10}|{:>6}|", player, level);
+}
 ```
 
 Options go after a colon inside the braces. `{:<10}` means "left align (`<`) the value in a space 10 characters wide." `{:>6}` means "right align (`>`) in a space 6 characters wide." Shorter values are padded with spaces, so every row lines up. The `|` characters are plain text that makes the column edges visible. Use `^` instead of `<` or `>` to center a value.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+|Name      | Level|
+|Dina      |     5|
+```
+
 ### Step 3: Round Decimal Numbers
 
-Add these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     let health = 87.456;
     println!("Health: {health:.1}%");
+}
 ```
 
 `87.456` is a decimal number (Rust calls it a floating point number; more on that in Lesson 4). The option `:.1` inside `{health:.1}` rounds the value to one digit after the decimal point when printing. The stored value is not changed; only its printed form is. The `%` after the closing brace is ordinary text.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Health: 87.5%
+```
+
 ### Step 4: print! and Escaped Braces
 
-Finish `main` with these lines:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     print!("Saving");
     print!("...");
     println!(" done.");
@@ -309,13 +398,26 @@ Finish `main` with these lines:
 
 `print!` works like `println!` but does not add a new line at the end, so the next output continues on the same line. The three calls above produce a single line of text. `println!` at the end finishes the line.
 
-Because `{` and `}` have special meaning inside `println!`, you write them twice, `{{` and `}}`, when you want an actual brace in the output. The closing `}` on the last line ends the `main` function.
+Because `{` and `}` have special meaning inside `println!`, you write them twice, `{{` and `}}`, when you want an actual brace in the output.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Saving... done.
+Use { and } to print braces.
+```
 
 ---
 
 ## 6. Run and Test
 
-Your complete `src/main.rs` should now look like this:
+Each step above ran on its own. To see all four topics working together in one program, replace the contents of `src/main.rs` with the complete version:
 
 ```rust
 const MAX_LEVEL: u32 = 50;
@@ -362,7 +464,7 @@ fn main() {
 }
 ```
 
-The constant sits above `main`, and the body runs top to bottom through the four topics of this lesson: immutable variables, a mutable variable, shadowing, and formatting. Run it, this time with `-q` to hide Cargo's messages:
+The constant sits above `main`, and the body runs top to bottom through the four topics of this lesson: immutable variables, a mutable variable, shadowing, and formatting. Run it with `-q` to hide Cargo's messages:
 
 ```bash
 cargo run -q

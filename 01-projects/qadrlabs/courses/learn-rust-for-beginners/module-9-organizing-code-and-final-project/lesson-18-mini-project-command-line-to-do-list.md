@@ -65,7 +65,7 @@ A plain text format like this is easy to read and to debug: you can open the fil
 
 ## 3. Model a Task
 
-The first building block is the `Task` struct. Everything else in the program works with tasks, so it is a natural place to start.
+The first building block is the `Task` struct. Everything else in the program works with tasks, so it is a natural place to start. In Sections 3 to 5 you write the whole of `src/todo.rs`, one complete item at a time; the program runs for the first time in Section 6, once `main.rs` connects the module to the user.
 
 ### Step 1: Define the Task Struct
 
@@ -89,17 +89,19 @@ impl Task {
             done: false,
         }
     }
+}
 ```
 
-The three `use` lines import the formatting module for `Display`, the file system module for reading and writing, and `Path`, which you will use to check whether the save file exists. The compiler will warn that `fs` and `Path` are unused until Section 5; that is expected.
+The three `use` lines import the formatting module for `Display`, the file system module for reading and writing, and `Path`, which you will use to check whether the save file exists. `fs` and `Path` are used in Section 5.
 
-`Task` has two public fields: the title, owned as a `String`, and a `done` flag. It derives `Debug`, `Clone`, and `PartialEq` (Lesson 16); `PartialEq` and `Debug` are needed so tests can compare tasks with `assert_eq!`. `Task::new` is the constructor from Lesson 11: every new task starts as not done. The `impl` block stays open for the next step.
+`Task` has two public fields: the title, owned as a `String`, and a `done` flag. It derives `Debug`, `Clone`, and `PartialEq` (Lesson 16); `PartialEq` and `Debug` are needed so tests can compare tasks with `assert_eq!`. `Task::new` is the constructor from Lesson 11: every new task starts as not done. The `impl` block is closed right after `new`, so the file is complete at the end of this step.
 
 ### Step 2: Convert a Task to a Line and Back
 
-Add two methods to finish the `impl Task` block:
+Add a second, complete `impl Task` block below the first one:
 
 ```rust
+impl Task {
     pub fn to_line(&self) -> String {
         let flag = if self.done { 1 } else { 0 };
         format!("{flag}|{}", self.title)
@@ -123,13 +125,13 @@ Add two methods to finish the `impl Task` block:
 }
 ```
 
-`to_line` produces the file format from Section 2: an `if` expression (Lesson 5) picks the flag, and `format!` joins it to the title with a `|`.
+Rust allows more than one `impl` block for the same type, and the compiler treats all of their methods as one set. Writing each group of methods in its own block lets you add them step by step without leaving any curly brace open. `to_line` produces the file format from Section 2: an `if` expression (Lesson 5) picks the flag, and `format!` joins it to the title with a `|`.
 
 `from_line` is the reverse, and it returns a `Result` because a line in the file might be damaged (Lesson 15). `splitn(2, '|')` splits the line at most into two parts, at the *first* `|` only. That detail matters: a title such as `Write | read files` contains a `|` itself, and a plain `split('|')` would cut it into three pieces. Section 9 shows how a test catches exactly that mistake. The `match` turns the flag into a `bool`, and its last arm binds any other value to `other` and returns an error. If everything is valid, the function builds the task.
 
 ### Step 3: Display a Task
 
-Add the `Display` implementation below the `impl Task` block:
+Add the `Display` implementation below the `impl Task` blocks:
 
 ```rust
 impl fmt::Display for Task {
@@ -214,7 +216,7 @@ The tasks could simply live in a `Vec<Task>` in `main`, but then any code could 
 
 ### Step 1: Wrap the Vector in a Struct
 
-Add the `TodoList` struct and the first methods:
+Add the `TodoList` struct and a complete `impl` block with the first methods:
 
 ```rust
 pub struct TodoList {
@@ -237,15 +239,17 @@ impl TodoList {
     pub fn add(&mut self, title: &str) {
         self.tasks.push(Task::new(title));
     }
+}
 ```
 
-The struct is public, but its `tasks` field is private, so code outside the module cannot change the vector directly. Instead, `tasks()` returns a read only slice (Lesson 10): `main.rs` can loop over the tasks and count them, but not modify them. `pending_count` counts the tasks that are not done with `filter` and `count` (Lesson 13). `add` takes `&mut self` because it changes the list. The `impl` block stays open.
+The struct is public, but its `tasks` field is private, so code outside the module cannot change the vector directly. Instead, `tasks()` returns a read only slice (Lesson 10): `main.rs` can loop over the tasks and count them, but not modify them. `pending_count` counts the tasks that are not done with `filter` and `count` (Lesson 13). `add` takes `&mut self` because it changes the list.
 
 ### Step 2: Complete and Remove Tasks Safely
 
-Add the methods that work with task numbers:
+Add a second, complete `impl TodoList` block with the methods that work with task numbers:
 
 ```rust
+impl TodoList {
     pub fn complete(&mut self, number: usize) -> Result<&Task, String> {
         let index = self.index_of(number)?;
         self.tasks[index].done = true;
@@ -263,6 +267,7 @@ Add the methods that work with task numbers:
         }
         Ok(number - 1)
     }
+}
 ```
 
 Users see tasks numbered from 1, but vectors are indexed from 0. The private helper `index_of` does that conversion in one place and rejects numbers that do not exist, so a typo like `done 9` produces an error message instead of an out of bounds panic (Lesson 13).
@@ -271,9 +276,10 @@ Users see tasks numbered from 1, but vectors are indexed from 0. The private hel
 
 ### Step 3: Load and Save the File
 
-Add the last two methods and close the `impl` block:
+Add a third, complete `impl TodoList` block with the last two methods:
 
 ```rust
+impl TodoList {
     pub fn load(path: &str) -> Result<TodoList, String> {
         let mut list = TodoList::new();
         if !Path::new(path).exists() {
@@ -423,6 +429,28 @@ fn read_line(prompt: &str) -> Result<String, String> {
 
 `read_line` is the helper from Lesson 8, upgraded to return a `Result` instead of calling `expect`. One more detail: `read_line` on standard input returns the number of bytes it read, and 0 means the input has ended, for example when the user presses `Ctrl` + `D`. Without a check, the loop would read empty lines forever. Treating the end of input as `quit` lets the program finish cleanly.
 
+The program is now complete enough to run. Start it, type `add Buy milk`, `list`, and `quit`:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Rust To-Do List: 0 task(s) loaded.
+Type 'help' to see the commands.
+> add Buy milk
+Added task 1: Buy milk
+> list
+ 1. [ ] Buy milk
+1 of 1 task(s) still pending.
+> quit
+Goodbye!
+```
+
+The lines after each `>` prompt are what you typed. The program saved the task to `tasks.txt`. Delete that file with `rm tasks.txt` so that Section 8 starts with an empty list.
+
 ---
 
 ## 7. Test the Logic
@@ -526,7 +554,7 @@ All five tests pass. Remember that tests run in parallel, so the order of the li
 
 ## 8. Run and Test
 
-Your complete `src/main.rs` is the code from Section 6: the module declaration, the `use` lines, the `FILE_PATH` constant, `main`, and the three helper functions. `src/todo.rs` contains, from top to bottom: the three `use` lines, `Task` with its `impl` block and `Display` implementation (Section 3), `Command` and `parse_command` with `parse_number` (Section 4), `TodoList` with its `impl` block (Section 5), and the test module (Section 7).
+Your complete `src/main.rs` is the code from Section 6: the module declaration, the `use` lines, the `FILE_PATH` constant, `main`, and the three helper functions. `src/todo.rs` contains, from top to bottom: the three `use` lines, `Task` with its two `impl` blocks and `Display` implementation (Section 3), `Command` and `parse_command` with `parse_number` (Section 4), `TodoList` with its three `impl` blocks (Section 5), and the test module (Section 7).
 
 Make sure there is no `tasks.txt` in the project folder yet, then start the program and try every command. The lines after each `>` prompt are what you type:
 
@@ -680,7 +708,7 @@ failures:
 
 ---- todo::tests::converts_tasks_to_lines_and_back stdout ----
 
-thread 'todo::tests::converts_tasks_to_lines_and_back' (66651) panicked at src/todo.rs:183:9:
+thread 'todo::tests::converts_tasks_to_lines_and_back' (422406) panicked at src/todo.rs:189:9:
 assertion `left == right` failed
   left: Err("invalid task line: '1|Write | read files'")
  right: Ok(Task { title: "Write | read files", done: true })

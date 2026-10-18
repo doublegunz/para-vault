@@ -38,7 +38,7 @@ cargo new errors
 cd errors
 ```
 
-These commands create the `errors` project. You will start with a short experiment and then replace it with the order program.
+These commands create the `errors` project. In every step of this lesson you will replace the contents of `src/main.rs` (or one function in it) with a short, complete program and run it right away.
 
 ### Step 2: Trigger a Panic
 
@@ -90,11 +90,10 @@ You do not write this definition yourself. `Ok(T)` holds the successful value of
 
 ### Step 1: Inspect a Result from the Standard Library
 
-Replace `src/main.rs` with the beginning of the order program. Note the new signature of `main`; it is explained in Section 6, so for now just type it as shown:
+Replace the contents of `src/main.rs` with:
 
 ```rust
-fn main() -> Result<(), String> {
-    // A Result from the standard library.
+fn main() {
     let good: Result<i32, _> = "42".parse::<i32>();
     let bad: Result<i32, _> = "4x2".parse::<i32>();
     println!("{:?}", good);
@@ -104,11 +103,26 @@ fn main() -> Result<(), String> {
         Ok(number) => println!("Parsed {number}"),
         Err(error) => println!("Could not parse: {error}"),
     }
+}
 ```
 
 `parse::<i32>()` returns a `Result<i32, ParseIntError>`. The type annotations write the error type as `_`, which asks Rust to infer it. Printing both results with `{:?}` shows the two variants: `Ok(42)` for the valid text, and an `Err` containing a `ParseIntError` with the reason `InvalidDigit` for `"4x2"`.
 
 The `match` handles both cases. This time the `Err` arm binds the error value to `error` instead of ignoring it with `_`, and prints it with `{}`. Standard library errors have a human readable message, here `invalid digit found in string`. Debug output (`{:?}`) is for programmers; display output (`{}`) is for users.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Ok(42)
+Err(ParseIntError { kind: InvalidDigit })
+Could not parse: invalid digit found in string
+```
 
 ---
 
@@ -118,9 +132,20 @@ Your own functions can return `Result` too. That puts the possibility of failure
 
 ### Step 1: Validate a Quantity
 
-Add this function below `main` (you will close `main` later):
+Replace the contents of `src/main.rs` with a program that defines `parse_quantity` and calls it twice:
 
 ```rust
+fn main() {
+    match parse_quantity("3") {
+        Ok(quantity) => println!("Quantity: {quantity}"),
+        Err(message) => println!("Error: {message}"),
+    }
+    match parse_quantity("0") {
+        Ok(quantity) => println!("Quantity: {quantity}"),
+        Err(message) => println!("Error: {message}"),
+    }
+}
+
 fn parse_quantity(text: &str) -> Result<u32, String> {
     let quantity: u32 = match text.trim().parse() {
         Ok(number) => number,
@@ -137,11 +162,37 @@ The return type `Result<u32, String>` says: on success you get a `u32`, on failu
 
 Parsing is not the only check. A quantity of 0 is a valid number but not a valid order, so the `if` returns another `Err`. Rules like this are called validation, and `Result` gives them a natural home. If every check passes, the tail expression `Ok(quantity)` wraps the value in the success variant. Forgetting the `Ok(...)` wrapper is a common mistake (see Section 8).
 
+Calling a function that returns `Result` looks exactly like calling `parse`: the caller decides what to do in each case with `match`. `"3"` passes every check, while `"0"` parses as a number but fails the validation and produces the message from the `if`.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Quantity: 3
+Error: quantity must be at least 1
+```
+
 ### Step 2: Look Up a Price
 
-Add a second function:
+Replace the contents of `src/main.rs` with a program that looks up two prices:
 
 ```rust
+fn main() {
+    match find_price("tea") {
+        Ok(price) => println!("Price: Rp{price}"),
+        Err(message) => println!("Error: {message}"),
+    }
+    match find_price("pizza") {
+        Ok(price) => println!("Price: Rp{price}"),
+        Err(message) => println!("Error: {message}"),
+    }
+}
+
 fn find_price(item: &str) -> Result<u32, String> {
     match item {
         "coffee" => Ok(18_000),
@@ -154,23 +205,18 @@ fn find_price(item: &str) -> Result<u32, String> {
 
 This is the `find_price` function from Lesson 12, rewritten to return `Result` instead of `Option`. With `Option`, the caller only learns that there is no price. With `Result`, the caller also gets a message explaining which item was missing, which can be shown to the user directly.
 
-### Step 3: Call Your Functions
+Run it:
 
-Add these lines to `main`:
-
-```rust
-    // Our own functions that return Result.
-    match parse_quantity("3") {
-        Ok(quantity) => println!("Quantity: {quantity}"),
-        Err(message) => println!("Error: {message}"),
-    }
-    match parse_quantity("0") {
-        Ok(quantity) => println!("Quantity: {quantity}"),
-        Err(message) => println!("Error: {message}"),
-    }
+```bash
+cargo run -q
 ```
 
-Calling a function that returns `Result` looks exactly like calling `parse`: the caller decides what to do in each case with `match`. `"3"` passes every check, while `"0"` parses as a number but fails the validation and produces the message from the `if`.
+Output:
+
+```text
+Price: Rp12000
+Error: 'pizza' is not on the menu
+```
 
 ---
 
@@ -180,9 +226,36 @@ Real programs build larger operations out of smaller ones that can each fail. Ca
 
 ### Step 1: Combine Fallible Steps
 
-Add this function:
+Replace the contents of `src/main.rs` with a program that combines `parse_quantity` and `find_price` in a new `order_total` function:
 
 ```rust
+fn main() {
+    match order_total("coffee, 2") {
+        Ok(total) => println!("Total: Rp{total}"),
+        Err(message) => println!("Error: {message}"),
+    }
+}
+
+fn parse_quantity(text: &str) -> Result<u32, String> {
+    let quantity: u32 = match text.trim().parse() {
+        Ok(number) => number,
+        Err(_) => return Err(format!("'{}' is not a valid quantity", text.trim())),
+    };
+    if quantity == 0 {
+        return Err(String::from("quantity must be at least 1"));
+    }
+    Ok(quantity)
+}
+
+fn find_price(item: &str) -> Result<u32, String> {
+    match item {
+        "coffee" => Ok(18_000),
+        "tea" => Ok(12_000),
+        "cake" => Ok(25_000),
+        _ => Err(format!("'{item}' is not on the menu")),
+    }
+}
+
 fn order_total(line: &str) -> Result<u32, String> {
     let parts: Vec<&str> = line.split(',').collect();
     if parts.len() != 2 {
@@ -200,12 +273,24 @@ The line is split at the comma, as in Lesson 14. If there are not exactly two pa
 
 Without `?`, each of those two lines would need a five line `match`. `?` keeps the "happy path" readable while still handling every error. It can only be used inside a function that itself returns a `Result` (or an `Option`), because it needs somewhere to return the error to.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Total: Rp36000
+```
+
 ### Step 2: Process Several Orders
 
-Add these lines to `main`:
+Keep the three functions and replace only the `main` function with:
 
 ```rust
-    // Functions that use ? to pass errors up.
+fn main() {
     let orders = ["coffee, 2", "cake, 1", "pizza, 1", "tea, two", "tea"];
     for line in orders {
         match order_total(line) {
@@ -213,141 +298,10 @@ Add these lines to `main`:
             Err(message) => println!("{line:<12} -> error: {message}"),
         }
     }
+}
 ```
 
 Each order line goes through `order_total`, and the `match` reports either the total or the error. Notice that the messages come from three different functions: the format check in `order_total`, the menu check in `find_price`, and the quantity check in `parse_quantity`. `?` carried each one up to `main`, where it is displayed.
-
-### Step 3: Convert Errors with map_err
-
-The `?` operator requires that the error type of the expression matches the error type of the function. `parse()` fails with a `ParseIntError`, but `parse_quantity` returns `String` errors, so you cannot simply write `text.trim().parse()?` there (Section 8 shows the compiler's message). The `match` in Section 4 handles this, and there is a shorter alternative: `map_err`.
-
-```rust
-let quantity: u32 = text
-    .trim()
-    .parse()
-    .map_err(|_| format!("'{}' is not a valid quantity", text.trim()))?;
-```
-
-`map_err` leaves an `Ok` value untouched and transforms an `Err` value with a closure, here replacing the `ParseIntError` with a `String` message. After that, the error types match and `?` works. This version is equivalent to the `match` in `parse_quantity`; you can use whichever you find clearer. The exercises use `map_err`.
-
----
-
-## 6. Shortcuts and a main That Returns Result
-
-`match` and `?` are the main tools, but `Result` also has the same convenience methods as `Option`. And because `?` needs a function that returns `Result`, Rust lets `main` return one too.
-
-### Step 1: unwrap_or and expect
-
-Add these lines to `main`:
-
-```rust
-    // Shortcuts.
-    let fallback = order_total("pizza, 1").unwrap_or(0);
-    println!("Total with fallback: {fallback}");
-    let sure = order_total("tea, 3").expect("a valid order");
-    println!("Total with expect: {sure}");
-```
-
-`unwrap_or(0)` returns the value inside `Ok`, or the default if the result is an `Err`. The error message is discarded, so use it only when a default really is acceptable.
-
-`expect("...")` returns the value inside `Ok`, and panics with your message (followed by the error) if the result is an `Err`. `unwrap()` does the same with a generic message. Use them only when an error would mean a bug in your own program, such as here, where the input is a fixed, known good value, or in quick experiments. For anything that depends on users, files, or the network, handle the error properly.
-
-### Step 2: Use ? in main
-
-Add the last lines and close `main`:
-
-```rust
-    // ? also works in main when main returns Result.
-    let grand_total = order_total("coffee, 2")? + order_total("cake, 1")?;
-    println!("Grand total: Rp{grand_total}");
-    Ok(())
-}
-```
-
-Now the signature you typed in Section 3 makes sense. `fn main() -> Result<(), String>` declares that `main` returns either `Ok(())` or an error message. `()` is the unit type from Lesson 7, meaning "no meaningful value": when `main` succeeds, there is nothing to return except the fact that it succeeded. Because `main` returns a `Result`, `?` can be used inside it. The final line, `Ok(())`, reports success.
-
-If one of these `?` operators meets an `Err`, `main` returns that error. Rust then prints `Error: ` followed by the error in debug format and exits with a failure status, which other programs and scripts can detect. You will see this in Section 7.
-
----
-
-## 7. Run and Test
-
-Your complete `src/main.rs` should look like this:
-
-```rust
-fn main() -> Result<(), String> {
-    // A Result from the standard library.
-    let good: Result<i32, _> = "42".parse::<i32>();
-    let bad: Result<i32, _> = "4x2".parse::<i32>();
-    println!("{:?}", good);
-    println!("{:?}", bad);
-
-    match "4x2".parse::<i32>() {
-        Ok(number) => println!("Parsed {number}"),
-        Err(error) => println!("Could not parse: {error}"),
-    }
-
-    // Our own functions that return Result.
-    match parse_quantity("3") {
-        Ok(quantity) => println!("Quantity: {quantity}"),
-        Err(message) => println!("Error: {message}"),
-    }
-    match parse_quantity("0") {
-        Ok(quantity) => println!("Quantity: {quantity}"),
-        Err(message) => println!("Error: {message}"),
-    }
-
-    // Functions that use ? to pass errors up.
-    let orders = ["coffee, 2", "cake, 1", "pizza, 1", "tea, two", "tea"];
-    for line in orders {
-        match order_total(line) {
-            Ok(total) => println!("{line:<12} -> Rp{total}"),
-            Err(message) => println!("{line:<12} -> error: {message}"),
-        }
-    }
-
-    // Shortcuts.
-    let fallback = order_total("pizza, 1").unwrap_or(0);
-    println!("Total with fallback: {fallback}");
-    let sure = order_total("tea, 3").expect("a valid order");
-    println!("Total with expect: {sure}");
-
-    // ? also works in main when main returns Result.
-    let grand_total = order_total("coffee, 2")? + order_total("cake, 1")?;
-    println!("Grand total: Rp{grand_total}");
-    Ok(())
-}
-
-fn parse_quantity(text: &str) -> Result<u32, String> {
-    let quantity: u32 = match text.trim().parse() {
-        Ok(number) => number,
-        Err(_) => return Err(format!("'{}' is not a valid quantity", text.trim())),
-    };
-    if quantity == 0 {
-        return Err(String::from("quantity must be at least 1"));
-    }
-    Ok(quantity)
-}
-
-fn find_price(item: &str) -> Result<u32, String> {
-    match item {
-        "coffee" => Ok(18_000),
-        "tea" => Ok(12_000),
-        "cake" => Ok(25_000),
-        _ => Err(format!("'{item}' is not on the menu")),
-    }
-}
-
-fn order_total(line: &str) -> Result<u32, String> {
-    let parts: Vec<&str> = line.split(',').collect();
-    if parts.len() != 2 {
-        return Err(String::from("expected the format 'item, quantity'"));
-    }
-    let price = find_price(parts[0].trim())?;
-    let quantity = parse_quantity(parts[1])?;
-    Ok(price * quantity)
-}
-```
 
 Run it:
 
@@ -358,24 +312,125 @@ cargo run -q
 Output:
 
 ```text
-Ok(42)
-Err(ParseIntError { kind: InvalidDigit })
-Could not parse: invalid digit found in string
-Quantity: 3
-Error: quantity must be at least 1
 coffee, 2    -> Rp36000
 cake, 1      -> Rp25000
 pizza, 1     -> error: 'pizza' is not on the menu
 tea, two     -> error: 'two' is not a valid quantity
 tea          -> error: expected the format 'item, quantity'
+```
+
+### Step 3: Convert Errors with map_err
+
+The `?` operator requires that the error type of the expression matches the error type of the function. `parse()` fails with a `ParseIntError`, but `parse_quantity` returns `String` errors, so you cannot simply write `text.trim().parse()?` there (Section 8 shows the compiler's message). The `match` in Section 4 handles this, and there is a shorter alternative: `map_err`.
+
+Replace the `parse_quantity` function with this version:
+
+```rust
+fn parse_quantity(text: &str) -> Result<u32, String> {
+    let quantity: u32 = text
+        .trim()
+        .parse()
+        .map_err(|_| format!("'{}' is not a valid quantity", text.trim()))?;
+    if quantity == 0 {
+        return Err(String::from("quantity must be at least 1"));
+    }
+    Ok(quantity)
+}
+```
+
+`map_err` leaves an `Ok` value untouched and transforms an `Err` value with a closure, here replacing the `ParseIntError` with a `String` message. After that, the error types match and `?` works. This version is equivalent to the `match` in the previous `parse_quantity`; you can use whichever you find clearer. The exercises use `map_err`.
+
+Run it, and the output is exactly the same as in Step 2:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+coffee, 2    -> Rp36000
+cake, 1      -> Rp25000
+pizza, 1     -> error: 'pizza' is not on the menu
+tea, two     -> error: 'two' is not a valid quantity
+tea          -> error: expected the format 'item, quantity'
+```
+
+---
+
+## 6. Shortcuts and a main That Returns Result
+
+`match` and `?` are the main tools, but `Result` also has the same convenience methods as `Option`. And because `?` needs a function that returns `Result`, Rust lets `main` return one too.
+
+### Step 1: unwrap_or and expect
+
+Replace the `main` function with:
+
+```rust
+fn main() {
+    let fallback = order_total("pizza, 1").unwrap_or(0);
+    println!("Total with fallback: {fallback}");
+    let sure = order_total("tea, 3").expect("a valid order");
+    println!("Total with expect: {sure}");
+}
+```
+
+`unwrap_or(0)` returns the value inside `Ok`, or the default if the result is an `Err`. The error message is discarded, so use it only when a default really is acceptable.
+
+`expect("...")` returns the value inside `Ok`, and panics with your message (followed by the error) if the result is an `Err`. `unwrap()` does the same with a generic message. Use them only when an error would mean a bug in your own program, such as here, where the input is a fixed, known good value, or in quick experiments. For anything that depends on users, files, or the network, handle the error properly.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 Total with fallback: 0
 Total with expect: 36000
+```
+
+### Step 2: Use ? in main
+
+Replace the `main` function with a version that returns `Result`:
+
+```rust
+fn main() -> Result<(), String> {
+    let grand_total = order_total("coffee, 2")? + order_total("cake, 1")?;
+    println!("Grand total: Rp{grand_total}");
+    Ok(())
+}
+```
+
+Look at the new signature. `fn main() -> Result<(), String>` declares that `main` returns either `Ok(())` or an error message. `()` is the unit type from Lesson 7, meaning "no meaningful value": when `main` succeeds, there is nothing to return except the fact that it succeeded. Because `main` returns a `Result`, `?` can be used inside it. The final line, `Ok(())`, reports success.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 Grand total: Rp61000
 ```
 
-Every invalid order produced a specific message, and the program kept going after each one. The fallback total is 0 because pizza is not on the menu, and the grand total adds two valid orders: 36,000 plus 25,000.
+If one of these `?` operators meets an `Err`, `main` returns that error. Rust then prints `Error: ` followed by the error in debug format and exits with a failure status, which other programs and scripts can detect. You will see this in Section 7.
 
-Now see what happens when `?` fails inside `main`. Change `order_total("cake, 1")?` to `order_total("cake, zero")?` and run the program again. The output is the same until the grand total line, which is replaced by:
+---
+
+## 7. Run and Test
+
+Every step already ran its own program. The last one, with `main` returning `Result`, is still in `src/main.rs`; use it to see what happens when `?` fails inside `main`. Change `order_total("cake, 1")?` to `order_total("cake, zero")?` and run the program again:
+
+```bash
+cargo run -q
+```
+
+Output:
 
 ```text
 Error: "'zero' is not a valid quantity"

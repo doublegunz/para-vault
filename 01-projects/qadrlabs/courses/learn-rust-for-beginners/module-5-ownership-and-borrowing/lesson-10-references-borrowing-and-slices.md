@@ -37,11 +37,11 @@ cargo new borrowing
 cd borrowing
 ```
 
-These commands create the `borrowing` project. As before, you will add code to `main` section by section and put helper functions below it.
+These commands create the `borrowing` project. In every step of this lesson you will replace the contents of `src/main.rs` with a short, complete program and run it right away, so each example works on its own.
 
 ### Step 2: Pass a Reference to a Function
 
-Replace the contents of `src/main.rs` with:
+Replace the contents of `src/main.rs` with a program that has `main` and a `count_bytes` function below it:
 
 ```rust
 fn main() {
@@ -49,11 +49,8 @@ fn main() {
     let title = String::from("The Rust Programming Language");
     let length = count_bytes(&title);
     println!("'{title}' has {length} bytes.");
-```
+}
 
-Add this function below `main` (you will add `main`'s closing brace later in the lesson):
-
-```rust
 fn count_bytes(text: &String) -> usize {
     text.len()
 }
@@ -63,17 +60,45 @@ The parameter type `&String` means "a reference to a `String`." When `main` call
 
 When `count_bytes` ends, `text` goes out of scope, but because it is only a reference, nothing is dropped. That is why `main` can still print `title` on the next line. Compare this with `measure` from Lesson 9's exercise, which had to return the string in a tuple. Borrowing makes that unnecessary.
 
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+'The Rust Programming Language' has 29 bytes.
+```
+
 ### Step 3: Have Several Readers at Once
 
-Add these lines to `main`:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
+    let title = String::from("The Rust Programming Language");
+
     let r1 = &title;
     let r2 = &title;
     println!("Two readers: {r1} / {r2}");
+}
 ```
 
 References can also be stored in variables. `r1` and `r2` are two references to the same `String`. Having many immutable references at the same time is always allowed, because none of them can change the value; any number of people can safely read the same book at the same time. `println!` follows each reference and prints the text it points to.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Two readers: The Rust Programming Language / The Rust Programming Language
+```
 
 ---
 
@@ -83,25 +108,35 @@ A plain reference only allows reading. To let a function change a value it does 
 
 ### Step 1: Write a Function That Modifies Its Argument
 
-Add these lines to `main`:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // Mutable references: change without taking ownership.
     let mut note = String::from("Buy milk");
     add_suffix(&mut note);
     add_suffix(&mut note);
     println!("Note: {note}");
-```
+}
 
-And add the function below the others:
-
-```rust
 fn add_suffix(text: &mut String) {
     text.push_str(" (urgent)");
 }
 ```
 
 Three things must line up for mutable borrowing. The variable must be declared `mut`, because its value will change. The call must write `&mut note` to create a mutable reference. And the parameter type must be `&mut String`. Inside the function, `text.push_str(...)` changes the `String` that `note` owns. When the function returns, the borrow ends, and `main` can borrow it again for the second call. After two calls, the note has two suffixes.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Note: Buy milk (urgent) (urgent)
+```
 
 ### Step 2: Understand the Borrowing Rules
 
@@ -124,17 +159,31 @@ Often you need only part of a value: the first word of a sentence, the file name
 
 ### Step 1: Take String Slices
 
-Add these lines to `main`:
+Replace the contents of `src/main.rs` with:
 
 ```rust
+fn main() {
     // String slices: borrow part of a string.
     let sentence = String::from("hello wonderful world");
     let hello = &sentence[0..5];
     let world = &sentence[16..];
     println!("Slices: [{hello}] [{world}]");
+}
 ```
 
 `&sentence[0..5]` is a string slice that refers to the bytes from position 0 up to, but not including, position 5: the text `hello`. The range syntax is the same as in `for` loops from Lesson 6. You can leave out either end: `[16..]` means from position 16 to the end, which is `world`, and `[..5]` would mean from the start up to position 5.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Slices: [hello] [world]
+```
 
 The type of a string slice is `&str`. Now you know what that type has meant all along: a reference to some text stored elsewhere. A text literal such as `"hello"` is also a `&str`; it is a slice pointing to text stored inside the compiled program. That is why literals cannot be modified.
 
@@ -142,16 +191,15 @@ The positions are byte positions. For plain English letters each character is on
 
 ### Step 2: Write a Function That Returns a Slice
 
-Add these lines to `main`:
+Replace the contents of `src/main.rs` with a program that has a `first_word` function:
 
 ```rust
+fn main() {
+    let sentence = String::from("hello wonderful world");
     println!("First word: {}", first_word(&sentence));
     println!("First word of a literal: {}", first_word("borrow checker"));
-```
+}
 
-And add the function:
-
-```rust
 fn first_word(text: &str) -> &str {
     for (index, character) in text.char_indices() {
         if character == ' ' {
@@ -163,6 +211,19 @@ fn first_word(text: &str) -> &str {
 ```
 
 `text.char_indices()` goes through the text one character at a time and gives you each character together with its byte position, as a tuple. The `for` loop destructures each tuple into `index` and `character`. When it finds a space, it returns the slice from the start up to that position, which is the first word. If the loop finishes without finding a space, the whole text is one word, so the function returns `text` itself.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+First word: hello
+First word of a literal: borrow
+```
 
 The return type `&str` is a slice of the input, so it borrows from the same value as the parameter. The compiler connects the two automatically: the returned slice is valid as long as the text passed in is valid. If `main` tried to clear `sentence` while still holding the first word, the borrow checker would stop it (see Section 7).
 
@@ -180,20 +241,17 @@ Slices work for arrays too. This solves a limitation from Lesson 7, where `avera
 
 ### Step 1: Write a Function That Takes Any Number of Elements
 
-Add the last lines to `main` and close it:
+Replace the contents of `src/main.rs` with a program that has a `sum` function:
 
 ```rust
+fn main() {
     // Array slices: borrow part of an array.
     let scores = [80, 92, 67, 75, 88, 95];
     println!("Sum of all: {}", sum(&scores));
     println!("Sum of first three: {}", sum(&scores[..3]));
     println!("Sum of last two: {}", sum(&scores[4..]));
 }
-```
 
-Add the function:
-
-```rust
 fn sum(numbers: &[i32]) -> i32 {
     let mut total = 0;
     for number in numbers {
@@ -207,70 +265,6 @@ The parameter type `&[i32]` is an array slice: a reference to a sequence of `i32
 
 Looping over a slice gives you references to its elements, so `number` has the type `&i32`. The `*` in `*number` is the dereference operator: it follows the reference to the value it points to, giving a plain `i32` that can be added to `total`. You will see `*` whenever you need the value behind a reference. For method calls and printing, Rust dereferences automatically, which is why `text.len()` worked without it.
 
----
-
-## 6. Run and Test
-
-Your complete `src/main.rs` should look like this:
-
-```rust
-fn main() {
-    // Immutable references: read without taking ownership.
-    let title = String::from("The Rust Programming Language");
-    let length = count_bytes(&title);
-    println!("'{title}' has {length} bytes.");
-
-    let r1 = &title;
-    let r2 = &title;
-    println!("Two readers: {r1} / {r2}");
-
-    // Mutable references: change without taking ownership.
-    let mut note = String::from("Buy milk");
-    add_suffix(&mut note);
-    add_suffix(&mut note);
-    println!("Note: {note}");
-
-    // String slices: borrow part of a string.
-    let sentence = String::from("hello wonderful world");
-    let hello = &sentence[0..5];
-    let world = &sentence[16..];
-    println!("Slices: [{hello}] [{world}]");
-    println!("First word: {}", first_word(&sentence));
-    println!("First word of a literal: {}", first_word("borrow checker"));
-
-    // Array slices: borrow part of an array.
-    let scores = [80, 92, 67, 75, 88, 95];
-    println!("Sum of all: {}", sum(&scores));
-    println!("Sum of first three: {}", sum(&scores[..3]));
-    println!("Sum of last two: {}", sum(&scores[4..]));
-}
-
-fn count_bytes(text: &String) -> usize {
-    text.len()
-}
-
-fn add_suffix(text: &mut String) {
-    text.push_str(" (urgent)");
-}
-
-fn first_word(text: &str) -> &str {
-    for (index, character) in text.char_indices() {
-        if character == ' ' {
-            return &text[..index];
-        }
-    }
-    text
-}
-
-fn sum(numbers: &[i32]) -> i32 {
-    let mut total = 0;
-    for number in numbers {
-        total += *number;
-    }
-    total
-}
-```
-
 Run it:
 
 ```bash
@@ -280,20 +274,30 @@ cargo run -q
 Output:
 
 ```text
-'The Rust Programming Language' has 29 bytes.
-Two readers: The Rust Programming Language / The Rust Programming Language
-Note: Buy milk (urgent) (urgent)
-Slices: [hello] [world]
-First word: hello
-First word of a literal: borrow
 Sum of all: 497
 Sum of first three: 239
 Sum of last two: 183
 ```
 
-Every value was used after being borrowed: `title` was printed after `count_bytes`, `note` after two mutable borrows, and `sentence` and `scores` after several slices. No `clone` and no "give it back" tuples were needed. The sums confirm the slices: 80 + 92 + 67 is 239, and 88 + 95 is 183.
+---
 
-As an experiment, change `count_bytes` to take `text: &str` and run again. The output is identical, which shows that `&String` arguments convert to `&str` automatically.
+## 6. Run and Test
+
+You have already run every program in this lesson. Look back at what they had in common. Every value was used after being borrowed: `title` was printed after `count_bytes`, `note` after two mutable borrows, and `sentence` and `scores` after several slices. No `clone` and no "give it back" tuples were needed. The sums confirm the slices: 80 + 92 + 67 is 239, and 88 + 95 is 183.
+
+As an experiment, put the `count_bytes` program from Section 2, Step 2 back into `src/main.rs`, change its parameter to `text: &str`, and run it again:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+'The Rust Programming Language' has 29 bytes.
+```
+
+The output is identical, which shows that `&String` arguments convert to `&str` automatically.
 
 ---
 

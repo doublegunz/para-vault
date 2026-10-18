@@ -38,11 +38,11 @@ cargo new structs
 cd structs
 ```
 
-These commands create the `structs` project. This time the file will have three parts: the struct definition at the top, an `impl` block with its methods, and `main` at the bottom.
+These commands create the `structs` project. The programs in this lesson have up to three parts: the struct definition at the top, an `impl` block with its methods, and `main` at the bottom. In every step you will replace the contents of `src/main.rs` with a complete program and run it right away, so each example works on its own.
 
 ### Step 2: Define the Book Struct
 
-Replace the contents of `src/main.rs` with:
+Replace the contents of `src/main.rs` with a program that defines a `Book` struct and uses it in `main`:
 
 ```rust
 #[derive(Debug)]
@@ -51,6 +51,22 @@ struct Book {
     author: String,
     pages: u32,
     available: bool,
+}
+
+fn main() {
+    // Create an instance with struct literal syntax.
+    let mut first = Book {
+        title: String::from("The Silent Forest"),
+        author: String::from("Rina Hartono"),
+        pages: 529,
+        available: true,
+    };
+    println!("Title: {}", first.title);
+    println!("Author: {}", first.author);
+    println!("Available: {}", first.available);
+    println!("Pages: {}", first.pages);
+    first.pages = 534;
+    println!("Pages after the new edition: {}", first.pages);
 }
 ```
 
@@ -60,265 +76,13 @@ The `title` and `author` fields are `String`, not `&str`. That makes each `Book`
 
 `#[derive(Debug)]` is an attribute placed above the struct. It asks the compiler to generate code that lets you print a `Book` with the `{:?}` debug placeholder from Lesson 4. Without it, Rust does not know how to display your type. (Lesson 16 explains what `derive` does in general.)
 
+You will look at the `main` function in the next step.
+
 ### Step 3: Create an Instance and Access Its Fields
 
-Add a `main` function below the struct:
+Now look at `main` in the program from Step 2. To create an instance, write the struct name followed by braces, and give every field a value with `name: value`. The order of the fields does not matter, but every field must be present. The result is a single value of type `Book`, stored in `first`.
 
-```rust
-fn main() {
-    // Create an instance with struct literal syntax.
-    let mut first = Book {
-        title: String::from("The Silent Forest"),
-        author: String::from("Rina Hartono"),
-        pages: 529,
-        available: true,
-    };
-    println!("Title: {}", first.title);
-    println!("Pages: {}", first.pages);
-    first.pages = 534;
-    println!("Pages after the new edition: {}", first.pages);
-```
-
-To create an instance, write the struct name followed by braces, and give every field a value with `name: value`. The order of the fields does not matter, but every field must be present. The result is a single value of type `Book`, stored in `first`.
-
-You read a field with dot notation: `first.title` and `first.pages`. You also change a field with dot notation, as in `first.pages = 534;`. This requires the whole instance to be mutable, which is why the variable is declared `let mut first`. Rust does not allow marking only some fields as mutable; mutability belongs to the variable that owns the value.
-
-Do not add the closing brace of `main` yet.
-
-### Step 4: Print the Whole Struct for Debugging
-
-Add these lines:
-
-```rust
-    // Debug printing.
-    println!("{:?}", first);
-    println!("{first:#?}");
-```
-
-`{:?}` prints the struct on one line, showing its name and every field. `{:#?}` is the "pretty" version: one field per line with indentation, which is much easier to read for structs with many fields. Both work because of `#[derive(Debug)]`. Debug output is meant for you, the programmer, while you develop and test; for output meant for users, you write your own formatting, as you will do with a method in the next section.
-
----
-
-## 3. Add Methods with impl
-
-A method is a function that belongs to a type. You define methods inside an `impl` block (short for implementation) for that type, and call them with dot notation on an instance, like `first.summary()`. Methods keep the behavior of a type next to its data, and they read naturally: "book, give me your summary."
-
-### Step 1: Write a Constructor and Read Only Methods
-
-Add this block between the struct definition and `main`:
-
-```rust
-impl Book {
-    // Associated function: builds a new Book.
-    fn new(title: &str, author: &str, pages: u32) -> Book {
-        Book {
-            title: title.to_string(),
-            author: author.to_string(),
-            pages,
-            available: true,
-        }
-    }
-
-    // Methods that read the book.
-    fn summary(&self) -> String {
-        format!("{} by {} ({} pages)", self.title, self.author, self.pages)
-    }
-
-    fn is_long(&self) -> bool {
-        self.pages > 300
-    }
-
-    fn reading_days(&self, pages_per_day: u32) -> u32 {
-        (self.pages + pages_per_day - 1) / pages_per_day
-    }
-```
-
-`impl Book { ... }` opens a block of functions that belong to `Book`. Leave the block open for now; you will add two more methods in the next step and then close it.
-
-`new` has no `self` parameter, which makes it an associated function rather than a method. It belongs to the type, not to an instance, so you call it on the type with `::`, as in `Book::new(...)`. You have already used associated functions: `String::new()` and `String::from(...)`. Rust has no special constructor syntax; by convention, a function named `new` that returns a new instance plays that role. This `new` takes `&str` parameters, which accept text literals, and converts them to owned `String`s with `to_string()`. Every new book starts as available, so callers do not need to pass that value.
-
-Notice `pages,` with no colon. When a variable has the same name as a field, you can write the name once instead of `pages: pages`. This is called field init shorthand.
-
-`summary`, `is_long`, and `reading_days` are methods: their first parameter is `&self`. `self` is the instance the method is called on, and `&self` means the method borrows it immutably, exactly like a `&Book` parameter. Inside the method, `self.title` and `self.pages` read the instance's fields. Because the borrow is immutable, these methods can read the book but not change it.
-
-`summary` uses the `format!` macro. `format!` works exactly like `println!`, with the same placeholders and options, but instead of printing, it returns the formatted text as a new `String`. It is the standard way to build text from several values.
-
-`reading_days` takes an extra parameter after `&self`. It divides the pages by the pages read per day, rounding up so that a partly read last day still counts as a day. Adding `pages_per_day - 1` before the integer division is a common trick for rounding up: 96 pages at 20 per day gives 115 / 20 = 5 days.
-
-### Step 2: Write Methods That Change the Instance
-
-Add two more methods and close the `impl` block:
-
-```rust
-    // Methods that change the book.
-    fn borrow_book(&mut self) -> bool {
-        if self.available {
-            self.available = false;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn return_book(&mut self) {
-        self.available = true;
-    }
-}
-```
-
-These methods take `&mut self`: a mutable borrow of the instance, so they can change its fields. `borrow_book` checks whether the book is available. If so, it marks it as borrowed and returns `true` to report success; if the book is already out, it returns `false` and changes nothing. The whole `if` is the tail expression, so its value is the method's return value. `return_book` marks the book as available again.
-
-Choosing between `&self` and `&mut self` follows directly from Lesson 10. Methods that only read should take `&self`, so they can be called on any instance, even through an immutable reference. Methods that modify must take `&mut self`, and can only be called on a mutable instance. A method can also take `self` by value, which moves the instance into the method, but that is needed only rarely.
-
-### Step 3: Call the Associated Function and the Methods
-
-Add these lines to `main`:
-
-```rust
-    // Create instances with an associated function.
-    let mut second = Book::new("Morning Coffee", "Budi Santoso", 96);
-    println!("{}", second.summary());
-    println!("Long book? {}", second.is_long());
-    println!("Days at 20 pages per day: {}", second.reading_days(20));
-
-    // Methods that change state.
-    println!("Borrowed: {}", second.borrow_book());
-    println!("Borrowed again: {}", second.borrow_book());
-    second.return_book();
-    println!("Available after return: {}", second.available);
-```
-
-`Book::new(...)` builds a book in one line, compared with the six line struct literal in Section 2. The method calls use dot notation, and you never write `&second` or `&mut second` yourself: Rust borrows the instance automatically, immutably for `&self` methods and mutably for `&mut self` methods. That is why `second` must be declared `mut`, since two of the methods change it.
-
-The first `borrow_book` call succeeds and returns `true`. The second returns `false`, because the book is already borrowed. After `return_book`, the field is `true` again.
-
----
-
-## 4. Work with Several Instances
-
-A single book is not much of a library. Because `Book` is a type like any other, you can store instances in an array and loop over them, combining structs with what you learned in Lessons 6 and 10.
-
-### Step 1: Loop over a Shelf of Books
-
-Add these lines and close `main`:
-
-```rust
-    // Structs in an array.
-    let shelf = [
-        Book::new("Rivers of Java", "Sari Wulandari", 535),
-        Book::new("Small Steps", "Agus Pratama", 320),
-        Book::new("Coding at Dawn", "Maya Lestari", 346),
-    ];
-    let mut total_pages = 0;
-    for book in &shelf {
-        println!("- {}", book.summary());
-        total_pages += book.pages;
-    }
-    println!("Total pages on the shelf: {total_pages}");
-}
-```
-
-`shelf` is an array of three `Book` values, each built with `Book::new`. The loop is written `for book in &shelf`, with an `&`. That borrows the array, so each `book` is a `&Book` reference. Without the `&`, the loop would take ownership of the array and move each book out of it, which would make `shelf` unusable after the loop. Borrowing is the right choice whenever the loop only needs to read.
-
-Inside the loop, methods and fields work through the reference exactly as they do on an owned value. `book.pages` is a `u32`, which is `Copy`, so adding it to `total_pages` simply copies the number.
-
----
-
-## 5. Run and Test
-
-Your complete `src/main.rs` should look like this:
-
-```rust
-#[derive(Debug)]
-struct Book {
-    title: String,
-    author: String,
-    pages: u32,
-    available: bool,
-}
-
-impl Book {
-    // Associated function: builds a new Book.
-    fn new(title: &str, author: &str, pages: u32) -> Book {
-        Book {
-            title: title.to_string(),
-            author: author.to_string(),
-            pages,
-            available: true,
-        }
-    }
-
-    // Methods that read the book.
-    fn summary(&self) -> String {
-        format!("{} by {} ({} pages)", self.title, self.author, self.pages)
-    }
-
-    fn is_long(&self) -> bool {
-        self.pages > 300
-    }
-
-    fn reading_days(&self, pages_per_day: u32) -> u32 {
-        (self.pages + pages_per_day - 1) / pages_per_day
-    }
-
-    // Methods that change the book.
-    fn borrow_book(&mut self) -> bool {
-        if self.available {
-            self.available = false;
-            true
-        } else {
-            false
-        }
-    }
-
-    fn return_book(&mut self) {
-        self.available = true;
-    }
-}
-
-fn main() {
-    // Create an instance with struct literal syntax.
-    let mut first = Book {
-        title: String::from("The Silent Forest"),
-        author: String::from("Rina Hartono"),
-        pages: 529,
-        available: true,
-    };
-    println!("Title: {}", first.title);
-    println!("Pages: {}", first.pages);
-    first.pages = 534;
-    println!("Pages after the new edition: {}", first.pages);
-
-    // Debug printing.
-    println!("{:?}", first);
-    println!("{first:#?}");
-
-    // Create instances with an associated function.
-    let mut second = Book::new("Morning Coffee", "Budi Santoso", 96);
-    println!("{}", second.summary());
-    println!("Long book? {}", second.is_long());
-    println!("Days at 20 pages per day: {}", second.reading_days(20));
-
-    // Methods that change state.
-    println!("Borrowed: {}", second.borrow_book());
-    println!("Borrowed again: {}", second.borrow_book());
-    second.return_book();
-    println!("Available after return: {}", second.available);
-
-    // Structs in an array.
-    let shelf = [
-        Book::new("Rivers of Java", "Sari Wulandari", 535),
-        Book::new("Small Steps", "Agus Pratama", 320),
-        Book::new("Coding at Dawn", "Maya Lestari", 346),
-    ];
-    let mut total_pages = 0;
-    for book in &shelf {
-        println!("- {}", book.summary());
-        total_pages += book.pages;
-    }
-    println!("Total pages on the shelf: {total_pages}");
-}
-```
+You read a field with dot notation: `first.title`, `first.author`, `first.available`, and `first.pages`. You also change a field with dot notation, as in `first.pages = 534;`. This requires the whole instance to be mutable, which is why the variable is declared `let mut first`. Rust does not allow marking only some fields as mutable; mutability belongs to the variable that owns the value.
 
 Run it:
 
@@ -330,6 +94,59 @@ Output:
 
 ```text
 Title: The Silent Forest
+Author: Rina Hartono
+Available: true
+Pages: 529
+Pages after the new edition: 534
+```
+
+### Step 4: Print the Whole Struct for Debugging
+
+Replace the contents of `src/main.rs` with the same program plus two debug printing lines at the end of `main`:
+
+```rust
+#[derive(Debug)]
+struct Book {
+    title: String,
+    author: String,
+    pages: u32,
+    available: bool,
+}
+
+fn main() {
+    let mut first = Book {
+        title: String::from("The Silent Forest"),
+        author: String::from("Rina Hartono"),
+        pages: 529,
+        available: true,
+    };
+    println!("Title: {}", first.title);
+    println!("Author: {}", first.author);
+    println!("Available: {}", first.available);
+    println!("Pages: {}", first.pages);
+    first.pages = 534;
+    println!("Pages after the new edition: {}", first.pages);
+
+    // Debug printing.
+    println!("{:?}", first);
+    println!("{first:#?}");
+}
+```
+
+`{:?}` prints the struct on one line, showing its name and every field. `{:#?}` is the "pretty" version: one field per line with indentation, which is much easier to read for structs with many fields. Both work because of `#[derive(Debug)]`. Debug output is meant for you, the programmer, while you develop and test; for output meant for users, you write your own formatting, as you will do with a method in the next section.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Title: The Silent Forest
+Author: Rina Hartono
+Available: true
 Pages: 529
 Pages after the new edition: 534
 Book { title: "The Silent Forest", author: "Rina Hartono", pages: 534, available: true }
@@ -339,19 +156,282 @@ Book {
     pages: 534,
     available: true,
 }
+```
+
+Compare the two debug lines: `{:?}` fits everything on one line, and `{:#?}` spreads the same data over several lines. The debug output shows text fields in quotes, which makes it clear where each string starts and ends.
+
+---
+
+## 3. Add Methods with impl
+
+A method is a function that belongs to a type. You define methods inside an `impl` block (short for implementation) for that type, and call them with dot notation on an instance, like `first.summary()`. Methods keep the behavior of a type next to its data, and they read naturally: "book, give me your summary."
+
+### Step 1: Write a Constructor and Read Only Methods
+
+Replace the contents of `src/main.rs` with a program that adds an `impl` block between the struct definition and `main`:
+
+```rust
+#[derive(Debug)]
+struct Book {
+    title: String,
+    author: String,
+    pages: u32,
+    available: bool,
+}
+
+impl Book {
+    // Associated function: builds a new Book.
+    fn new(title: &str, author: &str, pages: u32) -> Book {
+        Book {
+            title: title.to_string(),
+            author: author.to_string(),
+            pages,
+            available: true,
+        }
+    }
+
+    // Methods that read the book.
+    fn summary(&self) -> String {
+        format!("{} by {} ({} pages)", self.title, self.author, self.pages)
+    }
+
+    fn is_long(&self) -> bool {
+        self.pages > 300
+    }
+
+    fn reading_days(&self, pages_per_day: u32) -> u32 {
+        (self.pages + pages_per_day - 1) / pages_per_day
+    }
+}
+
+fn main() {
+    // Create an instance with an associated function.
+    let second = Book::new("Morning Coffee", "Budi Santoso", 96);
+    println!("{}", second.summary());
+    println!("Available: {}", second.available);
+    println!("Long book? {}", second.is_long());
+    println!("Days at 20 pages per day: {}", second.reading_days(20));
+}
+```
+
+`impl Book { ... }` opens a block of functions that belong to `Book`. Everything between its braces is part of the implementation of `Book`.
+
+`new` has no `self` parameter, which makes it an associated function rather than a method. It belongs to the type, not to an instance, so you call it on the type with `::`, as in `Book::new(...)`. You have already used associated functions: `String::new()` and `String::from(...)`. Rust has no special constructor syntax; by convention, a function named `new` that returns a new instance plays that role. This `new` takes `&str` parameters, which accept text literals, and converts them to owned `String`s with `to_string()`. Every new book starts as available, so callers do not need to pass that value.
+
+Notice `pages,` with no colon. When a variable has the same name as a field, you can write the name once instead of `pages: pages`. This is called field init shorthand.
+
+`summary`, `is_long`, and `reading_days` are methods: their first parameter is `&self`. `self` is the instance the method is called on, and `&self` means the method borrows it immutably, exactly like a `&Book` parameter. Inside the method, `self.title` and `self.pages` read the instance's fields. Because the borrow is immutable, these methods can read the book but not change it.
+
+`summary` uses the `format!` macro. `format!` works exactly like `println!`, with the same placeholders and options, but instead of printing, it returns the formatted text as a new `String`. It is the standard way to build text from several values.
+
+`reading_days` takes an extra parameter after `&self`. It divides the pages by the pages read per day, rounding up so that a partly read last day still counts as a day. Adding `pages_per_day - 1` before the integer division is a common trick for rounding up: 96 pages at 20 per day gives 115 / 20 = 5 days.
+
+In `main`, `Book::new(...)` builds a book in one line, compared with the six line struct literal in Section 2. The method calls use dot notation, and you never write `&second` yourself: Rust borrows the instance automatically for `&self` methods.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso (96 pages)
+Available: true
+Long book? false
+Days at 20 pages per day: 5
+```
+
+### Step 2: Write Methods That Change the Instance
+
+Replace the contents of `src/main.rs` with a program whose `impl` block has two more methods at the end, and whose `main` uses them:
+
+```rust
+#[derive(Debug)]
+struct Book {
+    title: String,
+    author: String,
+    pages: u32,
+    available: bool,
+}
+
+impl Book {
+    // Associated function: builds a new Book.
+    fn new(title: &str, author: &str, pages: u32) -> Book {
+        Book {
+            title: title.to_string(),
+            author: author.to_string(),
+            pages,
+            available: true,
+        }
+    }
+
+    // Methods that read the book.
+    fn summary(&self) -> String {
+        format!("{} by {} ({} pages)", self.title, self.author, self.pages)
+    }
+
+    fn is_long(&self) -> bool {
+        self.pages > 300
+    }
+
+    fn reading_days(&self, pages_per_day: u32) -> u32 {
+        (self.pages + pages_per_day - 1) / pages_per_day
+    }
+
+    // Methods that change the book.
+    fn borrow_book(&mut self) -> bool {
+        if self.available {
+            self.available = false;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn return_book(&mut self) {
+        self.available = true;
+    }
+}
+
+fn main() {
+    // Create an instance with an associated function.
+    let mut second = Book::new("Morning Coffee", "Budi Santoso", 96);
+    println!("{}", second.summary());
+    println!("Long book? {}", second.is_long());
+    println!("Days at 20 pages per day: {}", second.reading_days(20));
+
+    // Methods that change state.
+    println!("Borrowed: {}", second.borrow_book());
+    println!("Borrowed again: {}", second.borrow_book());
+    second.return_book();
+    println!("Available after return: {}", second.available);
+}
+```
+
+These methods take `&mut self`: a mutable borrow of the instance, so they can change its fields. `borrow_book` checks whether the book is available. If so, it marks it as borrowed and returns `true` to report success; if the book is already out, it returns `false` and changes nothing. The whole `if` is the tail expression, so its value is the method's return value. `return_book` marks the book as available again.
+
+Choosing between `&self` and `&mut self` follows directly from Lesson 10. Methods that only read should take `&self`, so they can be called on any instance, even through an immutable reference. Methods that modify must take `&mut self`, and can only be called on a mutable instance. A method can also take `self` by value, which moves the instance into the method, but that is needed only rarely.
+
+In `main`, Rust borrows `second` mutably for the `&mut self` methods, just as it borrowed it immutably for the `&self` methods. You still never write `&mut second` yourself. That is why `second` must be declared `mut` this time, since two of the methods change it.
+
+The first `borrow_book` call succeeds and returns `true`. The second returns `false`, because the book is already borrowed. After `return_book`, the field is `true` again.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 Morning Coffee by Budi Santoso (96 pages)
 Long book? false
 Days at 20 pages per day: 5
 Borrowed: true
 Borrowed again: false
 Available after return: true
+```
+
+---
+
+## 4. Work with Several Instances
+
+A single book is not much of a library. Because `Book` is a type like any other, you can store instances in an array and loop over them, combining structs with what you learned in Lessons 6 and 10.
+
+### Step 1: Loop over a Shelf of Books
+
+Replace the contents of `src/main.rs` with the program below. It keeps only the parts of `impl Book` that the shelf needs, `new` and `summary`:
+
+```rust
+#[derive(Debug)]
+struct Book {
+    title: String,
+    author: String,
+    pages: u32,
+    available: bool,
+}
+
+impl Book {
+    fn new(title: &str, author: &str, pages: u32) -> Book {
+        Book {
+            title: title.to_string(),
+            author: author.to_string(),
+            pages,
+            available: true,
+        }
+    }
+
+    fn summary(&self) -> String {
+        format!("{} by {} ({} pages)", self.title, self.author, self.pages)
+    }
+}
+
+fn main() {
+    // Structs in an array.
+    let shelf = [
+        Book::new("Rivers of Java", "Sari Wulandari", 535),
+        Book::new("Small Steps", "Agus Pratama", 320),
+        Book::new("Coding at Dawn", "Maya Lestari", 346),
+    ];
+    let mut total_pages = 0;
+    let mut available_count = 0;
+    for book in &shelf {
+        println!("- {}", book.summary());
+        total_pages += book.pages;
+        if book.available {
+            available_count += 1;
+        }
+    }
+    println!("Total pages on the shelf: {total_pages}");
+    println!("Available books: {available_count}");
+}
+```
+
+`shelf` is an array of three `Book` values, each built with `Book::new`. The loop is written `for book in &shelf`, with an `&`. That borrows the array, so each `book` is a `&Book` reference. Without the `&`, the loop would take ownership of the array and move each book out of it, which would make `shelf` unusable after the loop. Borrowing is the right choice whenever the loop only needs to read.
+
+Inside the loop, methods and fields work through the reference exactly as they do on an owned value. `book.pages` is a `u32`, which is `Copy`, so adding it to `total_pages` simply copies the number. The `if book.available` check counts how many books are on the shelf right now; every book built with `Book::new` starts as available.
+
+Run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
 - Rivers of Java by Sari Wulandari (535 pages)
 - Small Steps by Agus Pratama (320 pages)
 - Coding at Dawn by Maya Lestari (346 pages)
 Total pages on the shelf: 1201
+Available books: 3
 ```
 
-Compare the two debug lines: `{:?}` fits everything on one line, and `{:#?}` spreads the same data over several lines. The debug output shows text fields in quotes, which makes it clear where each string starts and ends. The summary lines come from `format!` inside `summary`, and the borrowing methods changed `available` as expected.
+---
+
+## 5. Run and Test
+
+You have already run every program in this lesson. Now test a method with a different argument. Put the program from Section 3, Step 2 back into `src/main.rs`, change `second.reading_days(20)` to `second.reading_days(30)`, change the text `at 20 pages` to `at 30 pages`, and run it:
+
+```bash
+cargo run -q
+```
+
+Output:
+
+```text
+Morning Coffee by Budi Santoso (96 pages)
+Long book? false
+Days at 30 pages per day: 4
+Borrowed: true
+Borrowed again: false
+Available after return: true
+```
+
+96 pages at 30 per day is 3.2 days, which `reading_days` rounds up to 4: (96 + 29) / 30 = 4. The summary lines come from `format!` inside `summary`, and the borrowing methods changed `available` as expected. Try a few more values, such as `reading_days(96)` and `reading_days(100)`, and predict the result before each run.
 
 ---
 
