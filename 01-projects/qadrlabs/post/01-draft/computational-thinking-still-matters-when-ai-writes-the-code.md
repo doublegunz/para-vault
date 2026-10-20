@@ -82,7 +82,7 @@ The commands create an empty folder for every file in this article and make it t
 
 Now create a file named `attendance_sample.csv` with a few records. Each row holds the employee name, the date, the scheduled shift start, and the actual check-in time.
 
-```csv
+```
 employee,date,shift_start,check_in
 Rina,2026-10-12,09:00,09:12
 Rina,2026-10-13,09:00,09:20
@@ -143,7 +143,7 @@ Rina was 12 and 20 minutes late, which adds up to 32. Budi was 30 and 8 minutes 
 
 Real attendance data is messier. Create `attendance_week.csv` with records that a real company would actually have: an early arrival, a small delay of a few minutes, a night shift that starts at 22:00, and someone who arrived exactly on time.
 
-```csv
+```
 employee,date,shift_start,check_in
 Rina,2026-10-12,09:00,09:12
 Rina,2026-10-13,09:00,08:45
@@ -173,7 +173,7 @@ Two of the three lines are wrong, and only one of them looks wrong. Rina's 15-mi
 
 Finally, create `attendance_missing.csv`. It has the same rows as the previous file plus one more line where Sari never checked in on Wednesday, so the `check_in` cell is empty.
 
-```csv
+```
 employee,date,shift_start,check_in
 Rina,2026-10-12,09:00,09:12
 Rina,2026-10-13,09:00,08:45

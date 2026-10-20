@@ -117,4 +117,4 @@
 **Title:** Computational Thinking Still Matters When AI Writes the Code
 **Short description:** Is computational thinking still relevant when AI writes code? Learn its four pillars with a Python example: vague prompts, precise specs, and tests. (148 chars)
 **Category:** Programming
-**Tags:** computational-thinking, ai-coding, problem-solving, python, beginners, testing, prompt-engineering
+**Tags:** Computational Thinking, AI Coding, Problem Solving, python, beginners, testing, prompt-engineering
