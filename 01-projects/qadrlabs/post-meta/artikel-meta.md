@@ -125,3 +125,10 @@
 **Short description:** PHP 8.5.12, 8.4.27, 8.3.36, and 8.2.35 fix two critical unauthenticated RCE flaws. Learn who is affected, how to update, and interim mitigations. (145 chars)
 **Category:** PHP
 **Tags:** php, security, cve, rce, PHP FPM, mod_php, Security Update
+
+## 2026-10-22 - Laravel security advisories
+**File:** 01-projects/qadrlabs/post/01-draft/laravel-security-advisories-cve-2026-114509-114508.md
+**Title:** Laravel Security Advisories CVE-2026-114509 and CVE-2026-114508: Token Guard Auth Bypass and Unauthorized Data Destruction
+**Short description:** Laravel 12.68.0 and 13.29.0 fix a critical token guard auth bypass and a data destruction flaw. Learn who is affected and how to patch your app safely. (151 chars)
+**Category:** Laravel
+**Tags:** laravel, security, cve, authentication, composer, Security Update
