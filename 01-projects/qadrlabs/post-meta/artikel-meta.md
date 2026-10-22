@@ -118,3 +118,10 @@
 **Short description:** Is computational thinking still relevant when AI writes code? Learn its four pillars with a Python example: vague prompts, precise specs, and tests. (148 chars)
 **Category:** Programming
 **Tags:** Computational Thinking, AI Coding, Problem Solving, python, beginners, testing, prompt-engineering
+
+## 2026-10-21 - PHP critical RCE vulnerabilities
+**File:** 01-projects/qadrlabs/post/01-draft/php-critical-rce-vulnerabilities-cve-2026-109618-109619.md
+**Title:** PHP Critical RCE Vulnerabilities CVE-2026-109618 and CVE-2026-109619: What Happened and How to Protect Your Servers
+**Short description:** PHP 8.5.12, 8.4.27, 8.3.36, and 8.2.35 fix two critical unauthenticated RCE flaws. Learn who is affected, how to update, and interim mitigations. (145 chars)
+**Category:** PHP
+**Tags:** php, security, cve, rce, PHP FPM, mod_php, Security Update
