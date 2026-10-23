@@ -3,7 +3,7 @@
 VIDEO PROMPT — “LATE NIGHT CARBONARA COOKING”
 
 Duration: 10 seconds
-Format: 16:9 widescreen
+Format: 9:16 vertical reels instagram format
 Style: High-end Japanese full-color cinematic anime movie aesthetic, premium 2D animation, ultra detailed anime rendering, soft cinematic shading, natural character motion, intimate slice-of-life cooking atmosphere, warm late-night kitchen ambience.
 
 REFERENCE IMAGE SETUP:
@@ -276,7 +276,7 @@ Steam fading gently.
 The finished carbonara remains in frame as the scene ends.
 
 FORMAT:
-16:9 widescreen.
+9:16 vertical reels instagram format.
 10-second cinematic anime cooking montage.
 Premium Japanese full-color anime movie quality.
 No BGM.
