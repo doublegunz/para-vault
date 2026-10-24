@@ -132,3 +132,10 @@
 **Short description:** Laravel 12.68.0 and 13.29.0 fix a critical token guard auth bypass and a data destruction flaw. Learn who is affected and how to patch your app safely. (151 chars)
 **Category:** Laravel
 **Tags:** laravel, security, cve, authentication, composer, Security Update
+
+## 2026-10-23 - Node.js October 2026 security release
+**File:** 01-projects/qadrlabs/post/01-draft/nodejs-security-release-october-2026-cve-2026-111497.md
+**Title:** Node.js October 2026 Security Release: Brotli RCE (CVE-2026-111497) and Nine More Fixes
+**Short description:** Node.js 26.12.1, 24.22.1, and 22.23.4 fix 10 CVEs, including a Brotli decoder RCE. Learn who is affected, how to upgrade, and temporary mitigations. (148 chars)
+**Category:** Node.js
+**Tags:** nodejs, security, cve, brotli, tls, rce, Security Update
