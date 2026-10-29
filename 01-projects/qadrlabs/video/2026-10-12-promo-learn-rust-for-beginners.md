@@ -1,7 +1,9 @@
 ---
+type: video
+brand: qadrlabs
 title: Promo Reels Learn Rust for Beginners (23 detik)
 date: 2026-10-12
-status: selesai
+status: published
 tags:
   - qadrlabs
   - video
@@ -9,6 +11,14 @@ tags:
   - gsap
   - rust
 project_dir: /home/gun-gun-priatna/obsidian-vault/sandbox/learning-video
+template: custom-html-gsap
+variants:
+  - id: reels-en
+    label: Reels (EN)
+    path: sandbox/learning-video/videos/rust-beginners-promo/out/rust-beginners-promo.mp4
+    format: 1080x1920 60fps
+    status: published
+    published: []
 ---
 
 # Promo Reels Learn Rust for Beginners (23 detik)

@@ -1,13 +1,29 @@
 ---
+type: video
+brand: qadrlabs
 title: Motion Graphics Intro qadrLabs (20 detik)
 date: 2026-09-30
-status: selesai
+status: published
 tags:
   - qadrlabs
   - video
   - motion-graphics
   - gsap
 project_dir: /home/gun-gun-priatna/Projects/qadrlabs/qadrlabs-intro-video
+template: custom-html-gsap
+variants:
+  - id: landscape
+    label: Landscape 16:9
+    path: ~/Projects/qadrlabs/qadrlabs-intro-video/qadrlabs-intro.mp4
+    format: 1920x1080 60fps
+    status: published
+    published: []
+  - id: vertical
+    label: Vertical 9:16
+    path: ~/Projects/qadrlabs/qadrlabs-intro-video/qadrlabs-intro-vertical.mp4
+    format: 1080x1920 60fps
+    status: published
+    published: []
 ---
 
 # Motion Graphics Intro qadrLabs (20 detik)

@@ -1,7 +1,9 @@
 ---
+type: video
+brand: qadrlabs
 title: Video Launching Learn Rust for Beginners (40 detik)
 date: 2026-10-24
-status: selesai
+status: published
 tags:
   - qadrlabs
   - video
@@ -9,6 +11,15 @@ tags:
   - gsap
   - rust
 project_dir: /home/gun-gun-priatna/obsidian-vault/sandbox/learning-video
+caption_path: sandbox/learning-video/caption/rust-course-launch.md
+template: custom-html-gsap
+variants:
+  - id: reels-en
+    label: Reels (EN)
+    path: sandbox/learning-video/videos/rust-course-launch/out/rust-course-launch.mp4
+    format: 1080x1920 60fps
+    status: published
+    published: []
 ---
 
 # Video Launching Learn Rust for Beginners (40 detik)
