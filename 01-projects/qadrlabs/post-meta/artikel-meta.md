@@ -139,3 +139,10 @@
 **Short description:** Node.js 26.12.1, 24.22.1, and 22.23.4 fix 10 CVEs, including a Brotli decoder RCE. Learn who is affected, how to upgrade, and temporary mitigations. (148 chars)
 **Category:** Node.js
 **Tags:** nodejs, security, cve, brotli, tls, rce, Security Update
+
+## 2026-10-30 - Linux kernel TCP CVE-2026-98432 on Ubuntu
+**File:** 01-projects/qadrlabs/post/01-draft/linux-kernel-tcp-vulnerability-cve-2026-98432-on-ubuntu.md
+**Title:** Linux Kernel TCP Vulnerability CVE-2026-98432 on Ubuntu: What It Means and How to Prepare While the Patch Is Pending
+**Short description:** A critical 9.8 Linux kernel TCP flaw affects Ubuntu 16.04 to 26.10 with fixes still pending. Learn the impact, how to check your kernel, and how to prepare. (156 chars)
+**Category:** Linux
+**Tags:** linux, ubuntu, kernel, security, cve, tcp, Security Update
