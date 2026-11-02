@@ -33,5 +33,6 @@ Lesson contoh dari template `qadrlabs-lesson-tts` (narasi Gemini TTS, voice Sula
 - `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/algorithm/docs/naskah-voice-over.md`
 - `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/algorithm/docs/tts.json`
 - `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/algorithm/description-qadrlabs-en.md`
+- `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/algorithm/caption-instagram-en.md` (caption Instagram, EN)
 
 > Dicatat ulang (backfill) pada 2026-10-29 dari file hasil render yang sudah ada. Status publish belum diketahui; ubah di Vault Hub setelah dicek.
