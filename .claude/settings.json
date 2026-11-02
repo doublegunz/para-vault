@@ -2,7 +2,8 @@
   "permissions": {
     "additionalDirectories": [
       "/Users/gungunpriatna/Projects/qadrtech-hq/videos",
-      "/Users/gungunpriatna/Projects/qadrlabs/learning-video"
+      "/Users/gungunpriatna/Projects/qadrlabs/learning-video",
+      "/Users/gungunpriatna/sandbox"
     ]
   }
 }

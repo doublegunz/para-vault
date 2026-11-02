@@ -19,7 +19,7 @@ Semua file ditempatkan di:
 01-projects/qadrlabs/courses/<course-slug>/module-N-<slug>/lesson-N-<slug>.md
 ```
 
-Jangan menempatkan file di dalam app Laravel (`sandbox/qadrlabs-laravel`). App itu hanya target publish.
+Jangan menempatkan file di dalam app Laravel (`~/sandbox/qadrlabs-laravel`). App itu hanya target publish.
 
 ## Konvensi Penamaan
 

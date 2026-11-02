@@ -9,7 +9,7 @@ This repository is an Obsidian vault organized with the PARA method (Projects, A
 - `02-areas/`: ongoing responsibilities without a fixed end date.
 - `03-resources/`: reference material, learning notes, and reusable documentation.
 - `04-archives/`: completed, inactive, or superseded material.
-- `sandbox/`: ignored local workspace for testing tutorial commands and sample projects. The folder is kept in Git with `.gitkeep`, but its contents are ignored.
+- `~/sandbox/` (outside the vault): local workspace for testing tutorial commands and sample projects. The vault holds notes only; never create test projects inside it.
 - `.obsidian/`: local Obsidian configuration. `workspace.json` is ignored because it is device-specific.
 
 Place new notes in the folder that matches their current status. Move notes as their status changes instead of duplicating them.
@@ -24,7 +24,7 @@ There is no application build pipeline or package manager in this vault. Useful 
 
 Open the repository as an Obsidian vault to preview wikilinks, backlinks, tags, and rendered Markdown.
 
-Use `sandbox/` for hands-on tutorial validation, throwaway projects, generated files, dependencies, local databases, and other experiment artifacts. Do not rely on files inside `sandbox/` as committed source material.
+Use `~/sandbox/` (outside the vault) for hands-on tutorial validation, throwaway projects, generated files, dependencies, local databases, and other experiment artifacts. Do not rely on files inside `~/sandbox/` as source material.
 
 ## Coding Style & Naming Conventions
 
@@ -46,7 +46,7 @@ Pull requests should describe the changed notes, explain any folder moves, and c
 
 Do not reorganize the PARA folders without a clear request. Avoid changing `.obsidian/workspace.json`. Preserve personal notes and Indonesian-language content unless editing for an explicit task.
 
-Agents may create, read, modify, and delete files inside `sandbox/` while testing tutorials. Keep secrets out of this folder; use example credentials, placeholder values, or `.env.example` patterns instead of real `.env` values.
+Agents may create, read, modify, and delete files inside `~/sandbox/` while testing tutorials. Do not put test projects, dependencies, or generated files inside the vault. Keep secrets out of this folder; use example credentials, placeholder values, or `.env.example` patterns instead of real `.env` values.
 
 For qadrlabs.com article work, follow `.claude/commands/generate-artikel.md` as the project-local article guide. It defines the required English writing style, Laravel 13 conventions, article structure, testing expectations, and surgical-edit workflow.
 
