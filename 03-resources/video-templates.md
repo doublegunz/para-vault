@@ -11,7 +11,7 @@ Daftar template video dan alur pencatatannya ke vault. Aturan lengkap untuk AI a
 | Key | Brand | Untuk | Path template | Hasil MP4 |
 | --- | --- | --- | --- | --- |
 | `qadrtech-promo` | qadrtech | Video promo/portofolio produk (VO avatar 5 part, ±40 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/_template` | `~/Projects/qadrtech-hq/videos/<project>/out/*.mp4` |
-| `qadrlabs-lesson-tts` | qadrlabs | Video pembelajaran dengan narasi Gemini TTS (45–90 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/algorithm` | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/<materi>/out/*.mp4` |
+| `qadrlabs-lesson-tts` | qadrlabs | Video pembelajaran dengan narasi Gemini TTS (45–90 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs` (satu project, satu folder `lessons/<materi>/` per video) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/out/<materi>-<varian>.mp4` |
 | `qadrlabs-php-basics` | qadrlabs | Seri dasar programming PHP tanpa narator (15–30 dtk, 60fps), satu repo untuk semua episode | `~/Projects/qadrlabs/learning-video` | `~/Projects/qadrlabs/learning-video/output/*.mp4` |
 
 ## Memulai video baru
@@ -31,8 +31,7 @@ claude        # atau: codex
 
 ```bash
 cd ~/Projects/qadrtech-hq/videos/learning-video-qadrlabs
-sh algorithm/scripts/new-lesson.sh <nama-materi>
-cd <nama-materi>
+npm run lesson -- <nama-materi>      # folder baru di lessons/, tanpa menyalin project
 claude        # atau: codex
 ```
 
