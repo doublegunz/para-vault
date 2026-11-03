@@ -5,6 +5,10 @@ kanban-plugin: board
 ## Backlog
 
 - [ ] perlu cek redirect www untuk qadr.tech dan qadrtech.id
+- [ ] publish video whats is git di laptop rog
+- [ ] publish video qadrtech sdlc di laptop macbook
+- [ ] development skripsi app
+- [ ] development acadio untuk publish sebagai post di linkedin
 
 ## Minggu ini
 
