@@ -146,3 +146,10 @@
 **Short description:** A critical 9.8 Linux kernel TCP flaw affects Ubuntu 16.04 to 26.10 with fixes still pending. Learn the impact, how to check your kernel, and how to prepare. (156 chars)
 **Category:** Linux
 **Tags:** linux, ubuntu, kernel, security, cve, tcp, Security Update
+
+## 2026-11-03 - Install PHP 8.5 from packages.sury.org on Ubuntu 26.04
+**File:** 01-projects/qadrlabs/post/01-draft/install-php-85-from-sury-repository-on-ubuntu-2604.md
+**Title:** How to Install PHP 8.5 and PHP-FPM from packages.sury.org on Ubuntu 26.04 for Laravel and Nginx
+**Short description:** Remove Ubuntu's bundled PHP safely, add packages.sury.org on Ubuntu 26.04, install PHP 8.5 with PHP-FPM, and connect it to nginx for Laravel. (141 chars)
+**Category:** PHP
+**Tags:** php, php-8.5, php-fpm, ubuntu, nginx, laravel, sury

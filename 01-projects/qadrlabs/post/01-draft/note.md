@@ -1,20 +1,46 @@
-artikel sebelumnya tentang celah keamanan
-https://qadrlabs.com/post/php-critical-rce-vulnerabilities-cve-2026-109618-and-cve-2026-109619-what-happened-and-how-to-protect-your-servers 
-https://qadrlabs.com/post/how-we-patched-critical-php-rce-vulnerabilities-on-an-ubuntu-2404-server 
-https://qadrlabs.com/post/laravel-security-advisories-cve-2026-114509-and-cve-2026-114508-token-guard-auth-bypass-and-unauthorized-data-destruction 
+sebelumnya saya menulis https://qadrlabs.com/post/cara-install-php-85-menggunakan-ppa-ondrej-php-di-ubuntu-2504 atau `/home/gun-gun-priatna/obsidian-vault/01-projects/qadrlabs/post/03-published/php/cara-install-php-85-menggunakan-ppa-ondrej-php-di-ubuntu-2504.md`.
 
-sekarang nemu info lagi terkait celah keamanan berikut
+karena saat itu ppa tidak tersedia untuk ubuntu 25.04 (bukan lts).
 
+sekarang laptop saya dengan os ubuntu 26.04 saya coba install ppa ondrej.
+alasan saya ingin install itu karena saya memerlukan project dengan versi php yang berbeda beda sama seperti alasan yang pernah saya tullis ketika saya menyusun artikel tentang ppa tersebut.
 
-| CVE             | What it is                                                                                 | Severity | Affected lines   |
-| --------------- | ------------------------------------------------------------------------------------------ | -------- | ---------------- |
-| CVE-2026-111497 | Out-of-bounds write in the Brotli decoder; remote code execution, per the project          | High     | 22.x, 24.x, 26.x |
-| CVE-2026-106069 | TLS hostname-check bypass when a host resolves to an IP address in non-canonical form      | High     | 22.x, 24.x, 26.x |
-| CVE-2026-105483 | TLS hostname-check bypass when an IP is written in fullwidth digits                        | High     | 24.x, 26.x       |
-| CVE-2026-105482 | dns.resolve truncates names that contain a null byte                                       | High     | 22.x, 24.x, 26.x |
-| CVE-2026-105481 | Keep-alive socket can process a response written before the request was sent               | Medium   | 22.x, 24.x, 26.x |
-| CVE-2026-106072 | Certificate validation for non-canonical IPv4 lets DNS names authenticate IP endpoints     | Medium   | 22.x, 24.x, 26.x |
-| CVE-2026-106074 | randomUUID() and randomInt() caches reused in startup snapshots and single-executable apps | Medium   | 22.x, 24.x, 26.x |
-| CVE-2026-106070 | ZipFile returns attacker-controlled bytes after a failed header check                      | Low      | 26.x             |
-| CVE-2026-106071 | Permission Model over-grants file access through a wildcard lookup                         | Low      | 26.x             |
-| CVE-2026-106073 | Permission Model bypass with fs.realpathSync                                               | Low      | 22.x, 24.x, 26.x |
+ketika saya akses https://launchpad.net/~ondrej/+archive/ubuntu/php terdapat notifikasi
+
+```
+This repository is in process of being merged into [https://packages.sury.org/php/](https://packages.sury.org/php/);
+
+For Ubuntu Resolute, [https://packages.sury.org/php/](https://packages.sury.org/php/) is the canonical way of getting PHP packages, for previous releases, I will provide a simple way how to migrate to the new repositories in upcoming weeks, you can still use this repository for Ubuntu Jammy and Ubuntu Noble.
+```
+
+saya cek https://packages.sury.org/php/README.txt dan ada isi nya
+```
+#!/bin/sh
+# To add this repository please do:
+
+if [ "$(whoami)" != "root" ]; then
+    SUDO=sudo
+fi
+
+${SUDO} apt-get update
+${SUDO} apt-get -y install lsb-release ca-certificates curl
+${SUDO} curl -sSLo /tmp/debsuryorg-archive-keyring.deb https://packages.sury.org/debsuryorg-archive-keyring.deb
+${SUDO} dpkg -i /tmp/debsuryorg-archive-keyring.deb
+${SUDO} sh -c 'echo "deb [signed-by=/usr/share/keyrings/debsuryorg-archive-keyring.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+${SUDO} apt-get update
+```
+
+saya ingin uji coba install php 8.5 dan php fpm dan lainnya untuk development laravel dengan nginx sebagai servernya (note nginx sudah diinstall). 
+
+namun saat ini sudah terinstall 
+```
+$ php -v
+PHP 8.5.9 (cli) (built: Jul 28 2026 13:06:52) (NTS)
+Copyright (c) The PHP Group
+Built by Shivam Mathur
+Zend Engine v4.5.9, Copyright (c) Zend Technologies
+    with Zend OPcache v8.5.9, Copyright (c), by Zend Technologies
+
+```
+
+jadi perlu hapus terlebih dahulu dengan aman.
