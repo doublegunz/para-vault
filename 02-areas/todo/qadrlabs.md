@@ -4,6 +4,7 @@ kanban-plugin: board
 
 ## Backlog
 
+- [ ] perlu cek redirect www untuk qadr.tech dan qadrtech.id
 
 ## Minggu ini
 
