@@ -10,13 +10,17 @@ Daftar template video dan alur pencatatannya ke vault. Aturan lengkap untuk AI a
 
 | Key | Brand | Untuk | Path template | Hasil MP4 |
 | --- | --- | --- | --- | --- |
-| `qadrtech-promo` | qadrtech | Video promo/portofolio produk (VO avatar 5 part, ±40 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/_template` | `~/Projects/qadrtech-hq/videos/<project>/out/*.mp4` |
+| `qadrtech-promo` | qadrtech | Video promo/portofolio produk (VO avatar 5 part, ±40 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/_template` (satu folder per produk; video berikutnya untuk produk yang sama dibuat di folder itu) | `~/Projects/qadrtech-hq/videos/<project>/out/*.mp4` (mode 2: `out/<video>-<lang>.mp4`) |
 | `qadrlabs-lesson-tts` | qadrlabs | Video pembelajaran dengan narasi Gemini TTS (45–90 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs` (satu project, satu folder `lessons/<materi>/` per video) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/out/<materi>-<varian>.mp4` |
 | `qadrlabs-php-basics` | qadrlabs | Seri dasar programming PHP tanpa narator (15–30 dtk, 60fps), satu repo untuk semua episode | `~/Projects/qadrlabs/learning-video` | `~/Projects/qadrlabs/learning-video/output/*.mp4` |
 
 ## Memulai video baru
 
 ### qadrtech-promo
+
+Ada dua cara (detail di `_template/AGENTS.md`, bagian *Two modes*). Cek dulu `ls ~/Projects/qadrtech-hq/videos`: kalau produknya sudah punya folder, pakai mode 2.
+
+**Mode 1: project baru.** Hanya untuk produk/klien yang belum punya folder, karena setiap folder butuh `node_modules` ±700 MB.
 
 ```bash
 cd ~/Projects/qadrtech-hq/videos
@@ -25,7 +29,27 @@ cd <nama-project>
 claude        # atau: codex
 ```
 
-> Buat video portfolio untuk project di `<path>`. Ikuti AGENTS.md. Mulai dari riset dan naskah.
+> Buat video portfolio untuk project di `<path>`. Ikuti mode 1 AGENTS.md. Mulai dari riset dan naskah.
+
+**Mode 2: video baru di project yang sudah ada.** Tidak menyalin template dan tidak membuat folder baru. File baru memakai nama pendek `<video>` (misalnya `naskah-<video>.md`, `voiceovers-<video>/`, `out/<video>-<lang>.mp4`), dan video lama tidak diubah. Kalau `node_modules` sudah dihapus, jalankan `npm install` dulu.
+
+```bash
+cd ~/Projects/qadrtech-hq/videos/<project>
+npm install   # hanya kalau node_modules belum ada
+claude        # atau: codex
+```
+
+> Buat video baru "`<video>`" di `~/Projects/qadrtech-hq/videos/<project>`. Ikuti mode 2 di `_template/AGENTS.md`. Mulai dari riset dan naskah.
+
+Catatan vault untuk mode 2: satu catatan per video, `01-projects/qadrtech/video/YYYY-MM-DD-<project>-<video>.md`, dengan `project_dir` yang sama seperti project-nya.
+
+**Hemat storage.** Setelah video selesai, `node_modules` boleh dihapus (bisa dipulihkan dengan `npm install`):
+
+```bash
+cd ~/Projects/qadrtech-hq/videos
+sh _template/scripts/clean-node-modules.sh                       # dry run
+sh _template/scripts/clean-node-modules.sh --keep <project> --yes
+```
 
 ### qadrlabs-lesson-tts
 
@@ -57,7 +81,7 @@ Untuk produksi yang panjang, lebih baik memulai dari folder project. Di sana `AG
 ## Alur kerja
 
 1. Jalankan `claude` atau `codex` di folder template/project atau di vault, lalu tulis prompt.
-2. Agent membuat folder project dan langsung membuat catatan di `01-projects/<brand>/video/` dengan status `in-progress`.
+2. Agent membuat folder project (mode 1) atau memakai folder yang sudah ada (mode 2 qadrtech-promo, lesson qadrlabs), lalu langsung membuat catatan di `01-projects/<brand>/video/` dengan status `in-progress`.
 3. Agent mengikuti `AGENTS.md` template sampai video selesai dirender.
 4. Agent mengisi `variants` (path MP4 per versi) dengan status `rendered`.
 5. Cek video, status, dan path-nya di Vault Hub → **Video** (filter **Belum dipublish**).

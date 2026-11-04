@@ -28,6 +28,7 @@ variants:
 Video edukasi alur kerja sama dengan Qadr Tech Solutions (SDLC): Conversation → Scope → Build & Review → Handover & upkeep. Konsep visual "One message becomes a system": satu pesan chat yang berubah jadi peta proses, lembar scope (IN/OUT + stempel "Approved by you"), aplikasi yang tumbuh v0.1→v0.3 lewat feedback, lalu serah terima (sistem, source code, walkthrough) + garis detak maintenance. Stage tracker 4 segmen tampil sepanjang video dengan checkpoint "✓ You decide" dan label SDLC per tahap. Format 9:16 + 16:9.
 
 - Naskah: ~/Projects/qadrtech-hq/videos/qadrtech-sdlc-explainer/docs/naskah-voice-over.md
+- Caption: ~/Projects/qadrtech-hq/videos/qadrtech-sdlc-explainer/caption-instagram-en.md · caption-linkedin-en.md · caption-youtube-en.md
 - Sumber fakta: qadr.tech (`components/Landing/WorkingProcess.js`, `pages/about.js`)
 
 ## Catatan produksi
