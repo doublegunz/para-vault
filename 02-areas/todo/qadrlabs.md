@@ -12,10 +12,10 @@ kanban-plugin: board
 
 ## Dikerjakan
 
-- [ ] development skripsi app
 
 ## Selesai
 
+- [x] development skripsi app
 - [x] publish video qadrtech sdlc di laptop macbook
 - [x] publish video whats is git di laptop rog
 - [x] publish video promosi layanan qadrtech di instagram, facebook, linkedin dan youtube
