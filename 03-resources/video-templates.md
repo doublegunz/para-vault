@@ -12,6 +12,7 @@ Daftar template video dan alur pencatatannya ke vault. Aturan lengkap untuk AI a
 | --- | --- | --- | --- | --- |
 | `qadrtech-promo` | qadrtech | Video promo/portofolio produk (VO avatar 5 part, ±40 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/_template` (satu folder per produk; video berikutnya untuk produk yang sama dibuat di folder itu) | `~/Projects/qadrtech-hq/videos/<project>/out/*.mp4` (mode 2: `out/<video>-<lang>.mp4`) |
 | `qadrlabs-lesson-tts` | qadrlabs | Video pembelajaran dengan narasi Gemini TTS (45–90 dtk, 30fps) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs` (satu project, satu folder `lessons/<materi>/` per video) | `~/Projects/qadrtech-hq/videos/learning-video-qadrlabs/out/<materi>-<varian>.mp4` |
+| `qadrtech-insight-tts` | qadrtech | Video edukasi Instagram dari artikel qadr.tech/insight, narasi Gemini TTS (±60 dtk, 30fps, tanpa URL artikel) | `~/Projects/qadrtech-hq/videos/qadrtech-insight` (satu project, satu folder `lessons/<episode>/` per artikel) | `~/Projects/qadrtech-hq/videos/qadrtech-insight/out/<episode>-<varian>.mp4` |
 | `qadrlabs-php-basics` | qadrlabs | Seri dasar programming PHP tanpa narator (15–30 dtk, 60fps), satu repo untuk semua episode | `~/Projects/qadrlabs/learning-video` | `~/Projects/qadrlabs/learning-video/output/*.mp4` |
 
 ## Memulai video baru
@@ -60,6 +61,18 @@ claude        # atau: codex
 ```
 
 > Buat video pembelajaran tentang `<topik>` untuk qadrlabs.com. Ikuti AGENTS.md. Mulai dari riset dan naskah.
+
+### qadrtech-insight-tts
+
+```bash
+cd ~/Projects/qadrtech-hq/videos/qadrtech-insight
+npm run lesson -- <nama-episode>     # folder baru di lessons/, tanpa menyalin project
+claude        # atau: codex
+```
+
+> Buat video edukasi Instagram qadr.tech dari artikel `~/Projects/qadrtech-hq/qadr-tech/data/blog/<slug>.mdx`. Ikuti AGENTS.md. Mulai dari riset dan naskah.
+
+Catatan vault: `01-projects/qadrtech/video/YYYY-MM-DD-qadrtech-insight-<episode>.md`, `project_dir` = `~/Projects/qadrtech-hq/videos/qadrtech-insight/lessons/<episode>`.
 
 ### qadrlabs-php-basics
 
