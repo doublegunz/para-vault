@@ -14,7 +14,7 @@ variants:
     path: ~/Projects/qadrtech-hq/videos/qadrtech-sdlc-explainer/out/qadrtech-sdlc-en.mp4
     format: 1080x1920 30fps
     duration: 46.0
-    status: rendered
+    status: published
     published: []
   - id: sdlc-en-wide
     label: SDLC Explainer (EN, 16:9)

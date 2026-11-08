@@ -3,7 +3,7 @@ type: video
 brand: qadrtech
 title: Insight — Recover Knowledge from Code (EN)
 date: 2026-11-06
-status: rendered
+status: published
 template: qadrtech-insight-tts
 project_dir: ~/Projects/qadrtech-hq/videos/qadrtech-insight/lessons/recover-knowledge
 generated_by: claude
@@ -14,7 +14,7 @@ variants:
     path: ~/Projects/qadrtech-hq/videos/qadrtech-insight/out/recover-knowledge-en.mp4
     format: 1080x1920 30fps
     duration: 71.0
-    status: rendered
+    status: published
     published: []
 ---
 
