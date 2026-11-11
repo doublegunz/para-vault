@@ -6,7 +6,7 @@ Tanggal: 2026-11-02. Sumber awal: `~/Downloads/learn-symfony-for-beginners` (tid
 
 - Ubuntu, PHP 8.5.9 (course menulis PHP 8.4 untuk Windows/Laragon; Symfony 8 butuh >= 8.4)
 - Symfony **8.1.10** (`symfony/skeleton:"^8.0"` + `webapp`), Doctrine ORM 3.7, doctrine-fixtures-bundle 4.3
-- MariaDB 11.8.6, database `db_catatku` (user `catatku_symfony`, lihat `00-inbox/membuat-database-catatku-symfony.md`). `.env` diisi persis seperti lesson, kredensial lokal di `.env.local`.
+- MariaDB 11.8.6, database `db_catatku` (user `catatku_symfony`, lihat `01-projects/qadrlabs/notes/membuat-database-catatku-symfony.md`). `.env` diisi persis seperti lesson, kredensial lokal di `.env.local`.
 - Proyek: `sandbox/catatku-symfony`, satu branch per lesson (`symfony/lesson-02` ... `symfony/lesson-11-register`), di-merge `--no-ff` ke `main`.
 - Cara uji: `php -S localhost:8080 -t public`, curl dengan cookie jar + ekstraksi token CSRF, `debug:router`, `doctrine:schema:validate`, query MariaDB langsung. Output terminal di lesson diambil dari jalankan asli (perintah interaktif `make:*` direkam lewat pseudo-TTY).
 

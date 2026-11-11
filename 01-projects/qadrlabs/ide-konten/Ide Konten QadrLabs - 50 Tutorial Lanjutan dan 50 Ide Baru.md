@@ -1,7 +1,7 @@
 ---
 title: Ide Konten QadrLabs — 50 Tutorial Lanjutan & 50 Ide Baru
 date: 2026-06-06
-source: 00-inbox/posts-2026-06-06.csv
+source: 01-projects/qadrlabs/ide-konten/posts-2026-06-06.csv
 tags: [ide-konten, qadrlabs, content-planning, editorial]
 status: draft
 ---

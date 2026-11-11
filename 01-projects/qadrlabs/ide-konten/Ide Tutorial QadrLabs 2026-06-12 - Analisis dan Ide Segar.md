@@ -1,7 +1,7 @@
 ---
 title: Ide Tutorial QadrLabs 2026-06-12 — Analisis dan Ide Segar
 date: 2026-06-12
-source: 01-projects/qadrlabs/post/03-published (280+ post) + 00-inbox/posts-2026-06-06.csv
+source: 01-projects/qadrlabs/post/03-published (280+ post) + 01-projects/qadrlabs/ide-konten/posts-2026-06-06.csv
 tags: [ide-konten, qadrlabs, content-planning, editorial]
 status: draft
 ---

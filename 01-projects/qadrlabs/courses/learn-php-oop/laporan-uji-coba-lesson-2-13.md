@@ -45,7 +45,7 @@ mengubah logika aplikasi):
 - **Database:** lesson memakai `db_catatku` dengan user `root` password kosong.
   Di mesin uji, MySQL/MariaDB `root` butuh sudo interaktif, jadi dipakai
   kredensial khusus course yang sudah disiapkan
-  (`00-inbox/membuat credentials untuk database mysql.md`):
+  (`01-projects/qadrlabs/notes/membuat credentials untuk database mysql.md`):
   ```php
   // config/database.php
   'database' => 'db_php_oop',

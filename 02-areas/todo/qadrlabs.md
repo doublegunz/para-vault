@@ -6,6 +6,8 @@ kanban-plugin: board
 
 - [ ] perlu cek redirect www untuk qadr.tech dan qadrtech.id
 - [ ] development acadio untuk publish sebagai post di linkedin
+- [ ] tulis artikel: menambahkan tag di git dan rilis version di github #artikel
+- [ ] selesaikan pindah sandbox: buat ulang `.venv-ml` di Mac + sesuaikan laptop ROG [[sisa-pekerjaan-pindah-sandbox]] [[panduan-pindah-sandbox-laptop-rog-ubuntu]]
 
 ## Minggu ini
 

@@ -83,7 +83,7 @@ Tugas ini sudah dikerjakan di Mac. Sekarang lakukan hal yang sama di laptop ROG 
    ```bash
    rm -rf ~/.config/obsidian/IndexedDB ~/.config/obsidian/Cache ~/.config/obsidian/"Code Cache"
    ```
-   Tanyakan dulu sebelum menghapus. Detail ada di `00-inbox/petunjuk-percepat-loading-obsidian.md`.
+   Tanyakan dulu sebelum menghapus. Detail ada di `03-resources/petunjuk-percepat-loading-obsidian.md`.
 
 9. **Cek folder besar lain di dalam vault** (opsional, hanya laporan):
    ```bash
