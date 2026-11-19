@@ -46,7 +46,6 @@ Urutan ini dari yang paling dekat dengan pekerjaan yang sudah ada.
 
 - **Disk.** Sisa ruang sekitar 5 GB. Folder `out/` (render dan frame) dan file `*.blend1` adalah yang paling aman dihapus.
 - **Jangan menimpa file sumber.** `vesna.blend` dan `vesna_clean.blend` adalah dasar semua file lain. Hasil eksperimen disimpan dengan nama baru.
-- **Lisensi model.** Hanya untuk belajar dan non-komersial, tidak boleh didistribusikan ulang. Game dan `.glb` tidak boleh di-deploy atau di-push ke repo publik.
 - **Blender 5.3.** Banyak tutorial dan jawaban AI memakai API Blender 3 atau 4. Yang sudah terbukti berubah: `action.fcurves` tidak ada lagi, dan format video tidak lagi dipilih lewat `image_settings.file_format = 'FFMPEG'`.
 
 ## Bagian 2: Menulis prompt untuk mengedit karakter

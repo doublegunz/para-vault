@@ -6,8 +6,6 @@ tags: [blender, mmd, 3d, claude-code, mcp]
 
 Catatan ini merangkum setup Blender yang dikerjakan bersama Claude Code pada 2026-11-15, dengan model **Vesna** (`.pmx`, format MMD) sebagai contoh. Semua file kerja ada di `~/sandbox/blender-assets/` (di luar vault, sesuai aturan vault).
 
-> Lisensi model: dari readme model, hanya untuk belajar dan non-komersial. Tidak boleh didistribusikan ulang, bagian-bagiannya tidak boleh dipakai untuk model lain, dan tidak boleh untuk tujuan komersial. Cek ulang readme setiap model baru.
-
 ## 1. Lokasi penting
 
 | Apa | Lokasi |
@@ -116,7 +114,7 @@ Peringatan: server ini bisa menjalankan kode Python bebas di Blender. Jangan mem
 
 Langkah umum untuk model `.pmx` baru, misalnya `nama-model`:
 
-1. Unduh model, baca readme-nya (lisensi), lalu salin ke folder kerja baru:
+1. Unduh model, baca readme-nya, lalu salin ke folder kerja baru:
    ```bash
    mkdir -p ~/sandbox/blender-assets/nama-model
    cp -r ~/Downloads/<folder-model> ~/sandbox/blender-assets/nama-model/src
@@ -181,7 +179,6 @@ Hal yang perlu diingat:
 - Klip `SitType` (duduk mengetik, 6 detik) memakai ukuran di `SIT` pada `make_clips.py`: dudukan 0,42 m, meja 0,63 m. Properti di `src/props.js` harus memakai ukuran yang sama. Di game, tekan E dalam jarak 3 m dari meja: karakter berjalan ke titik berdiri, berputar, memutar klip `SitDown`, lalu `SitType`. E lagi memutar `StandUp`. Klip duduk dibuat di sekitar titik asal bangku, sedangkan posisi berdiri 12 cm di depannya, jadi `character.js` menggeser root mengikuti bobot klip duduk supaya badan tidak meluncur saat crossfade.
 - Uji urutan duduk tanpa keyboard: `?auto&warm=900&standAt=600` menekan E secara simulasi, dan judul halaman mencatat perpindahan mode.
 - Parameter URL tambahan: `?state=SitType`, `?idle=0.25` (bekukan fase idle), `?warm=150` (simulasikan spring bone dulu sebelum screenshot).
-- Game hanya untuk uji lokal. Jangan di-deploy atau di-push ke repo publik karena lisensi model.
 
 ## 8. Catatan dan masalah yang diketahui
 
