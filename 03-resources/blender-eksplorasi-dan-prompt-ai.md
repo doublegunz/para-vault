@@ -15,7 +15,7 @@ Kondisi per 2026-11-15: karakter Vesna punya klip `Idle`, `Walk`, `Run`, `SitTyp
 | Cara | Kapan dipakai | Catatan |
 |---|---|---|
 | **Skrip headless** (AI menulis Python, lalu menjalankan `blender -b file.blend -P skrip.py`) | Pekerjaan yang harus bisa diulang: animasi, ekspor, material | Semua pekerjaan sejauh ini memakai cara ini. Skripnya tersimpan, jadi hasilnya bisa dibuat ulang |
-| **Blender MCP** (AI mengontrol Blender yang sedang terbuka) | Eksplorasi interaktif: bertanya isi scene, mencoba perubahan kecil sambil melihat viewport | Sudah terpasang dan terdaftar, tetapi **belum pernah dipakai untuk mengedit**. Butuh Blender terbuka, server MCP berjalan, dan sesi Claude Code baru |
+| **Blender MCP** (AI mengontrol Blender yang sedang terbuka) | Eksplorasi interaktif: bertanya isi scene, mencoba perubahan kecil sambil melihat viewport | Dipakai untuk membuat pakaian Ellie (2026-11-19): AI membuka file, membangun mesh, dan merender pratinjau, lalu hasil akhirnya ditulis sebagai skrip. Butuh Blender terbuka dan server MCP berjalan |
 
 Saran: pakai MCP untuk bertanya dan mencoba, lalu minta AI menuliskan hasil akhirnya sebagai skrip. Perubahan yang hanya dilakukan lewat MCP hilang kalau file tidak disimpan, dan tidak bisa diulang untuk model lain.
 
@@ -44,7 +44,7 @@ Urutan ini dari yang paling dekat dengan pekerjaan yang sudah ada.
 
 ### Hal yang perlu dijaga
 
-- **Disk.** Sisa ruang sekitar 5 GB. Folder `out/` (render dan frame) dan file `*.blend1` adalah yang paling aman dihapus.
+- **Disk.** Per 2026-11-19 sisa ruang sekitar 59 GB. Folder `out/` (render dan frame) dan file `*.blend1` adalah yang paling aman dihapus.
 - **Jangan menimpa file sumber.** `vesna.blend` dan `vesna_clean.blend` adalah dasar semua file lain. Hasil eksperimen disimpan dengan nama baru.
 - **Blender 5.3.** Banyak tutorial dan jawaban AI memakai API Blender 3 atau 4. Yang sudah terbukti berubah: `action.fcurves` tidak ada lagi, dan format video tidak lagi dipilih lewat `image_settings.file_format = 'FFMPEG'`.
 
