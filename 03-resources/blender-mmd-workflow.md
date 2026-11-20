@@ -10,7 +10,7 @@ Catatan ini merangkum setup Blender yang dikerjakan bersama Claude Code pada 202
 
 | Apa | Lokasi |
 |---|---|
-| Blender 5.3.0 (tarball, tanpa instalasi) | `~/Downloads/blender-5.3.0-linux-x64/blender` |
+| Blender 5.3.0 (tarball, tanpa instalasi) | `~/.local/bin/blender` (tautan ke `~/.local/opt/blender-5.3.0/`). Folder lama `~/Downloads/blender-5.3.0-linux-x64/` sudah tidak ada sejak 2026-11-20 |
 | Folder kerja model | `~/sandbox/blender-assets/vesna/` |
 | Model asli (salinan, jangan diubah) | `~/sandbox/blender-assets/vesna/src/` |
 | Model asli (unduhan) | `~/Downloads/薇斯纳_by_原神_0576ff5aa94fad52f3d88c00e2702390/` |
@@ -40,7 +40,7 @@ File `*.blend1` adalah cadangan otomatis Blender. Boleh dihapus kalau disk menip
 
 1. Jalankan Blender:
    ```bash
-   ~/Downloads/blender-5.3.0-linux-x64/blender ~/sandbox/blender-assets/vesna/vesna_pose.blend
+   ~/.local/bin/blender ~/sandbox/blender-assets/vesna/vesna_pose.blend
    ```
    Atau buka Blender dari menu aplikasi, lalu **File > Open**.
 2. Tekan **Z** di viewport dan pilih **Material Preview** supaya tekstur terlihat.
@@ -61,7 +61,7 @@ Pola umum:
 
 ```bash
 cd ~/sandbox/blender-assets/vesna
-~/Downloads/blender-5.3.0-linux-x64/blender -b <file.blend> -P <skrip.py>
+~/.local/bin/blender -b <file.blend> -P <skrip.py>
 ```
 
 Skrip yang ada, urut sesuai fungsinya:
@@ -156,7 +156,7 @@ Putaran penyetelan gerakan:
 
 ```bash
 cd ~/sandbox/blender-assets/vesna
-B=~/Downloads/blender-5.3.0-linux-x64/blender
+B=~/.local/bin/blender
 $B -b vesna_clean.blend -P make_clips.py     # buat klip, ukur selip kaki, contact sheet di out/
 $B -b vesna_motion.blend -P export_glb.py    # tulis vesna.glb dan salin ke game
 $B -b -P verify_glb.py                       # opsional: bandingkan pose glb dengan sumber
@@ -176,7 +176,7 @@ Parameter URL untuk pengecekan: `?state=Walk&phase=0.25&yaw=270&nogui` membekuka
 Hal yang perlu diingat:
 - Klip dibuat di tempat (in-place). Kecepatan maju tiap klip ada di `clips.json` (jalan 0,80 m/dtk, lari 2,80 m/dtk), dan game memakainya supaya kaki tidak tergelincir.
 - Kaki dideformasi bone `足D / ひざD / 足首D` yang mengikuti IK lewat constraint, jadi ekspor harus memakai sampling (bake). `export_glb.py` sudah mengaturnya.
-- Rambut, rok, dan sayap digerakkan spring bone di `src/springbones.js`, bukan fisika MMD. Track animasi bone itu dibuang saat klip dimuat.
+- Rambut, rok, dan sayap digerakkan spring bone di `src/springbones.js`, bukan fisika MMD. Track animasi bone itu dibuang saat klip dimuat. Grup diatur di `GROUPS`. Grup pertama yang cocok yang dipakai, jadi grup khusus (`longhair`, `lock`) harus ada di atas grup umum `hair`. `collide` berisi daftar set collider (`upper`, `shoulder`, `back`, `skirtball`, `leg`, `calf`). `seat: true` berarti ikut batasan dudukan saat duduk.
 - Ekspor hanya membawa 6 morph wajah dan tekstur dasar. Efek sphere map MMD tidak ikut.
 - Klip `SitType` (duduk mengetik, 6 detik) memakai ukuran di `SIT` pada `make_clips.py`: dudukan 0,42 m, meja 0,63 m. Properti di `src/props.js` harus memakai ukuran yang sama. Di game, tekan E dalam jarak 3 m dari meja: karakter berjalan ke titik berdiri, berputar, memutar klip `SitDown`, lalu `SitType`. E lagi memutar `StandUp`. Klip duduk dibuat di sekitar titik asal bangku, sedangkan posisi berdiri 12 cm di depannya, jadi `character.js` menggeser root mengikuti bobot klip duduk supaya badan tidak meluncur saat crossfade.
 - Uji urutan duduk tanpa keyboard: `?auto&warm=900&standAt=600` menekan E secara simulasi, dan judul halaman mencatat perpindahan mode.
@@ -194,13 +194,13 @@ Hal yang perlu diingat:
 
 ## 9. Karakter Ellie (turunan Vesna)
 
-Dibuat 2026-11-19 dari desain `~/Pictures/ellie.png`. Rig dan keenam klip Vesna dipakai apa adanya, jadi semua animasi tetap jalan. Game `~/sandbox/vesna-game` sekarang memuat Ellie (`public/models/ellie.glb`). File `vesna.glb` tetap ada sebagai cadangan.
+Dibuat 2026-11-19 dari desain `~/Pictures/ellie.png`. Prompt untuk melanjutkan ada di [[prompt-lanjut-ellie]]. Rig dan keenam klip Vesna dipakai apa adanya, jadi semua animasi tetap jalan. Game `~/sandbox/vesna-game` sekarang memuat Ellie (`public/models/ellie.glb`). File `vesna.glb` tetap ada sebagai cadangan.
 
 Membuat ulang (setelah `make_clips.py` kalau klip diubah):
 
 ```bash
 cd ~/sandbox/blender-assets/vesna
-B=~/Downloads/blender-5.3.0-linux-x64/blender
+B=~/.local/bin/blender
 $B -b vesna_motion.blend -P make_ellie.py              # -> ellie_motion.blend, src/tex_ellie/, out/ellie/
 CHAR=ellie $B -b ellie_motion.blend -P export_glb.py   # -> ellie.glb + ellie_materials.json, disalin ke game
 CHAR=ellie $B -b -P verify_glb.py                      # opsional: cek pose glb vs sumber
@@ -210,7 +210,7 @@ CHAR=ellie $B -b -P verify_glb.py                      # opsional: cek pose glb 
 
 | Skrip | Isi |
 |---|---|
-| `make_ellie.py` | Urutan lengkap: warna ulang tekstur (salinan di `src/tex_ellie/`), hapus sayap/tiara/kristal/cape/rok lama, lalu bangun pakaian baru dan gabungkan ke `薇斯纳_mesh`. Palet warna ada di bagian atas |
+| `make_ellie.py` | Urutan lengkap: warna ulang tekstur (salinan di `src/tex_ellie/`), hapus sayap/tiara/kristal/cape/rok lama, lalu bangun pakaian baru dan rambut, dan gabungkan ke `薇斯纳_mesh`. Palet warna ada di bagian atas. Satu putaran sekitar 40 detik, termasuk render pratinjau |
 | `ellie_lib.py` | Mask UV per wilayah (rasterisasi segitiga UV, bisa membawa posisi 3D per piksel), tint, geser hue, pola kotak-kotak |
 | `ellie_skirt.py` | Rok lipit kotak-kotak + rumbai, dibangun di atas cincin bone rok `Q_`. Weight disalin dari rok lama |
 | `ellie_cloth.py` | Pustaka bersama: ukur badan, pembangun mesh (semua face menghadap keluar), fitting ala Shrinkwrap, garis bawah kerah (`Neckline`), tekstur rajut |
@@ -218,6 +218,7 @@ CHAR=ellie $B -b -P verify_glb.py                      # opsional: cek pose glb 
 | `ellie_cardigan.py` | Kardigan: badan dan lengan ditempelkan ke badan (7 mm, lengan 8 mm), naik sampai kerah, lis + kancing + saku, garis pink di lengan. Lengan kanan adalah cermin lengan kiri (bentuk dan weight) |
 | `ellie_shoes.py` | Kaki bot digembungkan jadi sneaker, sol tebal, pita kaus kaki, hapus kancing bot. Betis bot diwarnai jadi kaus kaki |
 | `ellie_chain.py` | Rantai emas di rok, di dalam bukaan kardigan: satu lengkung dari ikat pinggang kanan ke samping gesper, plus untaian pendek dengan liontin sakura. Mata rantai bergantian rebah/berdiri. Mengikuti sisi terluar lipit rok (bukan masuk ke lipatan). Weight dari rok terdekat, jadi ikut spring rok. Juga berisi pembangun `link()` dan `sakura()` |
+| `ellie_hair.py` | Rambut (2026-11-20), dipanggil paling akhir dari `make_ellie.py`. Menghapus ponytail ikal Vesna (`髮` dan salinan kilaunya `髮+`), ikal samping (`Bone_HairC*`), dan pita putih (`体` pada `頭` di atas leher dan `Bone_HairG/K`). Tirai belakang: dua lapis, shell di atas tengkorak sampai ekuator kepala, lalu jatuh mengikuti hull luar punggung dan rok sampai bawah lutut, di 7 rantai spring baru `Bone_HairS<k>_<n>`. Dua helai samping lurus sampai dada memakai rantai `Bone_HairC01..03`. Poni Vesna (`前髪` dan salinan kilaunya) dibentuk ulang jadi poni samping oleh satu medan deformasi halus (`reshape_fringe`, parameter di `FR`): poni di atas mata menyapu 4,2 cm ke kanan Ellie, sisi kanannya dipanjangkan sampai sedikit di bawah mata (z 1,35), lalu didorong keluar dari wajah. Semua shape key ikut digeser. Warna pastel diatur lewat `HAIR` di `make_ellie.py` |
 | `ellie_bag.py` | **Belum dipakai** (`ELLIE_BAG=1` untuk mencoba). Tas bahu di pinggul kiri-belakang (sudut 161°), tali lurus dari kedua ujung tas ke atas bahu kiri seperti di desain. **Memakai ulang** pita pink bergaris Vesna (`Bone_ShirtDecor*`, dulu di pinggul kanan) sebagai pita tutup tas, dan liontin jubahnya (`Bone_CapeDecor*`) sebagai charm tas. Keduanya disalin keluar dengan `stash_parts()` sebelum pakaian lama dihapus. Kristal toska jadi pink dan rumbai jadi putih di bagian tekstur `make_ellie.py` |
 
 Hal yang perlu diingat:
@@ -237,4 +238,25 @@ Hal yang perlu diingat:
 - **Cek tembus di Blender jangan memakai rambut.** Di Blender rambut ikut rig secara kaku, sedangkan di game digerakkan spring bone. Uji "di dalam" pakai hitung tembakan sinar (ray parity), bukan arah normal face terdekat, karena tanda dari normal salah untuk kotak.
 - Saat `SitType`, tas tidak menyentuh badan atau tangan (dicek di Blender) dan tidak masuk ke dudukan bangku (dicek di screenshot game).
 
-Yang belum dibuat: rambut lurus panjang, ahoge, telinga putih (telinga lancip dan pita putih Vesna masih ada). **Tas selempang** sudah ada skripnya, tetapi belum dipasang (2026-11-19). Menurut pengguna hasilnya masih tidak rapi, walaupun tali sudah tidak naik ke telinga dan tas sudah tidak tembus. Dua versi dicoba: tali menyilang dada (tidak rapi, sempat naik ke telinga) dan tali lurus dari bahu kiri sesuai desain. Versi kedua masih tembus ke badan saat Idle menurut pengguna, walaupun cek di Blender (tangan dan badan terhadap kotak tas) bersih. Cek itu tidak mengukur tali terhadap badan, dan tidak memakai rambut maupun rok yang bergerak dengan spring. Tas dianggap terlalu rumit untuk sekarang. Kerah tegak Vesna dipakai sebagai kerah kemeja.
+### Rambut (2026-11-20)
+
+- **Kenapa rambut baru, bukan bentuk ulang.** Ikal Vesna adalah lembaran spiral di satu rantai tengah `髮_1..26`. Kalau diluruskan, lembarannya bertumpuk dan teksturnya melar, dan akarnya tetap ponytail. Satu rantai di tengah juga membuat tirai lebar terpuntir. Bone `髮_*` lama masih ada di rig, tetapi tidak punya weight lagi, jadi tidak ikut diekspor.
+- **Percobaan gagal (2026-11-20): poni dan rambut samping prosedural.** Poni Vesna dibuang dan diganti 13 helai pita runcing plus 5 helai samping per sisi, dibangun di atas permukaan `前髪` lama. Menurut pengguna, hasilnya "berantakan banget": helainya terlalu tipis, dan outline toon di game menggambar garis gelap di tepi setiap helai, jadi seperti coretan. Skripnya disimpan sementara di scratchpad sesi (`ellie_hair.v2_strands.py`), tidak dipakai. Pelajarannya: poni pahatan tangan Vesna jauh lebih rapi daripada helai buatan skrip. Untuk mengubah bentuk poni, deformasi `前髪` yang ada (geser dan lengkungkan vertex, semua shape key ikut digeser), jangan membangun ulang dari helai.
+- **Poni samping berhasil dengan deformasi, bukan helai baru.** Ada tiga jebakan, semuanya karena medan deformasi mengenai rambut di luar poni. (1) Peregangan mengenai helai pembingkai pipi, sehingga rambut turun sampai dagu. Sekarang peregangan hanya untuk |x| < 4,5 cm dan berhenti di z 1,352. (2) Faktor sapuan tidak dibatasi untuk vertex di bawah ujung poni, sehingga helai pipi Vesna (`Bone_HairB02`, `L01`, z 1,33 sampai 1,37) tergeser 6 cm ke depan wajah. Sekarang sapuan hanya untuk vertex di atas z 1,37 sampai 1,41. (3) Dorongan keluar wajah hanya untuk vertex yang awalnya memang di depan wajah. Cara mencari penyebab: render versi `FR` dengan sapuan dan peregangan 0 sebagai pembanding, lalu cari face `前髪` yang ada di tempat yang salah dan lihat bone dominannya.
+- `ELLIE_HAIR=0 ELLIE_OUT=<file> make_ellie.py` membuat file tanpa rambut baru, untuk mencoba `ellie_hair.build` lewat MCP tanpa membangun ulang pakaian (sekitar 1 detik per percobaan).
+- **Kepala Vesna botak di belakang.** Yang ada di sana hanya tutup kulit `肌` (28 face). Tutup itu dulu tertutup rambut ponytail. Shell rambut baru mengukur jari-jari kepala dari `前髪` dan kulit kepala (`肌` pada `頭`, tanpa telinga).
+- **Shell berhenti di ekuator kepala** (elevasi −8°), dan tirai jatuh dari situ. Versi pertama membungkus sampai bawah tengkorak, sehingga bentuknya seperti balon dengan lipatan dan bercak toon gelap di tengkuk. Normal tebal shell di bawah ekuator dibuat mendatar karena alasan yang sama.
+- **Draping memakai hull, bukan shrinkwrap.** Untuk tiap kolom, rambut mengikuti hull luar profil punggung dari samping (belikat, pinggul, rok), lalu lurus ke bawah dari titik terlebar rok. Bahu (`肩`) ikut dihitung. Tanpa bahu, kardigan tembus berbentuk bulatan di tepi rambut.
+- **Spring di game** (`src/springbones.js`):
+  - Grup `longhair`: kaku di dekat kepala dan lentur ke ujung (`stiffTaper`). Angin 0,12 dan `maxAngle` 55°. Dengan angin 0,22, rambut saat Run hampir horizontal dan tertekuk.
+  - Rantai bersebelahan diikat sebagai lembaran (`_sheet()`, jarak 0,6 sampai 1,15 kali jarak awal).
+  - Collider tambahan: punggung bawah (`back`), dua bola di belakang panggul untuk kembang rok (`skirtball`, dimatikan saat duduk), bahu `肩`→`腕` (`shoulder`), betis `ひざD`→`足首D` (`calf`).
+  - Saat Run, pergelangan kaki terayun ke belakang sampai y +0,35 pada z 0,25 sampai 0,37. Itulah sebabnya collider betis wajib.
+  - Rambut ikut batasan dudukan saat `SitType`.
+- **Helai samping punya grup sendiri (`lock`), tanpa collider.** Ujung rantai C ada di dalam bola dada, jadi helai terlempar ke samping dan dari belakang tampak seperti "sayap".
+- **Getaran saat diam** (`?warm=300&jitter=longhair`, probe `jitter` sekarang menerima nama grup): rambut panjang maks 0,71 mm per langkah (SitType 0,81 mm), helai samping 0,21 mm, rok 0,28 mm.
+- **Screenshot cek:** `~/sandbox/blender-assets/vesna/out/ellie/hair_check/`.
+- **Di Blender rambut kaku** (tanpa spring). Pada pose Idle atau duduk, rambut tampak seperti tongkat yang ikut kepala. Untuk mengecek bentuk, pakai rest pose. Untuk mengecek gerak, pakai game.
+- **Belum dicek:** transisi berhenti mendadak dari lari, berputar cepat, `SitDown`/`StandUp`, dan tembus rambut ke rok saat rok mengayun (rok dan rambut sama-sama spring dan tidak saling bertabrakan, hanya bola `skirtball` yang menahan). Saat Idle, tangan kanan yang terangkat menyentuh helai samping (tidak ada collider jari).
+
+Yang belum dibuat: rambut samping berlapis (sekarang dua helai tipis), ahoge, telinga putih (telinga lancip Vesna masih ada), dan helai belakang yang terpisah-pisah. Pita putih Vesna sudah dihapus dan warna sudah pastel (2026-11-20). **Tas selempang** sudah ada skripnya, tetapi belum dipasang (2026-11-19). Menurut pengguna hasilnya masih tidak rapi, walaupun tali sudah tidak naik ke telinga dan tas sudah tidak tembus. Dua versi dicoba: tali menyilang dada (tidak rapi, sempat naik ke telinga) dan tali lurus dari bahu kiri sesuai desain. Versi kedua masih tembus ke badan saat Idle menurut pengguna, walaupun cek di Blender (tangan dan badan terhadap kotak tas) bersih. Cek itu tidak mengukur tali terhadap badan, dan tidak memakai rambut maupun rok yang bergerak dengan spring. Tas dianggap terlalu rumit untuk sekarang. Kerah tegak Vesna dipakai sebagai kerah kemeja.
