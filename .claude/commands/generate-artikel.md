@@ -47,6 +47,16 @@ Section yang bersifat penjelasan mendalam (bukan langkah coding) **ditempatkan s
 ### Section Conclusion
 Wajib ada. Berisi **key takeaways dalam format bullet points**. Setiap bullet dimulai dengan term penting dalam bold, diikuti penjelasan singkat satu atau dua kalimat.
 
+### Section References
+Wajib ada jika artikel memuat fakta dari sumber luar (dokumentasi resmi, release notes, RFC, changelog, repository). Gunakan format footnote Markdown:
+- Di dalam teks, tempel penanda footnote langsung setelah kata atau kalimat yang dirujuk, tanpa spasi: `According to the official documentation[^1], ...`
+- Nomori berurutan sesuai kemunculan pertama di artikel (`[^1]`, `[^2]`, ...). Sumber yang sama dirujuk ulang dengan nomor yang sama.
+- Kumpulkan semua definisi di section terakhir `## References {#references}`, setelah Conclusion, dengan format:
+  `[^1]: Judul Halaman @ [https://url-lengkap](https://url-lengkap)`
+- Gunakan judul halaman sumber yang sebenarnya, dan URL lengkap sebagai teks link sekaligus target.
+- Prioritaskan sumber resmi (php.net, laravel.com/docs, wiki RFC, README repository). Pastikan setiap URL bisa dibuka sebelum artikel selesai.
+- Link internal ke artikel qadrlabs.com lain tetap ditulis sebagai link biasa, bukan footnote.
+
 ## Output Terminal / Command
 **Jangan ubah, edit, atau hapus output command** yang ditampilkan sebagai hasil uji coba langsung. Tampilkan apa adanya persis seperti yang dihasilkan di terminal, termasuk whitespace dan formatting aslinya.
 
@@ -88,6 +98,7 @@ Wajib ada. Berisi **key takeaways dalam format bullet points**. Setiap bullet di
 5. `## Step N: Try It Out {#step-n-try-it-out}` as numbered step with sub-scenarios
 6. Reference/explanation sections (e.g., "How X Works Under the Hood") come AFTER steps, WITHOUT "Step" label, but WITH anchor `{#slug}`
 7. `## Conclusion {#conclusion}` with narrative intro + bullet list of key takeaways formatted as: `- **Bold phrase.** Explanation sentence.`
+8. `## References {#references}` as the LAST section, containing footnote definitions: `[^1]: Page Title @ [https://url](https://url)`
 
 ### Laravel 13 Technical Requirements
 - PHP 8.3+ required in What You'll Need
@@ -137,6 +148,7 @@ Sebelum menyusun artikel, selalu ikuti urutan berikut:
 - Mengubah output terminal yang merupakan hasil uji coba nyata.
 - Membuat artikel referensi yang hanya berisi snippet ilustrasi tanpa contoh yang bisa dijalankan.
 - Menyebutkan library atau tool eksternal secara negatif jika konteks artikel tidak memerlukannya.
+- Menuliskan klaim faktual (versi, tanggal rilis, perilaku fitur) tanpa footnote ke sumbernya, atau menaruh footnote di tengah artikel alih-alih di section References.
 
 ## Deliverables
 

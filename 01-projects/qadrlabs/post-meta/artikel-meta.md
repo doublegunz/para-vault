@@ -153,3 +153,17 @@
 **Short description:** Remove Ubuntu's bundled PHP safely, add packages.sury.org on Ubuntu 26.04, install PHP 8.5 with PHP-FPM, and connect it to nginx for Laravel. (141 chars)
 **Category:** PHP
 **Tags:** php, php-8.5, php-fpm, ubuntu, nginx, laravel, sury
+
+## 2026-11-20 - PHP 8.6 released (revised what's new article)
+**File:** 01-projects/qadrlabs/post/03-published/php-86-whats-new-and-changed.md
+**Title:** PHP 8.6 Released: What's New and Changed
+**Short description:** Learn what shipped in PHP 8.6: partial function application, clamp(), readonly defaults, Time\Duration, Io\Poll, plus BC breaks and deprecations. (145 chars)
+**Category:** PHP
+**Tags:** php, php-8.6, php release, partial function application, deprecations
+
+## 2026-11-20 - Install PHP 8.6 from packages.sury.org on Ubuntu 26.04
+**File:** 01-projects/qadrlabs/post/01-draft/install-php-86-from-sury-repository-on-ubuntu-2604.md
+**Title:** How to Install PHP 8.6 on Ubuntu 26.04 from packages.sury.org
+**Short description:** Install PHP 8.6 with PHP-FPM and Laravel extensions on Ubuntu 26.04 from packages.sury.org, side by side with PHP 8.5, with real terminal output. (145 chars)
+**Category:** PHP
+**Tags:** php, php-8.6, php-fpm, ubuntu, sury, laravel
