@@ -4,9 +4,7 @@ kanban-plugin: board
 
 ## Backlog
 
-- [ ] perlu cek redirect www untuk qadr.tech dan qadrtech.id
 - [ ] development acadio untuk publish sebagai post di linkedin
-- [ ] setup domain qadr.tech setelah dihapus. tunggu satu jam. setup kembali jam 21.00
 
 ## Minggu ini
 
@@ -16,6 +14,8 @@ kanban-plugin: board
 
 ## Selesai
 
+- [x] setup domain qadr.tech setelah dihapus. tunggu satu jam. setup kembali jam 21.00
+- [x] perlu cek redirect www untuk qadr.tech dan qadrtech.id
 - [x] tulis artikel: menambahkan tag di git dan rilis version di github #artikel
 - [x] selesaikan pindah sandbox: buat ulang `.venv-ml` di Mac + sesuaikan laptop ROG [[sisa-pekerjaan-pindah-sandbox]] [[panduan-pindah-sandbox-laptop-rog-ubuntu]]
 - [x] development skripsi app
